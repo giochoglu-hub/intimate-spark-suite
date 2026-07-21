@@ -10,33 +10,44 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicBizimOyunGenerateRouteImport } from './routes/api/public/bizim-oyun-generate'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBizimOyunGenerateRoute =
+  ApiPublicBizimOyunGenerateRouteImport.update({
+    id: '/api/public/bizim-oyun-generate',
+    path: '/api/public/bizim-oyun-generate',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/bizim-oyun-generate': typeof ApiPublicBizimOyunGenerateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/bizim-oyun-generate': typeof ApiPublicBizimOyunGenerateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/bizim-oyun-generate': typeof ApiPublicBizimOyunGenerateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/public/bizim-oyun-generate'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/public/bizim-oyun-generate'
+  id: '__root__' | '/' | '/api/public/bizim-oyun-generate'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicBizimOyunGenerateRoute: typeof ApiPublicBizimOyunGenerateRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +59,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/bizim-oyun-generate': {
+      id: '/api/public/bizim-oyun-generate'
+      path: '/api/public/bizim-oyun-generate'
+      fullPath: '/api/public/bizim-oyun-generate'
+      preLoaderRoute: typeof ApiPublicBizimOyunGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicBizimOyunGenerateRoute: ApiPublicBizimOyunGenerateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -1,0 +1,1699 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#10090c" />
+<title>Bizim Oyun</title>
+<style>
+:root{
+  --bg:#10090c; --surface:#1b1015; --surface-2:#26151d;
+  --wine:#7d2138; --wine-light:#a73752; --gold:#d9af61;
+  --cream:#f5ead8; --muted:#bbaeb2; --danger:#c9505f; --success:#719b79;
+  --radius:18px; --radius-lg:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--cream);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;line-height:1.5;overscroll-behavior-y:contain}
+body{min-height:100vh;min-height:100dvh;
+  background:radial-gradient(1200px 700px at 50% -10%,#3a1420 0%,#10090c 55%,#0a0508 100%)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:var(--gold)}
+h1,h2,h3,h4{margin:0;font-weight:700;letter-spacing:-0.01em}
+h1{font-size:28px} h2{font-size:22px} h3{font-size:18px}
+.app{max-width:520px;margin:0 auto;padding:20px 18px 100px;min-height:100vh;min-height:100dvh;position:relative}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.brand{font-size:14px;letter-spacing:.3em;color:var(--gold);text-transform:uppercase}
+.iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--surface-2)}
+.iconbtn:hover{background:var(--surface-2)}
+.card{background:linear-gradient(180deg,rgba(38,21,29,.85),rgba(27,16,21,.85));
+  border:1px solid var(--surface-2);border-radius:var(--radius-lg);padding:20px;
+  box-shadow:0 20px 60px -30px rgba(167,55,82,.6);backdrop-filter:blur(6px)}
+.card + .card{margin-top:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 18px;
+  border-radius:14px;background:var(--surface-2);color:var(--cream);font-weight:600;font-size:15px;
+  border:1px solid transparent;min-height:48px;width:100%;transition:transform .1s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:linear-gradient(135deg,var(--wine-light),var(--wine));box-shadow:0 12px 30px -12px rgba(167,55,82,.9)}
+.btn.gold{background:linear-gradient(135deg,#e6c079,#b98d3e);color:#2b1a08}
+.btn.ghost{background:transparent;border-color:var(--surface-2);color:var(--muted)}
+.btn.danger{background:transparent;border-color:var(--danger);color:var(--danger)}
+.btn.small{padding:10px 12px;font-size:13px;min-height:40px;width:auto}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row > .btn{flex:1 1 0;min-width:0}
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--surface-2);
+  color:var(--muted);font-size:12px;margin-right:6px;margin-top:6px}
+.tag.gold{background:rgba(217,175,97,.15);color:var(--gold);border:1px solid rgba(217,175,97,.35)}
+.tag.ai{background:rgba(167,55,82,.2);color:#f0b9c5;border:1px solid rgba(167,55,82,.5)}
+.tag.custom{background:rgba(113,155,121,.15);color:#a9d1b1;border:1px solid rgba(113,155,121,.4)}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.hero-title{font-size:34px;margin-top:4px}
+.hero-sub{color:var(--gold);font-style:italic;margin-top:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mod{padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--surface-2);
+  text-align:left;display:flex;flex-direction:column;gap:6px;min-height:96px}
+.mod:hover{border-color:var(--gold)}
+.mod .name{font-weight:700;font-size:15px}
+.mod .desc{font-size:12px;color:var(--muted)}
+.wheel-wrap{position:relative;width:260px;height:260px;margin:14px auto}
+.wheel{width:100%;height:100%;border-radius:50%;position:relative;
+  transition:transform 4s cubic-bezier(.15,.85,.25,1);
+  background:conic-gradient(from 0deg,#7d2138,#a73752,#d9af61,#7d2138,#a73752,#d9af61,#7d2138,#a73752);
+  box-shadow:inset 0 0 0 6px #26151d,0 30px 60px -30px rgba(167,55,82,.7)}
+.wheel::after{content:"";position:absolute;inset:24%;border-radius:50%;background:var(--surface);
+  border:1px solid var(--surface-2);display:grid;place-items:center}
+.wheel-center{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:2}
+.wheel-center .lbl{font-size:12px;color:var(--gold);letter-spacing:.2em;text-transform:uppercase}
+.wheel-center .val{font-size:15px;color:var(--cream);font-weight:700;margin-top:4px;max-width:120px;text-align:center}
+.wheel-pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;
+  border-top:18px solid var(--gold);z-index:3;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.overlay{position:fixed;inset:0;background:rgba(6,3,5,.85);display:grid;place-items:center;
+  padding:20px;z-index:1000;backdrop-filter:blur(8px)}
+.modal{background:var(--surface);border:1px solid var(--surface-2);border-radius:var(--radius-lg);
+  padding:22px;max-width:460px;width:100%;max-height:90vh;overflow:auto}
+.big{font-size:20px;font-weight:700}
+input[type=text],input[type=number],textarea,select{
+  width:100%;padding:12px 14px;border-radius:12px;background:var(--surface-2);
+  border:1px solid #3a2028;color:var(--cream);font:inherit;outline:none}
+textarea{min-height:80px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
+.divider{height:1px;background:var(--surface-2);margin:16px 0}
+.badge{display:inline-block;padding:3px 8px;border-radius:8px;font-size:11px;
+  background:var(--surface-2);color:var(--muted)}
+.hidden{display:none!important}
+.pill-row{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:6px 12px;border-radius:999px;background:var(--surface-2);color:var(--muted);
+  font-size:13px;border:1px solid transparent;cursor:pointer}
+.pill.active{background:var(--wine);color:var(--cream);border-color:var(--wine-light)}
+.dice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.die{background:var(--surface-2);border-radius:14px;padding:12px;text-align:center;
+  min-height:80px;display:flex;flex-direction:column;justify-content:center;
+  border:1px solid #3a2028}
+.die .k{font-size:11px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase}
+.die .v{font-size:15px;font-weight:600;margin-top:4px}
+.die.rolling{animation:shake .5s ease-in-out infinite}
+@keyframes shake{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--gold);
+  border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  background:var(--surface-2);color:var(--cream);padding:12px 18px;border-radius:12px;
+  border:1px solid var(--gold);z-index:2000;font-size:14px;max-width:90vw;text-align:center}
+.hide-answer{filter:blur(18px);pointer-events:none;user-select:none}
+.answers{display:flex;gap:8px}
+.answers .btn{flex:1}
+.consent-box{background:rgba(217,175,97,.08);border:1px solid rgba(217,175,97,.35);
+  border-radius:14px;padding:14px;color:var(--cream);font-size:14px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(16,9,12,.92);
+  backdrop-filter:blur(10px);border-top:1px solid var(--surface-2);padding:8px 12px;z-index:50}
+.bottom-nav .inner{max-width:520px;margin:0 auto;display:flex;justify-content:space-around}
+.bottom-nav a{color:var(--muted);text-decoration:none;padding:6px 10px;font-size:12px;
+  border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.bottom-nav a.active{color:var(--gold)}
+.kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--surface-2)}
+.kv:last-child{border:0}
+@media (prefers-reduced-motion: reduce){
+  .wheel{transition:none}
+  .die.rolling{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app" aria-live="polite"></div>
+<div id="overlay-root"></div>
+<div id="toast-root"></div>
+
+<script type="module">
+"use strict";
+
+/* ============================================================
+ * 1. Constants & schemas
+ * ============================================================ */
+const SCHEMA_VERSION = 1;
+const K = {
+  meta:"bizimOyun.meta",
+  settings:"bizimOyun.settings",
+  pool:(m)=>`bizimOyun.pool.${m}`,
+  seen:(m)=>`bizimOyun.seen.${m}`,
+  custom:"bizimOyun.custom",
+  disabled:"bizimOyun.disabled",
+  favorites:"bizimOyun.favorites",
+  sessions:"bizimOyun.sessions",
+  activeSession:"bizimOyun.activeSession",
+  daily:"bizimOyun.dailyQuestion",
+  consent:"bizimOyun.consent",
+};
+
+const MODULES = {
+  warmup:{name:"Isınma",desc:"Hafif, tanışma soruları",icon:"🌱"},
+  flirt:{name:"Flört",desc:"Göz kırpan sorular",icon:"💋"},
+  intimacy:{name:"Yakınlaşma",desc:"Duygusal ve fiziksel derinlik",icon:"🔥"},
+  memories:{name:"Anılarımız",desc:"Ortak hikâyeler",icon:"📖"},
+  party:{name:"Parti Oyunları",desc:"6 mini oyun",icon:"🎲"},
+  okNok:{name:"OK mu NOK mu?",desc:"Gizli cevap, birlikte açma",icon:"🤔"},
+  guessMe:{name:"Beni Tahmin Et",desc:"Birbirinizi ne kadar tanıyorsunuz?",icon:"💭"},
+  sexDice:{name:"Sex Zarı",desc:"Yetişkin, rızaya dayalı",icon:"🎯"},
+};
+
+const LEVELS = ["warmup","flirt","intimacy","memories"];
+const PARTY = ["truth","dare","whoAmI","taboo","charades","rapidFire","story"];
+const PARTY_NAMES = {
+  truth:"Doğruluk", dare:"Cesaret", whoAmI:"Ben Kimim?", taboo:"Tabu-lite",
+  charades:"Sessiz Sinema", rapidFire:"Hızlı Ateş", story:"Hikâye Tamamla"
+};
+
+/* ============================================================
+ * 2. Utility functions
+ * ============================================================ */
+function hashStr(s){let h=5381;s=String(s);for(let i=0;i<s.length;i++)h=((h<<5)+h)+s.charCodeAt(i);return(h>>>0).toString(36)}
+function cardId(title,prompt){return "c_"+hashStr((title||"")+"|"+(prompt||""))}
+function today(){return new Date().toISOString().slice(0,10)}
+function nowIso(){return new Date().toISOString()}
+function uid(){return "u_"+Math.random().toString(36).slice(2,10)+Date.now().toString(36)}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function shuffle(a){const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
+function el(tag,attrs={},...kids){
+  const e=document.createElement(tag);
+  for(const k in attrs){
+    if(k==="class")e.className=attrs[k];
+    else if(k==="style")e.setAttribute("style",attrs[k]);
+    else if(k.startsWith("on")&&typeof attrs[k]==="function")e.addEventListener(k.slice(2),attrs[k]);
+    else if(k==="html")e.innerHTML=attrs[k]; // only for trusted static strings
+    else if(attrs[k]!=null&&attrs[k]!==false)e.setAttribute(k,attrs[k]);
+  }
+  for(const kid of kids){
+    if(kid==null||kid===false)continue;
+    if(Array.isArray(kid))kid.forEach(k=>k!=null&&e.append(k.nodeType?k:document.createTextNode(String(k))));
+    else e.append(kid.nodeType?kid:document.createTextNode(String(kid)));
+  }
+  return e;
+}
+function toast(msg,ms=2200){
+  const t=el("div",{class:"toast"},msg);
+  document.getElementById("toast-root").append(t);
+  setTimeout(()=>t.remove(),ms);
+}
+
+/* ============================================================
+ * 3. Storage helpers
+ * ============================================================ */
+const storage = {
+  get(k,fallback){
+    try{const raw=localStorage.getItem(k);if(raw==null)return fallback;
+      const v=JSON.parse(raw);return v==null?fallback:v;
+    }catch{return fallback}
+  },
+  set(k,v){
+    try{localStorage.setItem(k,JSON.stringify(v));return true}
+    catch(e){toast("Depolama alanı dolu.");return false}
+  },
+  remove(k){try{localStorage.removeItem(k)}catch{}},
+  getAll(){
+    const out={};
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith("bizimOyun."))out[k]=storage.get(k,null);
+    }
+    return out;
+  },
+  reset(){
+    const keys=[];
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith("bizimOyun."))keys.push(k);
+    }
+    keys.forEach(k=>localStorage.removeItem(k));
+  }
+};
+
+/* ============================================================
+ * 4. Migrations
+ * ============================================================ */
+const migrations = {
+  1(data){ return data; }
+};
+function runMigrations(){
+  const meta = storage.get(K.meta,null);
+  if(!meta){
+    storage.set(K.meta,{schemaVersion:SCHEMA_VERSION,createdAt:nowIso(),updatedAt:nowIso()});
+    return true;
+  }
+  let v = meta.schemaVersion||1;
+  try{
+    while(v<SCHEMA_VERSION){
+      v++;
+      if(migrations[v]) migrations[v]();
+    }
+    storage.set(K.meta,{...meta,schemaVersion:SCHEMA_VERSION,updatedAt:nowIso()});
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+/* ============================================================
+ * 5. Core card pools
+ * ============================================================ */
+function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core"}={}){
+  return {id:cardId(title,prompt),title,prompt,tags,category,hardness,source,disabled:false};
+}
+
+const CORE = {
+  warmup: [
+    mk("İlk buluşma","Bizim ilk buluşmamızda seni en çok ne şaşırttı?",{tags:["ilk","anı"],category:"tanışma",hardness:1}),
+    mk("Küçük mucize","Bu haftanın en küçük ama en tatlı anı hangisiydi?",{tags:["haftalık"],hardness:1}),
+    mk("Sabah versiyonu","Sabahları ilk 10 dakikanda genelde neler geçiyor kafandan?",{tags:["rutin"],hardness:1}),
+    mk("Şarkı","Şu anda bize eşlik etsin istediğin bir şarkı seç ve neden onu seçtiğini anlat.",{tags:["müzik"],hardness:1}),
+    mk("Enerji seviyesi","1-10 arası bugünkü enerji seviyen kaç? Neden?",{tags:["haldenanla"],hardness:1}),
+    mk("Küçük şey","Bende hoşuna giden ama muhtemelen bana hiç söylemediğin küçük bir şey var mı?",{tags:["iltifat"],hardness:2}),
+    mk("Bugünün rengi","Bugünü tek bir renk olarak tarif etsen hangi renk olurdu?",{tags:["yaratıcı"],hardness:1}),
+    mk("Yeni bir şey","Bu ay öğrendiğin, denediğin ya da fark ettiğin yeni bir şey var mı?",{tags:["gelişim"],hardness:1}),
+    mk("Sessiz zaman","Yalnız kaldığında kendine en çok ne yapıyorsun?",{tags:["içsel"],hardness:2}),
+    mk("Küçük gurur","Son zamanlarda kendinle ilgili gurur duyduğun küçük bir şey söyle.",{tags:["kendine"],hardness:1}),
+    mk("Beni gülümseten","Bugün beni düşünüp gülümsediğin bir an oldu mu?",{tags:["romantik"],hardness:1}),
+    mk("Kaçış planı","Şu an bir düğmeye bassak nereye kaçardık, sadece ikimiz?",{tags:["hayal"],hardness:1}),
+    mk("Yorgun günün ilacı","Çok yorgun bir günde en çok ne ister canın: sessizlik mi, sohbet mi, sarılmak mı, uyumak mı?",{tags:["ihtiyaç"],hardness:2}),
+    mk("Kahve mi çay mı","Şu anki ruh halin kahve mi çay mı? Neden?",{tags:["hafif"],hardness:1}),
+    mk("Küçük iltifat","Bana bugün için bir iltifat uydur, sadece bugüne özel olsun.",{tags:["iltifat","romantik"],hardness:1}),
+    mk("Bugünün kahramanı","Bugünü kurtaran bir an ya da kişi var mıydı?",{tags:["haftalık"],hardness:1}),
+    mk("Duş sohbeti","Duştayken en çok kafanda hangi konu dönüyor bu aralar?",{tags:["içsel"],hardness:2}),
+  ],
+  flirt: [
+    mk("Bakış","Sana ilk baktığımda ne düşünmüştün, dürüstçe?",{tags:["ilk","dürüstlük"],hardness:2}),
+    mk("Sekiz saniye","Sekiz saniyeliğine gözlerime bak, sonra ilk aklına gelen şeyi söyle.",{tags:["oyun","göz"],hardness:2}),
+    mk("Hangi kıyafet","Beni hangi kıyafetimle görmek özellikle hoşuna gidiyor?",{tags:["stil"],hardness:2}),
+    mk("Küçük hareket","Yaptığım hangi küçük hareket seni etkiler ama muhtemelen fark etmediğimi düşünürsün?",{tags:["farkındalık"],hardness:3}),
+    mk("Mesaj","Bana şu an bir mesaj yazsan, üç kelimeden fazla değil, ne yazardın?",{tags:["mesaj"],hardness:2}),
+    mk("Parfüm","Kokum sana ne çağrıştırıyor?",{tags:["duyusal"],hardness:2}),
+    mk("Dokunuş haritası","Omuz mu, ense mi, bel mi, saç mı? Sıralamak zorundasın.",{tags:["dokunuş"],hardness:3}),
+    mk("Sessiz flört","Kelime kullanmadan, sadece bir hareketle 'seni istiyorum' de.",{tags:["görev"],hardness:3}),
+    mk("Bir dakika","Bir dakika boyunca sadece bana bak, gülmek yasak.",{tags:["görev","göz"],hardness:2}),
+    mk("Playlist","Bize özel bir flört playlistinin ilk üç şarkısı ne olurdu?",{tags:["müzik"],hardness:2}),
+    mk("Kur yapma","Bugün ilk kez tanışıyor gibi bana kur yap, sadece bir cümle.",{tags:["görev","roleplay"],hardness:3}),
+    mk("Randevu","Bir gecelik gizli bir randevu planla: yer, saat, ne giyeceğim.",{tags:["hayal"],hardness:2}),
+    mk("Kulağa fısılda","Kulağıma sadece bir kelime fısılda, hangi kelimeyi seçtin?",{tags:["görev"],hardness:3}),
+    mk("Ne çekici","Sende son zamanlarda en çekici bulduğum şeyi tahmin etmeni istiyorum. Ben de sonra söyleyeceğim.",{tags:["tahmin"],hardness:2}),
+    mk("Küçük itiraf","Söylemekten çekindiğin küçük bir 'seni istiyorum' cümlesi var mı bugünlerde?",{tags:["itiraf"],hardness:3}),
+  ],
+  intimacy: [
+    mk("Sınır","Bu oyunda her an 'pas' diyebilirsin. Şu an kendini nasıl hissediyorsun, 1-5 arası?",{tags:["rıza","sınır"],category:"rıza",hardness:1}),
+    mk("Yakınlık haritası","Sana kendini en yakın hissettiğim an bugün ne zamandı? Ben tahmin edeyim, sen düzelt.",{tags:["yakınlık"],hardness:2}),
+    mk("Bir dokunuş","Şu an bir yerine dokunmam gerekse nereye dokunmamı isterdin, sadece söyle.",{tags:["dokunuş","rıza"],hardness:3}),
+    mk("Sessiz nefes","Alnımızı birleştirip 30 saniye sadece nefesimizi dinleyelim.",{tags:["görev","yavaş"],hardness:2}),
+    mk("Küçük korku","Yakınlıkla ilgili küçük bir korkunu paylaşabilir misin?",{tags:["içsel","kırılganlık"],hardness:3}),
+    mk("İhtiyaç","Bu hafta senin ihmal ettiğim küçük bir ihtiyacın oldu mu?",{tags:["ihtiyaç"],hardness:3}),
+    mk("Güvenli kelime","Bu geceye ait bir 'yavaşla' kelimesi seçelim. Söyleyen olduğunda hemen mola.",{tags:["rıza","güvenlik"],hardness:2}),
+    mk("Yavaş öpücük","Kelime yok. 20 saniye, mümkün olduğunca yavaş bir öpücük.",{tags:["görev","fiziksel"],hardness:3}),
+    mk("Şu anki arzu","Şu an bir arzun varsa, 1'den 10'a şiddeti kaç? Sadece rakam söyle, istersen sonra anlat.",{tags:["arzu"],hardness:3}),
+    mk("İki sınır","Bu geceye ait iki sınır belirle: ne olmasın, neyi denemek istemezsin?",{tags:["sınır","rıza"],hardness:2}),
+    mk("Küçük ritüel","Sadece ikimize ait, birlikte olduğumuzu hatırlatan bir küçük ritüel önerir misin?",{tags:["ritüel"],hardness:2}),
+    mk("Fısıltı","Kulağıma en son ne zaman gerçekten sıcak bir şey fısıldadığımı hatırlıyor musun?",{tags:["anı"],hardness:3}),
+    mk("Beden dinleme","Şu an bedeninin sana söylediği bir şey var mı? Yorgun mu, gergin mi, açık mı?",{tags:["farkındalık"],hardness:2}),
+    mk("İzin","Bu gece sana özel izin verdiğin bir şey ne olurdu? Suçluluk duymamak da olabilir.",{tags:["izin"],hardness:3}),
+    mk("Sırt sırta","Bir dakika sırt sırta oturup sessizce kalalım.",{tags:["görev","yavaş"],hardness:2}),
+  ],
+  memories: [
+    mk("İlk kez","Bizimle ilgili yaşadığın 'bu adam/bu kadın benim' dediğin ilk an neydi?",{tags:["ilk"],hardness:2}),
+    mk("Küçük detay","İlk zamanlarımızdan hâlâ hatırladığın çok küçük ama gereksiz bir detay söyle.",{tags:["detay"],hardness:1}),
+    mk("Beraber ilk kavga","İlk büyük tartışmamızı hatırlıyor musun? Şimdiden bakınca ne diyorsun?",{tags:["tartışma"],hardness:3}),
+    mk("Kaçırdığımız an","Keşke daha uzun sürseydi dediğin ortak anımız hangisi?",{tags:["nostalji"],hardness:2}),
+    mk("En saçma","Birlikte yaşadığımız en saçma, en çocukça anımız hangisiydi?",{tags:["komik"],hardness:1}),
+    mk("Fotoğraf","Zihninde bize ait, hiç fotoğrafı çekilmemiş bir sahne var mı?",{tags:["görsel"],hardness:2}),
+    mk("Yemek","Birlikte yediğimiz, tadını hâlâ hatırladığın bir öğün var mı?",{tags:["yemek"],hardness:1}),
+    mk("Yol hikayesi","Bizimle ilgili en sevdiğin yol/araba anısı hangisi?",{tags:["seyahat"],hardness:1}),
+    mk("Küçük söz","Sana verdiğim ve tuttuğum küçük bir söz aklına geliyor mu?",{tags:["söz"],hardness:2}),
+    mk("Zor gün","Beni ayakta tuttuğun bir gün hatırlıyor musun? Nasıl yaptığını?",{tags:["destek"],hardness:2}),
+    mk("Sürpriz","Benim yaptığım, seni gerçekten şaşırtan bir sürprizi hatırlar mısın?",{tags:["sürpriz"],hardness:1}),
+    mk("Aile","Ailelerimizle ilgili birlikte yaşadığımız en tatlı an hangisiydi?",{tags:["aile"],hardness:2}),
+    mk("Ev","Yaşadığımız/ziyaret ettiğimiz evlerden hangisi sende iz bıraktı?",{tags:["mekan"],hardness:1}),
+    mk("Gece yarısı","Bir gece yarısı konuşmamız var mı, hâlâ zihnine takılan?",{tags:["gece"],hardness:2}),
+    mk("İlk kavuşma","Uzun bir ayrılıktan sonra ilk kavuşmamızı hatırla, ne hissetmiştin?",{tags:["kavuşma"],hardness:2}),
+  ],
+  truth: [
+    mk("Küçük yalan","Bana söylediğin, aslında zararsız ama küçücük bir yalanı itiraf et.",{tags:["itiraf"],hardness:2}),
+    mk("Kıskançlık","Son zamanlarda beni kıskandığın küçük bir an oldu mu?",{tags:["duygu"],hardness:3}),
+    mk("Telefon","Şu an telefonumu 30 saniye kontrol edebilsen ilk neye bakardın?",{tags:["merak"],hardness:2}),
+    mk("Yalnız zaman","Bensiz geçirmek istediğin bir gün olur mu, ne yapardın?",{tags:["yalnızlık"],hardness:2}),
+    mk("Beğenmediğim","Bende beğenmediğin ama alıştığın bir şey söyle, kibarca.",{tags:["dürüstlük"],hardness:3}),
+    mk("Aptal soru","Yıllardır bana sormak isteyip de sormadığın bir soru var mı?",{tags:["merak"],hardness:2}),
+    mk("En büyük korku","İlişkimize dair en büyük iki korkun ne?",{tags:["korku"],hardness:3}),
+    mk("Beklenti","Benden sessizce beklediğin ama söylemediğin bir şey var mı?",{tags:["beklenti"],hardness:3}),
+    mk("Küçük çocuk","İçindeki küçük çocuk şu an ne ister?",{tags:["içsel"],hardness:2}),
+    mk("Sırlı beğeni","Kimseye söylemediğin bir 'guilty pleasure'ını söyle.",{tags:["itiraf"],hardness:1}),
+    mk("En rahat","Benimle en rahat hissettiğin an hangi tür anlar oluyor?",{tags:["yakınlık"],hardness:1}),
+  ],
+  dare: [
+    mk("30 saniye","30 saniye boyunca partnerine hiç gülmeden iltifat et.",{tags:["görev"],hardness:2}),
+    mk("Selfie","İkimize ait garip yüzler yaptığımız bir selfie çek.",{tags:["görev","eğlence"],hardness:1}),
+    mk("Sessiz servis","Partnerine kelime kullanmadan bir bardak su getir, sun.",{tags:["görev"],hardness:1}),
+    mk("Dans","10 saniye içinde en saçma dans hareketini yap.",{tags:["görev","dans"],hardness:2}),
+    mk("Taklit","Partnerini 20 saniye taklit et, sonra o değerlendirsin.",{tags:["görev","komik"],hardness:2}),
+    mk("Alnına yaz","Alnına havayla adını yaz, partnerin okumaya çalışsın.",{tags:["görev"],hardness:1}),
+    mk("Şarkı çığır","Şu an aklına gelen şarkının nakaratını yüksek sesle söyle.",{tags:["görev"],hardness:2}),
+    mk("Aksan","Bir sonraki 3 cümleni tuhaf bir aksanla söyle.",{tags:["görev","komik"],hardness:2}),
+    mk("Sekiz saniye sarıl","Partnerine tam 8 saniye boyunca sıkıca sarıl.",{tags:["görev","fiziksel"],hardness:1}),
+    mk("Aşk mektubu","Bir dakikada partnerine kısa bir aşk notu yaz ve sesli oku.",{tags:["görev","romantik"],hardness:2}),
+    mk("Emoji telefon","Telefonundaki son 3 emojiyle bir cümle kur.",{tags:["görev","komik"],hardness:1}),
+  ],
+  whoAmI: [
+    mk("Kararsız haldeyken","Kararsız kaldığımda genelde önce ne yaparım?",{tags:["kişilik"],hardness:2}),
+    mk("Rahatlama","En çok neyle rahatlarım?",{tags:["ihtiyaç"],hardness:1}),
+    mk("Sinir","En kolay hangi durumda sinirlenirim?",{tags:["duygu"],hardness:2}),
+    mk("Küçük hobim","Kimseye söylemediğim küçük bir ilgim ne olabilir?",{tags:["hobiler"],hardness:2}),
+    mk("Yeme alışkanlığım","Aç kaldığımda ilk aklıma gelen üç şey ne?",{tags:["yemek"],hardness:1}),
+    mk("Süper güç","Bir süper gücüm olsa ne olmasını isterdim?",{tags:["hayal"],hardness:1}),
+    mk("Rüyalar","En sık gördüğüm rüya teması ne?",{tags:["içsel"],hardness:2}),
+    mk("Sevdiğim ses","Beni sakinleştiren bir ses söyle.",{tags:["duyusal"],hardness:1}),
+    mk("Alışkanlık","Farkında olmadan yaptığım bir alışkanlığımı söyle.",{tags:["gözlem"],hardness:2}),
+    mk("İki kelime","Beni iki kelimeyle özetle.",{tags:["gözlem"],hardness:1}),
+  ],
+  taboo: [
+    mk("KAHVE","Yasak: fincan, sabah, kafein",{tags:["kelime"],hardness:1}),
+    mk("SAHİL","Yasak: kum, deniz, güneş",{tags:["kelime"],hardness:1}),
+    mk("EVLİLİK","Yasak: yüzük, düğün, söz",{tags:["kelime"],hardness:2}),
+    mk("ÖPÜCÜK","Yasak: dudak, aşk, romantik",{tags:["kelime"],hardness:2}),
+    mk("ÇOCUK","Yasak: bebek, ağlamak, süt",{tags:["kelime"],hardness:1}),
+    mk("SEYAHAT","Yasak: uçak, valiz, tatil",{tags:["kelime"],hardness:1}),
+    mk("YAĞMUR","Yasak: şemsiye, ıslak, damla",{tags:["kelime"],hardness:1}),
+    mk("MÜZİK","Yasak: şarkı, ritim, kulak",{tags:["kelime"],hardness:1}),
+    mk("YEMEK","Yasak: tabak, aç, mutfak",{tags:["kelime"],hardness:1}),
+    mk("KIŞ","Yasak: kar, soğuk, mont",{tags:["kelime"],hardness:1}),
+  ],
+  charades: [
+    mk("İlk buluşma sahnesi","Bizim ilk buluşmamızı canlandır.",{tags:["anı"],hardness:2}),
+    mk("Sabah insanı","Beni erken sabah uyanmaya çalışırken canlandır.",{tags:["komik"],hardness:1}),
+    mk("Alışverişte","Beni pazarda pazarlık yaparken canlandır.",{tags:["gözlem"],hardness:1}),
+    mk("Aşk filmi klişesi","Kötü bir romantik film sahnesini oyna.",{tags:["film"],hardness:2}),
+    mk("Sıkıcı toplantı","Beni sıkıldığım bir toplantıda canlandır.",{tags:["iş"],hardness:1}),
+    mk("Ev arkadaşı","Ev içinde en tekrar eden hareketimi taklit et.",{tags:["ev"],hardness:2}),
+    mk("Trafik anı","Trafikte sıkıştığımızda ben nasıl olurum?",{tags:["gözlem"],hardness:1}),
+    mk("Uykuya dalış","Beni uyumaya çalışırken canlandır.",{tags:["yatak"],hardness:1}),
+    mk("Yemek yaparken","Beni mutfakta canlandır: en tipik hareketim ne?",{tags:["mutfak"],hardness:1}),
+    mk("Kızgın hâlim","Ben kızgınken görüntümü abartılı canlandır.",{tags:["duygu"],hardness:2}),
+  ],
+  rapidFire: [
+    mk("Hızlı 5 - Sabah","Kahve mi? / Ekmek mi simit mi? / Ilık mı sıcak mı? / Müzikle mi sessizce mi? / Uzun mu kısa mı duş?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Seyahat","Deniz mi dağ mı? / Otel mi ev mi? / Erken mi geç mi? / Plan mı doğaçlama mı? / Yalnız mı kalabalık mı?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - İlişki","Sarılmak mı öpmek mi? / Mesaj mı arama mı? / Sürpriz mi plan mı? / Sessizlik mi konuşma mı? / Yavaş mı hızlı mı?",{tags:["hız"],hardness:2}),
+    mk("Hızlı 5 - Yiyecek","Tatlı mı tuzlu mı? / Acılı mı ılıman mı? / Et mi sebze mi? / Sıcak mı soğuk mı? / Az mı çok mu?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Ruh hâli","Kitap mı film mi? / Gece mi gündüz mü? / Şehir mi köy mü? / Yağmur mu güneş mi? / Kalabalık mı sessiz mi?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Bugün","Aç mısın? / Yorgun musun? / Neşeli misin? / Öpüşmek ister misin? / Yatmak ister misin?",{tags:["hız"],hardness:2}),
+    mk("Hızlı 5 - Gizli","Pijama mı çıplak mı? / Işık mı karanlık mı? / Yavaş mı vahşi mi? / Sabah mı gece mi? / Uzun mu kısa mı?",{tags:["hız","yetişkin"],hardness:3}),
+    mk("Hızlı 5 - Hayal","Ev mi karavan mı? / Kedi mi köpek mi? / Kitap mı podcast mi? / Kış mı yaz mı? / Erken emeklilik mi kariyer mi?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Sanat","Resim mi müzik mi? / Konser mi tiyatro mu? / Klasik mi modern mi? / Müze mi sinema mı? / Roman mı şiir mi?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Sen","Sabahçı mı gececi mi? / Söz mü yaz mı? / Sarılan mı sarılmayan mı? / Duygusal mı mantıklı mı? / İçe mi dışa mı?",{tags:["hız"],hardness:1}),
+  ],
+  story: [
+    mk("Otel odasında","Küçük bir sahil kasabasındaki eski otelin odasına girdiğimizde, camda tuhaf bir zarf duruyordu...",{tags:["hikaye"],hardness:1}),
+    mk("Kayıp anahtar","Evin anahtarını kaybettiğimiz gece, kapı önünde beklerken komşunun kedisi...",{tags:["hikaye"],hardness:1}),
+    mk("Zamanda yolculuk","Uyanınca yılların değiştiğini fark ettik, ilk yaptığımız şey...",{tags:["hikaye"],hardness:2}),
+    mk("Trende","Trenin bir vagonunda karşılıklı oturuyorduk, sonra biri geldi ve...",{tags:["hikaye"],hardness:1}),
+    mk("Tanışmadığımız o gece","Diyelim ki hiç tanışmadık ve bu gece bir barda ilk kez göz göze geldik...",{tags:["hikaye","roleplay"],hardness:2}),
+    mk("Küçük bir sır","Dolapta bulduğumuz eski bir mektubu okumaya başladık, ilk cümlesi...",{tags:["hikaye"],hardness:2}),
+    mk("Yürüyüş","Gece yarısı sokakta yürürken, birdenbire yağmur başladı ve...",{tags:["hikaye"],hardness:1}),
+    mk("Deniz feneri","Deniz feneri bakıcılığı için gönüllü olduk, ilk gecemizde...",{tags:["hikaye"],hardness:1}),
+    mk("Yıldızlar","Terasa çıktık, gökyüzüne baktık ve ikimiz de aynı anda aynı dileği tuttuk...",{tags:["hikaye"],hardness:1}),
+    mk("Kayıp dükkan","Şehirde daha önce hiç görmediğimiz bir dükkan bulduk, kapısında yazan tek şey 'sadece çiftler için' idi...",{tags:["hikaye"],hardness:2}),
+  ],
+  okNok: [
+    mk("Karşı cinsle mesajlaşma","Partnerinin karşı cinsten biriyle uzun süreli mesajlaşması senin için OK mu NOK mu?",{tags:["sosyal"]}),
+    mk("Instagram DM","Partnerinin eski birine DM atması nasıl?",{tags:["sosyal"]}),
+    mk("Telefon paylaşımı","Birbirimizin telefonunu istediğimizde açabilmemiz senin için OK mi?",{tags:["gizlilik"]}),
+    mk("Konum paylaşımı","Kalıcı olarak birbirimize konum açmak senin için ne?",{tags:["gizlilik"]}),
+    mk("Eski partnerle kahve","Eski bir partnerle bire bir kahve içmek?",{tags:["arkadaş"]}),
+    mk("Grup tatili","Sadece arkadaşlarla, birkaç gece süren bir tatil?",{tags:["tatil"]}),
+    mk("Beklenmedik hediye","Karşı cinsten bir arkadaştan pahalı hediye almak?",{tags:["hediye"]}),
+    mk("Sosyal medyada aşk paylaşımı","İlişkimizin fotoğraflarını sık sık sosyal medyada paylaşmak?",{tags:["sosyal"]}),
+    mk("Aile araya girmesi","Ailelerin ilişki konularımıza yorum yapması?",{tags:["aile"]}),
+    mk("Yalnız gece dışarısı","Ayda birkaç kez bensiz gece dışarı çıkman?",{tags:["yalnızlık"]}),
+    mk("Ortak hesap","Ortak bir banka hesabı açmak?",{tags:["para"]}),
+    mk("Sürekli kontrol","Birbirimize gün içinde sık sık nerede olduğumuzu sormak?",{tags:["iletişim"]}),
+    mk("Fikir tartışması","Politik konularda birbirimizi ikna etmeye çalışmak?",{tags:["iletişim"]}),
+    mk("Yolda müzik seçimi","Uzun yolculukta müziği tek kişinin seçmesi?",{tags:["günlük"]}),
+    mk("Sürpriz misafir","Habersiz eve misafir getirmek?",{tags:["ev"]}),
+    mk("Ortak şifreler","Sosyal medya şifrelerini paylaşmak?",{tags:["gizlilik"]}),
+    mk("Sessiz kalmak","Kavga sonrası birkaç saat konuşmadan durmak?",{tags:["kavga"]}),
+    mk("Küskün uyuma","Barışmadan uyumak?",{tags:["kavga"]}),
+    mk("Ortak plan","Yılda en az bir kez sadece ikimize tatil planlamak?",{tags:["tatil"]}),
+    mk("Fantezi paylaşımı","Yatak odasındaki fantezilerimizi açıkça paylaşmak?",{tags:["yetişkin"]}),
+  ],
+  guessMe: [
+    {q:"En sevdiğim küçük jest hangisidir?",type:"choice",options:["Elimi tutmak","Alnımdan öpmek","Saçımı okşamak","Beni izlemek"],category:"jest"},
+    {q:"Tartıştığımızda önce neye ihtiyacım olur?",type:"choice",options:["Sarılmak","Yalnız kalmak","Konuşmak","Ortamdan uzaklaşmak"],category:"kavga"},
+    {q:"En ideal hafta sonu türüm?",type:"choice",options:["Ev, film, sarılma","Şehir dışı kaçamak","Arkadaşlarla buluşma","Uzun uyku"],category:"tatil"},
+    {q:"Gizli yeteneğim ne olabilir?",type:"text",category:"kişilik"},
+    {q:"En rahat hissettiğim an?",type:"choice",options:["Sabah kahvesi","Duş sonrası","Yürüyüş","Yataktan çıkmadan"],category:"gündelik"},
+    {q:"Bende en sevdiğin özelliğim?",type:"text",category:"iltifat"},
+    {q:"Sabah ilk aklıma gelen genelde nedir?",type:"choice",options:["Sen","İş","Kahve","Uyku"],category:"rutin"},
+    {q:"En büyük korkum?",type:"text",category:"korku"},
+    {q:"Hayalimdeki tatil?",type:"choice",options:["Deniz","Dağ","Şehir gezmek","Karavan yolculuğu"],category:"hayal"},
+    {q:"Romantik jest tercihim?",type:"choice",options:["Sözle","Dokunuşla","Hediyeyle","Zaman ayırarak"],category:"romantik"},
+    {q:"Komik bir alışkanlığım?",type:"text",category:"komik"},
+    {q:"Kendimi ne kadar romantik biri olarak görürüm? (1-5)",type:"scale",category:"romantik"},
+    {q:"Öfkeli olduğumda ne yapmayı severim?",type:"choice",options:["Yürüyüş","Yalnız kalma","Duş","Konuşmak"],category:"duygu"},
+    {q:"En sevdiğim yiyecek türü?",type:"choice",options:["Deniz mahsulleri","Et","Sebze","Tatlı"],category:"yemek"},
+    {q:"Beni en çok gülümseten kelime?",type:"text",category:"iltifat"},
+    {q:"İşteki en zor günümde en çok neye ihtiyacım olur?",type:"choice",options:["Sessizlik","Sarılma","Yemek","Şaka"],category:"iş"},
+    {q:"Uyumadan önce genelde ne düşünürüm?",type:"text",category:"gece"},
+    {q:"Sinirimi en çok bozan şey?",type:"choice",options:["Geç kalınması","Karar verilememesi","Bağırılması","Yalan söylenmesi"],category:"sınır"},
+    {q:"Kendime dair 1-5, ne kadar sabırlıyım?",type:"scale",category:"kişilik"},
+    {q:"Beni en iyi anlatan tek kelime?",type:"text",category:"kişilik"},
+  ],
+};
+
+const DICE = {
+  oyuncu:["Ozzy","Su","İkiniz","Sırayla"],
+  eylem:["öpücük ver","masaj yap","fısılda","göz göze bak","tutuşarak yavaşça yaklaş","dinle, dokunma","sadece nefes al","yavaşça soyun"],
+  bolge:["boyun","kulak","el","omurga boyunca","bel","iç kol","alın","dizin arkası"],
+  pozisyon:["yan yana","karşılıklı diz üstü","kaşıklama","sarılarak","otururken","yüzüstü sırt masajı","kucakta oturma","ayakta sarılma","koltukta yaslanma","yatakta dik oturuş","yastıklarla yükseltilmiş bel","sırt sırta yaslanma"],
+  tarz:["yavaş","şefkatli","oyunlu","tutkulu","meraklı","utangaç ama cesur","sessiz","tamamen odaklı"],
+  tempo:["çok yavaş","yavaş","orta","artan","değişken","nefes ritminde"],
+  sure:["30 sn","1 dk","2 dk","3 dk","5 dk","şarkı süresi"],
+  yer:["yatak","kanepe","banyo","balkon","mutfak","yerde yastıklarda"],
+  kural:["gözler kapalı","kelime yok","sadece dokunuş","göz teması bozulmayacak","gülmek serbest","sen yönlendir"],
+  surpriz:["ışıkları kıs","bir şarkı aç","hafif parfüm","buz veya sıcak","tüy veya kumaş","aynanın önünde"],
+};
+
+const DICE_MODES = {
+  klasik:{name:"Klasik",dice:["oyuncu","eylem","bolge","sure"]},
+  yavas:{name:"Yavaş",dice:["oyuncu","eylem","tarz","tempo","sure"]},
+  vahsi:{name:"Vahşi",dice:["oyuncu","eylem","pozisyon","tarz","kural"]},
+  rulet:{name:"Rulet",dice:null},
+  kasa:{name:"Özel Kasa",dice:null},
+};
+
+/* ============================================================
+ * 6. Application state / pool management
+ * ============================================================ */
+function loadPool(mod){
+  const stored = storage.get(K.pool(mod),null);
+  if(stored && Array.isArray(stored) && stored.length) return stored;
+  const core = (CORE[mod]||[]).slice();
+  storage.set(K.pool(mod),core);
+  return core;
+}
+function savePool(mod,arr){storage.set(K.pool(mod),arr)}
+
+function getSettings(){
+  return storage.get(K.settings,{
+    player1:"Ozzy",player2:"Su",hardness:3,
+    enabledModules:{},enabledCategories:{},
+    consentReminder:true,soundEnabled:false,reducedMotion:false
+  });
+}
+function saveSettings(s){storage.set(K.settings,s)}
+
+function getDisabled(){return storage.get(K.disabled,{})}
+function setDisabled(d){storage.set(K.disabled,d)}
+function isDisabled(mod,id){const d=getDisabled();return !!(d[mod]&&d[mod][id])}
+function disableCard(mod,id){const d=getDisabled();d[mod]=d[mod]||{};d[mod][id]=true;setDisabled(d)}
+function enableCard(mod,id){const d=getDisabled();if(d[mod])delete d[mod][id];setDisabled(d)}
+
+function getFavorites(){return storage.get(K.favorites,{})}
+function toggleFav(mod,id){
+  const f=getFavorites();f[mod]=f[mod]||{};
+  if(f[mod][id]){delete f[mod][id]}else{f[mod][id]=true}
+  storage.set(K.favorites,f);
+  return !!f[mod][id];
+}
+function isFav(mod,id){const f=getFavorites();return !!(f[mod]&&f[mod][id])}
+
+function getSeen(mod){return storage.get(K.seen(mod),[])}
+function markSeen(mod,id){
+  const s=getSeen(mod);
+  if(!s.includes(id)){s.push(id);storage.set(K.seen(mod),s)}
+}
+function resetSeen(mod){storage.set(K.seen(mod),[])}
+
+function drawCard(mod){
+  const pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
+  if(!pool.length) return null;
+  const seen = new Set(getSeen(mod));
+  // priority: unseen ai > unseen custom > unseen core > any
+  const unseenAi = pool.filter(c=>c.source==="ai" && !seen.has(c.id));
+  if(unseenAi.length) return pick(unseenAi);
+  const unseenCustom = pool.filter(c=>c.source==="custom" && !seen.has(c.id));
+  if(unseenCustom.length) return pick(unseenCustom);
+  const unseenCore = pool.filter(c=>c.source==="core" && !seen.has(c.id));
+  if(unseenCore.length) return pick(unseenCore);
+  // exhausted
+  return {__exhausted:true};
+}
+
+function addCards(mod,newCards){
+  const pool = loadPool(mod);
+  const existing = new Set(pool.map(c=>c.id));
+  let added=0;
+  for(const c of newCards){
+    const id = c.id || cardId(c.title,c.prompt);
+    if(existing.has(id))continue;
+    pool.push({...c,id,disabled:false});
+    existing.add(id);
+    added++;
+  }
+  savePool(mod,pool);
+  return added;
+}
+
+/* ============================================================
+ * 7. Session tracking
+ * ============================================================ */
+function startSession(){
+  const s = {
+    id:uid(), startedAt:nowIso(), endedAt:null,
+    players:[getSettings().player1,getSettings().player2],
+    modules:{}, totalRounds:0, totalPasses:0
+  };
+  storage.set(K.activeSession,s);
+  return s;
+}
+function getSession(){
+  let s = storage.get(K.activeSession,null);
+  if(!s){s=startSession()}
+  return s;
+}
+function bumpSession(mod,kind){
+  const s=getSession();
+  s.modules[mod]=s.modules[mod]||{rounds:0,passes:0};
+  if(kind==="round"){s.modules[mod].rounds++;s.totalRounds++}
+  if(kind==="pass"){s.modules[mod].passes++;s.totalPasses++}
+  storage.set(K.activeSession,s);
+}
+function sessionSet(mod,patch){
+  const s=getSession();
+  s.modules[mod]=s.modules[mod]||{rounds:0,passes:0};
+  Object.assign(s.modules[mod],patch);
+  storage.set(K.activeSession,s);
+}
+function endSession(){
+  const s=getSession();s.endedAt=nowIso();
+  const list=storage.get(K.sessions,[]);
+  list.unshift(s);
+  storage.set(K.sessions,list.slice(0,50));
+  storage.remove(K.activeSession);
+  return s;
+}
+
+/* ============================================================
+ * 8. Daily question
+ * ============================================================ */
+function getDailyQuestion(){
+  const d = storage.get(K.daily,null);
+  const t = today();
+  if(d && d.date===t){
+    for(const m of LEVELS){
+      const pool = loadPool(m);
+      const found = pool.find(c=>c.id===d.id);
+      if(found) return {card:found,mod:m};
+    }
+  }
+  // pick a fresh one from any level
+  const all=[];
+  for(const m of LEVELS){
+    for(const c of loadPool(m)){
+      if(!isDisabled(m,c.id))all.push({card:c,mod:m});
+    }
+  }
+  if(!all.length) return null;
+  const pickIt = all[Math.floor(Math.random()*all.length)];
+  storage.set(K.daily,{date:t,id:pickIt.card.id,mod:pickIt.mod});
+  return pickIt;
+}
+
+/* ============================================================
+ * 9. Router
+ * ============================================================ */
+const routes = {};
+function route(path,fn){routes[path]=fn}
+function navigate(hash){location.hash=hash}
+function currentHash(){return location.hash||"#/home"}
+function render(){
+  const hash = currentHash();
+  const [path,queryStr] = hash.slice(1).split("?");
+  const q = new URLSearchParams(queryStr||"");
+  const app = document.getElementById("app");
+  app.innerHTML="";
+  // find best match
+  const keys = Object.keys(routes);
+  let handler = routes[path];
+  if(!handler){
+    // try prefix match /level/warmup
+    for(const k of keys){
+      if(k.endsWith("/*")){
+        const base=k.slice(0,-2);
+        if(path.startsWith(base)){handler=routes[k];break}
+      }
+    }
+  }
+  if(!handler) handler=routes["/home"];
+  try{ handler(app,path,q) }catch(e){
+    console.error(e);
+    app.append(el("div",{class:"card"},"Bir şey ters gitti. Ana ekrana dönebilirsin.",
+      el("div",{style:"margin-top:12px"},btn("Ana ekran","primary",()=>navigate("#/home")))));
+  }
+  window.scrollTo({top:0,behavior:"instant"});
+}
+window.addEventListener("hashchange",render);
+
+/* ============================================================
+ * 10. Shared UI components
+ * ============================================================ */
+function btn(label,variant,onClick,opts={}){
+  const cls = "btn "+(variant||"");
+  return el("button",{class:cls,"aria-label":opts.aria||label,onclick:onClick,type:"button"},label);
+}
+function topbar(title){
+  return el("div",{class:"topbar"},
+    el("button",{class:"iconbtn","aria-label":"Geri",onclick:()=>history.length>1?history.back():navigate("#/home")},"←"),
+    el("div",{class:"brand"},title||""),
+    el("button",{class:"iconbtn","aria-label":"Ayarlar",onclick:()=>navigate("#/settings")},"⚙")
+  );
+}
+function openModal(contentFn){
+  const root = document.getElementById("overlay-root");
+  root.innerHTML="";
+  const closer = ()=>{root.innerHTML=""};
+  const box = el("div",{class:"modal",role:"dialog","aria-modal":"true"});
+  root.append(el("div",{class:"overlay",onclick:(e)=>{if(e.target.classList.contains("overlay"))closer()}}, box));
+  contentFn(box,closer);
+  // focus trap: focus first focusable
+  setTimeout(()=>{const f=box.querySelector("button,input,textarea,select,a");f&&f.focus()},20);
+  const esc=(e)=>{if(e.key==="Escape"){closer();document.removeEventListener("keydown",esc)}};
+  document.addEventListener("keydown",esc);
+  return closer;
+}
+function tagList(card){
+  const tags=[];
+  if(card.source==="ai") tags.push(el("span",{class:"tag ai"},"AI"));
+  if(card.source==="custom") tags.push(el("span",{class:"tag custom"},"özel"));
+  (card.tags||[]).forEach(t=>tags.push(el("span",{class:"tag"},"#"+t)));
+  return el("div",{style:"margin-top:8px"},...tags);
+}
+
+/* ============================================================
+ * 11. AI client
+ * ============================================================ */
+function aiAvailable(){
+  return location.protocol!=="file:" && (typeof navigator==="undefined" || navigator.onLine!==false);
+}
+async function generateCards(payload){
+  if(!aiAvailable()) throw new Error("offline");
+  const res = await fetch("/api/public/bizim-oyun-generate",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload)
+  });
+  const data = await res.json().catch(()=>({ok:false,code:"INVALID_AI_RESPONSE",message:"Cevap işlenemedi."}));
+  if(!res.ok || !data.ok){
+    const map={
+      RATE_LIMITED:"Çok sık istek. Biraz sonra dene.",
+      PAYMENT_REQUIRED:"AI kredisi tükendi.",
+      AI_UNAVAILABLE:"AI şu an kullanılamıyor.",
+      INVALID_AI_RESPONSE:"AI cevabı işlenemedi.",
+      INVALID_REQUEST:"İstek geçersiz.",
+      INTERNAL_ERROR:"Beklenmedik bir hata."
+    };
+    throw new Error(map[data.code] || data.message || "Hata");
+  }
+  return data.cards;
+}
+
+/* ============================================================
+ * 12. Home / wheel
+ * ============================================================ */
+route("/home",(app)=>{
+  const settings = getSettings();
+  const dq = getDailyQuestion();
+  const sess = storage.get(K.activeSession,null);
+
+  app.append(topbar(""));
+  app.append(el("div",{class:"center"},
+    el("div",{class:"brand"},"Sadece ikimiz için"),
+    el("h1",{class:"hero-title"},"Bizim Oyun"),
+    el("div",{class:"hero-sub"},`${settings.player1} & ${settings.player2}`)
+  ));
+
+  // daily
+  if(dq){
+    const cardBox = el("div",{class:"card"});
+    cardBox.append(el("div",{class:"badge"},"Günün sorusu"));
+    cardBox.append(el("h3",{style:"margin-top:8px"},dq.card.title));
+    cardBox.append(el("div",{class:"muted",style:"margin-top:6px"},dq.card.prompt));
+    cardBox.append(el("div",{style:"margin-top:12px"},btn("Bu modülü aç","ghost",()=>navigate("#/level/"+dq.mod))));
+    app.append(cardBox);
+  }
+
+  // wheel
+  const wheelCard = el("div",{class:"card center"});
+  wheelCard.append(el("h3",null,"Rastgele Modül Çarkı"));
+  const wrap = el("div",{class:"wheel-wrap"});
+  const wheel = el("div",{class:"wheel","aria-hidden":"true"});
+  const pointer = el("div",{class:"wheel-pointer"});
+  const center = el("div",{class:"wheel-center"},
+    el("div",{class:"lbl"},"Sonuç"),
+    el("div",{class:"val",id:"wheel-val"},"Çevir!")
+  );
+  wrap.append(pointer,wheel,center);
+  wheelCard.append(wrap);
+  const wheelMods = Object.keys(MODULES);
+  wheelCard.append(btn("Çarkı Çevir","primary",()=>{
+    const idx = Math.floor(Math.random()*wheelMods.length);
+    const chosen = wheelMods[idx];
+    const rotations = 3+Math.random()*3;
+    const targetDeg = rotations*360 + Math.random()*360;
+    wheel.style.transform = `rotate(${targetDeg}deg)`;
+    setTimeout(()=>{
+      document.getElementById("wheel-val").textContent = MODULES[chosen].name;
+    },3800);
+    setTimeout(()=>{
+      openModal((box,close)=>{
+        box.append(el("h3",null,"Çarktan çıktı"));
+        box.append(el("div",{class:"big",style:"margin:10px 0"},MODULES[chosen].icon+" "+MODULES[chosen].name));
+        box.append(el("div",{class:"muted"},MODULES[chosen].desc));
+        box.append(el("div",{style:"margin-top:16px"},
+          btn("Bu modüle git","primary",()=>{close();openModule(chosen)}),
+          el("div",{style:"height:8px"}),
+          btn("Vazgeç","ghost",close)
+        ));
+      });
+    },4000);
+  }));
+  app.append(wheelCard);
+
+  // modules grid
+  const grid = el("div",{class:"grid"});
+  Object.keys(MODULES).forEach(k=>{
+    const m = MODULES[k];
+    grid.append(el("button",{class:"mod",onclick:()=>openModule(k)},
+      el("div",{style:"font-size:22px"},m.icon),
+      el("div",{class:"name"},m.name),
+      el("div",{class:"desc"},m.desc)
+    ));
+  });
+  app.append(el("div",{class:"card"},el("h3",null,"Modüller"),el("div",{style:"height:12px"}),grid));
+
+  // active session pill
+  if(sess){
+    app.append(el("div",{class:"card"},
+      el("div",{class:"muted"},"Aktif oturum"),
+      el("div",{style:"margin-top:6px"},`Toplam tur: ${sess.totalRounds} · Pas: ${sess.totalPasses}`),
+      el("div",{style:"margin-top:12px"},btn("Gece özetine bak","gold",()=>navigate("#/summary")))
+    ));
+  }
+});
+
+function openModule(k){
+  if(LEVELS.includes(k)) return navigate("#/level/"+k);
+  if(k==="party") return navigate("#/party");
+  if(k==="okNok") return navigate("#/ok-nok");
+  if(k==="guessMe") return navigate("#/guess-me");
+  if(k==="sexDice") return navigate("#/sex-dice");
+  navigate("#/home");
+}
+
+/* ============================================================
+ * 13. Level card module (warmup/flirt/intimacy/memories)
+ * ============================================================ */
+const consentShown = {};
+function maybeConsentReminder(kind,onDone){
+  const s = getSettings();
+  const consent = storage.get(K.consent,{});
+  if(kind!=="intimacy" && kind!=="sexDice") return onDone();
+  if(!s.consentReminder || consent[kind]) return onDone();
+  openModal((box,close)=>{
+    box.append(el("h3",null,"Küçük hatırlatma"));
+    box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
+      "Bu oyunda her şey karşılıklı istekle güzel. Her kartta pas diyebilir, görevi değiştirebilir veya oyunu durdurabilirsiniz."));
+    box.append(el("div",{style:"margin-top:16px"},btn("Anladık, başlayalım","primary",()=>{
+      consent[kind]=true;storage.set(K.consent,consent);close();onDone();
+    })));
+  });
+}
+
+route("/level/*",(app,path)=>{
+  const mod = path.split("/")[2];
+  if(!LEVELS.includes(mod)) return navigate("#/home");
+  maybeConsentReminder(mod,()=>renderLevel(app,mod));
+});
+function renderLevel(app,mod){
+  app.append(topbar(MODULES[mod].name));
+  const cardBox = el("div",{class:"card"});
+  app.append(cardBox);
+
+  function drawAndShow(){
+    cardBox.innerHTML="";
+    const c = drawCard(mod);
+    if(!c){cardBox.append(el("div",null,"Bu modülde henüz kart yok."));return}
+    if(c.__exhausted){
+      cardBox.append(el("div",{class:"muted"},"Bu modülün tüm kartlarını gördünüz."));
+      cardBox.append(el("div",{style:"height:12px"}));
+      if(aiAvailable()){
+        cardBox.append(btn("Yeni sorular üret (AI)","primary",()=>requestAi(mod,cardBox,drawAndShow)));
+      }
+      cardBox.append(el("div",{style:"height:8px"}));
+      cardBox.append(btn("Görülenleri sıfırla ve tekrar başla","ghost",()=>{
+        resetSeen(mod);drawAndShow();
+      }));
+      return;
+    }
+    bumpSession(mod,"round");
+    markSeen(mod,c.id);
+    renderCardUI(cardBox,mod,c,drawAndShow);
+  }
+  drawAndShow();
+}
+
+function renderCardUI(box,mod,c,onNext){
+  box.innerHTML="";
+  const head = el("div",{style:"display:flex;justify-content:space-between;align-items:center"},
+    el("div",{class:"badge"},"#"+(c.category||"kart")),
+    el("div",{style:"display:flex;gap:6px"},
+      el("span",{class:"tag gold"},"seviye "+(c.hardness||"?")),
+    )
+  );
+  box.append(head);
+  box.append(el("h2",{style:"margin-top:10px"},c.title));
+  box.append(el("div",{style:"margin-top:8px;font-size:16px"},c.prompt));
+  box.append(tagList(c));
+
+  const row1 = el("div",{class:"row",style:"margin-top:16px"},
+    btn("Pas","ghost",()=>{bumpSession(mod,"pass");onNext()}),
+    btn("Sonraki kart","primary",onNext)
+  );
+  box.append(row1);
+  const row2 = el("div",{class:"row",style:"margin-top:10px"},
+    btn(isFav(mod,c.id)?"★ Favori":"☆ Favori","ghost",(e)=>{
+      const on = toggleFav(mod,c.id);
+      toast(on?"Favorilere eklendi":"Favoriden çıkarıldı");
+      e.currentTarget.textContent = on?"★ Favori":"☆ Favori";
+    }),
+    btn("Bir daha gösterme","danger",()=>{
+      disableCard(mod,c.id);toast("Bu kart artık gösterilmeyecek.");onNext();
+    })
+  );
+  box.append(row2);
+  if(aiAvailable()){
+    box.append(el("div",{style:"margin-top:10px"},
+      btn("Yeni sorular üret (AI)","gold",()=>requestAi(mod,box,onNext))
+    ));
+  } else {
+    box.append(el("div",{class:"muted",style:"margin-top:10px;font-size:12px"},
+      "AI ile yeni kart üretmek için oyunu çevrimiçi adresinden aç. Sabit ve özel kartlar çevrimdışı çalışır."));
+  }
+}
+
+async function requestAi(mod,box,onNext){
+  const settings = getSettings();
+  const pool = loadPool(mod);
+  const avoidTitles = pool.slice(-50).map(c=>c.title);
+  const originalHtml = box.innerHTML;
+  box.innerHTML="";
+  box.append(el("div",{class:"center"},
+    el("div",{class:"spinner"}),
+    el("div",{class:"muted",style:"margin-top:12px"},"AI yeni kartlar üretiyor…")
+  ));
+  const moduleMap = { party:"truth" }; // safety; level modules use their own key
+  const modKey = moduleMap[mod]||mod;
+  try{
+    const cards = await generateCards({
+      module:modKey,
+      level:LEVELS.includes(mod)?mod:undefined,
+      count:5,
+      hardness:clamp(settings.hardness||3,1,5),
+      avoidTitles
+    });
+    const normalized = cards.map(c=>({
+      title:c.title,prompt:c.prompt,tags:c.tags||[],
+      category:c.category||"ai",hardness:c.hardness||3,source:"ai"
+    }));
+    const added = addCards(mod,normalized);
+    toast(`${added} yeni kart eklendi.`);
+    if(onNext)onNext();
+    else render();
+  }catch(e){
+    box.innerHTML=originalHtml;
+    toast("AI hatası: "+e.message);
+  }
+}
+
+/* ============================================================
+ * 14. Party games
+ * ============================================================ */
+route("/party",(app)=>{
+  app.append(topbar("Parti Oyunları"));
+  const grid = el("div",{class:"grid"});
+  PARTY.forEach(k=>{
+    grid.append(el("button",{class:"mod",onclick:()=>navigate("#/party/"+k)},
+      el("div",{class:"name"},PARTY_NAMES[k]),
+      el("div",{class:"desc"},"Kart çek, oyna")));
+  });
+  app.append(el("div",{class:"card"},grid));
+});
+
+route("/party/*",(app,path)=>{
+  const k = path.split("/")[2];
+  if(k==="truth" || k==="dare") return renderTruthDare(app);
+  if(!PARTY.includes(k)) return navigate("#/party");
+  app.append(topbar(PARTY_NAMES[k]));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const rules = {
+    whoAmI:"Kart çek, partnerin veya kendinle ilgili küçük tahmin.",
+    taboo:"Bir kelime ve söylenmesi yasak 3 kelime çıkacak. 60 saniyede anlat.",
+    charades:"Bir durum çıkacak. Kelime kullanmadan canlandır.",
+    rapidFire:"5 kısa soru çıkacak. Hızlıca cevapla.",
+    story:"Bir hikâye başlangıcı çıkacak. Sırayla devam ettirin."
+  };
+  box.append(el("div",{class:"muted"},rules[k]));
+  box.append(el("div",{style:"height:12px"}));
+  function draw(){
+    const c = drawCard(k);
+    box.innerHTML="";
+    box.append(el("div",{class:"muted"},rules[k]));
+    if(!c || c.__exhausted){
+      box.append(el("div",{style:"margin-top:12px"},"Tüm kartlar gösterildi."));
+      box.append(el("div",{style:"height:10px"}));
+      box.append(btn("Sıfırla ve devam","ghost",()=>{resetSeen(k);draw()}));
+      if(aiAvailable()){
+        box.append(el("div",{style:"height:8px"}));
+        box.append(btn("Yeni sorular üret (AI)","primary",()=>requestAi(k,box,draw)));
+      }
+      return;
+    }
+    bumpSession(k,"round");markSeen(k,c.id);
+    box.append(el("h2",{style:"margin-top:10px"},c.title));
+    box.append(el("div",{style:"margin-top:8px"},c.prompt));
+    box.append(tagList(c));
+    box.append(el("div",{class:"row",style:"margin-top:14px"},
+      btn("Pas","ghost",()=>{bumpSession(k,"pass");draw()}),
+      btn("Sonraki","primary",draw)
+    ));
+    box.append(el("div",{class:"row",style:"margin-top:8px"},
+      btn("Bir daha gösterme","danger",()=>{disableCard(k,c.id);draw()})
+    ));
+  }
+  box.append(btn("Başlat","primary",draw));
+});
+
+function renderTruthDare(app){
+  app.append(topbar("Doğruluk mu Cesaret mi"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  box.append(el("div",{class:"muted"},"Bir seçim yap ve kart çek."));
+  const chosenBox = el("div",{style:"margin-top:14px"});
+  box.append(chosenBox);
+  function draw(kind){
+    const c = drawCard(kind);
+    chosenBox.innerHTML="";
+    if(!c || c.__exhausted){
+      chosenBox.append(el("div",null,"Bu tür için kartlar bitti."));
+      chosenBox.append(el("div",{style:"height:8px"}));
+      chosenBox.append(btn("Sıfırla","ghost",()=>{resetSeen(kind);draw(kind)}));
+      return;
+    }
+    bumpSession(kind,"round");markSeen(kind,c.id);
+    chosenBox.append(el("div",{class:"badge"},kind==="truth"?"Doğruluk":"Cesaret"));
+    chosenBox.append(el("h2",{style:"margin-top:8px"},c.title));
+    chosenBox.append(el("div",{style:"margin-top:6px"},c.prompt));
+    chosenBox.append(tagList(c));
+    chosenBox.append(el("div",{class:"row",style:"margin-top:12px"},
+      btn("Pas","ghost",()=>{bumpSession(kind,"pass");draw(kind)}),
+      btn("Tamam","primary",()=>draw(kind))
+    ));
+  }
+  box.append(el("div",{class:"row",style:"margin-top:14px"},
+    btn("Doğruluk","primary",()=>draw("truth")),
+    btn("Cesaret","gold",()=>draw("dare")),
+    btn("Rastgele","ghost",()=>draw(Math.random()<0.5?"truth":"dare"))
+  ));
+}
+
+/* ============================================================
+ * 15. OK / NOK state machine
+ * ============================================================ */
+route("/ok-nok",(app)=>{
+  app.append(topbar("OK mu NOK mu?"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const state = { phase:"start", card:null, a1:null, a2:null };
+  const settings = getSettings();
+
+  function render(){
+    box.innerHTML="";
+    if(state.phase==="start"){
+      box.append(el("div",{class:"muted"},"İki oyuncu sırayla telefonu alacak. Cevaplar birlikte açılır."));
+      box.append(el("div",{style:"height:10px"}));
+      box.append(btn("Yeni kart çek","primary",()=>{
+        const c = drawCard("okNok");
+        if(!c || c.__exhausted){
+          box.innerHTML="";
+          box.append(el("div",null,"Tüm sorular gösterildi."));
+          box.append(el("div",{style:"height:10px"}));
+          box.append(btn("Sıfırla","ghost",()=>{resetSeen("okNok");state.phase="start";render()}));
+          if(aiAvailable()){
+            box.append(el("div",{style:"height:8px"}));
+            box.append(btn("Yeni kart üret (AI)","primary",()=>requestAi("okNok",box,()=>{state.phase="start";render()})));
+          }
+          return;
+        }
+        state.card=c;markSeen("okNok",c.id);bumpSession("okNok","round");
+        state.phase="pass1"; render();
+      }));
+    } else if(state.phase==="pass1"){
+      box.append(el("div",{class:"big center"},"Telefonu "+settings.player1+"'e ver"));
+      box.append(el("div",{class:"muted center",style:"margin-top:8px"},"Diğer oyuncu ekranı görmesin."));
+      box.append(el("div",{style:"height:14px"}));
+      box.append(btn("Hazırım","primary",()=>{state.phase="answer1";render()}));
+    } else if(state.phase==="answer1"){
+      box.append(el("h3",null,state.card.title));
+      box.append(el("div",{style:"margin-top:6px"},state.card.prompt));
+      box.append(el("div",{class:"muted",style:"margin-top:10px"},settings.player1+", gizlice seç:"));
+      box.append(el("div",{class:"answers",style:"margin-top:10px"},
+        btn("OK","primary",()=>{state.a1="ok";state.phase="pass2";render()}),
+        btn("Duruma göre","gold",()=>{state.a1="maybe";state.phase="pass2";render()}),
+        btn("NOK","danger",()=>{state.a1="nok";state.phase="pass2";render()})
+      ));
+      box.append(el("div",{style:"margin-top:10px"},btn("Pas","ghost",()=>{bumpSession("okNok","pass");state.phase="start";render()})));
+    } else if(state.phase==="pass2"){
+      box.append(el("div",{class:"big center"},"Telefonu "+settings.player2+"'e ver"));
+      box.append(el("div",{class:"muted center",style:"margin-top:8px"},settings.player1+"'in cevabı gizli."));
+      box.append(el("div",{style:"height:14px"}));
+      box.append(btn("Hazırım","primary",()=>{state.phase="answer2";render()}));
+    } else if(state.phase==="answer2"){
+      box.append(el("h3",null,state.card.title));
+      box.append(el("div",{style:"margin-top:6px"},state.card.prompt));
+      box.append(el("div",{class:"muted",style:"margin-top:10px"},settings.player2+", gizlice seç:"));
+      box.append(el("div",{class:"answers",style:"margin-top:10px"},
+        btn("OK","primary",()=>{state.a2="ok";state.phase="reveal";render()}),
+        btn("Duruma göre","gold",()=>{state.a2="maybe";state.phase="reveal";render()}),
+        btn("NOK","danger",()=>{state.a2="nok";state.phase="reveal";render()})
+      ));
+    } else if(state.phase==="reveal"){
+      box.append(el("h3",null,state.card.title));
+      const label={ok:"OK",nok:"NOK",maybe:"Duruma göre"};
+      const rowA = el("div",{class:"row",style:"margin-top:14px"},
+        el("div",{class:"card",style:"flex:1;text-align:center;padding:14px"},
+          el("div",{class:"muted"},settings.player1),
+          el("div",{class:"big",style:"margin-top:6px;color:var(--gold)"},label[state.a1])),
+        el("div",{class:"card",style:"flex:1;text-align:center;padding:14px"},
+          el("div",{class:"muted"},settings.player2),
+          el("div",{class:"big",style:"margin-top:6px;color:var(--gold)"},label[state.a2]))
+      );
+      box.append(rowA);
+      const same = state.a1===state.a2;
+      const s = getSession();
+      s.modules.okNok = s.modules.okNok || {rounds:0,passes:0,matches:0,differences:0};
+      if(same) s.modules.okNok.matches = (s.modules.okNok.matches||0)+1;
+      else s.modules.okNok.differences = (s.modules.okNok.differences||0)+1;
+      storage.set(K.activeSession,s);
+      box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
+        same ? "Aynı düşündünüz. Küçük bir kutlama hak ettiniz."
+             : "Burada farklı düşünüyorsunuz. Birbirinizi dinlemek için güzel bir soru olabilir."));
+      box.append(el("div",{class:"row",style:"margin-top:12px"},
+        btn("Bir daha gösterme","danger",()=>{disableCard("okNok",state.card.id);state.phase="start";state.a1=state.a2=null;render()}),
+        btn("Sonraki","primary",()=>{state.phase="start";state.a1=state.a2=null;render()})
+      ));
+    }
+  }
+  render();
+});
+
+/* ============================================================
+ * 16. Guess Me state machine
+ * ============================================================ */
+function loadGuessMePool(){
+  const stored = storage.get(K.pool("guessMe"),null);
+  if(stored && Array.isArray(stored) && stored.length) return stored;
+  const seed = CORE.guessMe.map(q=>({
+    id:cardId(q.q,q.type),
+    title:q.q,prompt:q.q,tags:[q.type],category:q.category||"soru",
+    hardness:2,source:"core",disabled:false,type:q.type,options:q.options||null
+  }));
+  storage.set(K.pool("guessMe"),seed);
+  return seed;
+}
+route("/guess-me",(app)=>{
+  app.append(topbar("Beni Tahmin Et"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const settings = getSettings();
+  const state = { phase:"pick", card:null, playerIdx:0, secret:null, guess:null };
+  function drawGM(){
+    const pool = loadGuessMePool().filter(c=>!isDisabled("guessMe",c.id));
+    const seen = new Set(getSeen("guessMe"));
+    const unseen = pool.filter(c=>!seen.has(c.id));
+    return unseen.length?pick(unseen):pool.length?pick(pool):null;
+  }
+  function render(){
+    box.innerHTML="";
+    const players=[settings.player1,settings.player2];
+    if(state.phase==="pick"){
+      box.append(el("div",{class:"muted"},"Kim kendini anlatacak?"));
+      box.append(el("div",{class:"row",style:"margin-top:12px"},
+        btn(players[0],"primary",()=>{state.playerIdx=0;state.card=drawGM();
+          if(!state.card){box.innerHTML="";box.append(el("div",null,"Soru bitti."));return}
+          markSeen("guessMe",state.card.id);bumpSession("guessMe","round");
+          state.phase="secret";render()}),
+        btn(players[1],"gold",()=>{state.playerIdx=1;state.card=drawGM();
+          if(!state.card){box.innerHTML="";box.append(el("div",null,"Soru bitti."));return}
+          markSeen("guessMe",state.card.id);bumpSession("guessMe","round");
+          state.phase="secret";render()})
+      ));
+    } else if(state.phase==="secret"){
+      const p = players[state.playerIdx];
+      box.append(el("div",{class:"big"},p+" gerçek cevabını gizlice ver"));
+      box.append(el("h3",{style:"margin-top:8px"},state.card.title));
+      renderAnswerInput(box,state.card,(v)=>{state.secret=v;state.phase="pass";render()});
+    } else if(state.phase==="pass"){
+      const other = players[1-state.playerIdx];
+      box.append(el("div",{class:"big center"},"Telefonu "+other+"'e ver"));
+      box.append(el("div",{style:"height:12px"}));
+      box.append(btn("Hazırım","primary",()=>{state.phase="guess";render()}));
+    } else if(state.phase==="guess"){
+      const other = players[1-state.playerIdx];
+      box.append(el("div",{class:"big"},other+" tahminini gir"));
+      box.append(el("h3",{style:"margin-top:8px"},state.card.title));
+      renderAnswerInput(box,state.card,(v)=>{state.guess=v;state.phase="reveal";render()});
+    } else if(state.phase==="reveal"){
+      box.append(el("h3",null,state.card.title));
+      box.append(el("div",{class:"row",style:"margin-top:12px"},
+        el("div",{class:"card",style:"flex:1;padding:12px"},
+          el("div",{class:"muted"},"Gerçek"),
+          el("div",{style:"margin-top:6px;font-weight:600"},String(state.secret))),
+        el("div",{class:"card",style:"flex:1;padding:12px"},
+          el("div",{class:"muted"},"Tahmin"),
+          el("div",{style:"margin-top:6px;font-weight:600"},String(state.guess)))
+      ));
+      box.append(el("div",{class:"muted",style:"margin-top:12px"},"Cevaplayan değerlendirsin:"));
+      const s = getSession();
+      s.modules.guessMe = s.modules.guessMe || {rounds:0,passes:0,score:0};
+      function award(pts,label){
+        s.modules.guessMe.score = (s.modules.guessMe.score||0)+pts;
+        storage.set(K.activeSession,s);
+        toast(label+" (+"+pts+")");
+        state.phase="pick"; render();
+      }
+      box.append(el("div",{class:"row",style:"margin-top:8px"},
+        btn("Bilemedi","ghost",()=>award(0,"Bilemedi")),
+        btn("Yaklaştı","gold",()=>award(1,"Yaklaştı")),
+        btn("Bildi","primary",()=>award(2,"Bildi"))
+      ));
+    }
+  }
+  render();
+});
+function renderAnswerInput(box,card,onDone){
+  const t = card.type||"text";
+  if(t==="choice" && card.options){
+    const wrap = el("div",{style:"margin-top:12px"});
+    card.options.forEach(op=>{
+      wrap.append(el("button",{class:"btn ghost",style:"margin-bottom:8px",onclick:()=>onDone(op)},op));
+    });
+    box.append(wrap);
+  } else if(t==="scale"){
+    const wrap = el("div",{class:"pill-row",style:"margin-top:12px;justify-content:center"});
+    [1,2,3,4,5].forEach(n=>{
+      wrap.append(el("button",{class:"pill",onclick:()=>onDone(n)},String(n)));
+    });
+    box.append(wrap);
+  } else if(t==="binary"){
+    box.append(el("div",{class:"row",style:"margin-top:12px"},
+      btn("Evet","primary",()=>onDone("Evet")),
+      btn("Hayır","ghost",()=>onDone("Hayır"))
+    ));
+  } else {
+    const inp = el("input",{type:"text",placeholder:"Cevabını yaz…"});
+    const b = btn("Onayla","primary",()=>{const v=(inp.value||"").trim().slice(0,120);if(!v)return;onDone(v)});
+    box.append(el("div",{style:"margin-top:12px"},inp));
+    box.append(el("div",{style:"margin-top:10px"},b));
+  }
+}
+
+/* ============================================================
+ * 17. Sex Dice engine
+ * ============================================================ */
+route("/sex-dice",(app)=>{
+  maybeConsentReminder("sexDice",()=>renderDice(app));
+});
+function getCustomDice(){return storage.get("bizimOyun.customDice",{})}
+function saveCustomDice(d){storage.set("bizimOyun.customDice",d)}
+function getDiceDisabled(){return storage.get("bizimOyun.diceDisabled",{})}
+function setDiceDisabled(d){storage.set("bizimOyun.diceDisabled",d)}
+function disableDie(pool,val){const d=getDiceDisabled();d[pool]=d[pool]||{};d[pool][val]=true;setDiceDisabled(d)}
+function isDieDisabled(pool,val){const d=getDiceDisabled();return !!(d[pool]&&d[pool][val])}
+function poolValues(pool){
+  const custom = getCustomDice()[pool]||[];
+  const base = (DICE[pool]||[]).concat(custom);
+  return base.filter(v=>!isDieDisabled(pool,v));
+}
+function renderDice(app){
+  app.append(topbar("Sex Zarı"));
+  const state = { mode:"klasik", result:null };
+  const card = el("div",{class:"card"});
+  app.append(card);
+  card.append(el("div",{class:"muted"},"Bir mod seç. Her sonuçta ikiniz de onaylıyor musunuz sorusu çıkar."));
+  const modeRow = el("div",{class:"pill-row",style:"margin-top:12px"});
+  Object.keys(DICE_MODES).forEach(k=>{
+    const b = el("button",{class:"pill"+(k===state.mode?" active":""),onclick:()=>{
+      state.mode=k;
+      modeRow.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
+      b.classList.add("active");
+    }},DICE_MODES[k].name);
+    modeRow.append(b);
+  });
+  card.append(modeRow);
+  const rollArea = el("div",{style:"margin-top:14px"});
+  card.append(rollArea);
+  card.append(btn("Zar At","primary",()=>roll()));
+  const kasaBtn = btn("Özel Kasa yönetimi","ghost",()=>navigate("#/dice-custom"));
+  card.append(el("div",{style:"margin-top:8px"},kasaBtn));
+
+  function pickDiceForMode(mode){
+    if(mode==="rulet"){
+      const keys = Object.keys(DICE);
+      const shuffled = shuffle(keys);
+      const n = 4+Math.floor(Math.random()*3);
+      return shuffled.slice(0,n);
+    }
+    if(mode==="kasa"){
+      const custom = getCustomDice();
+      return Object.keys(custom).filter(k=>custom[k] && custom[k].length);
+    }
+    return DICE_MODES[mode].dice;
+  }
+  function softenResult(res){
+    const soften = { tempo:["çok yavaş","yavaş"], sure:["30 sn","1 dk"], eylem:["fısılda","göz göze bak","dinle, dokunma","sadece nefes al"] };
+    const out = {...res};
+    for(const k in soften){
+      if(k in out){
+        const opts = soften[k].filter(v=>!isDieDisabled(k,v));
+        if(opts.length) out[k] = pick(opts);
+      }
+    }
+    return out;
+  }
+  function roll(){
+    let diceKeys = pickDiceForMode(state.mode);
+    if(state.mode==="kasa" && (!diceKeys || !diceKeys.length)){
+      toast("Özel Kasa boş. Önce içerik ekle.");return;
+    }
+    rollArea.innerHTML="";
+    const grid = el("div",{class:"dice-grid"});
+    const dice = {};
+    diceKeys.forEach(k=>{
+      const values = state.mode==="kasa"
+        ? (getCustomDice()[k]||[]).filter(v=>!isDieDisabled(k,v))
+        : poolValues(k);
+      if(!values.length){return}
+      const val = pick(values);
+      dice[k]=val;
+      grid.append(el("div",{class:"die rolling","data-k":k},
+        el("div",{class:"k"},k),
+        el("div",{class:"v"},val)
+      ));
+    });
+    rollArea.append(grid);
+    setTimeout(()=>{
+      grid.querySelectorAll(".die").forEach(d=>d.classList.remove("rolling"));
+      showResult(dice);
+    },900);
+  }
+  function showResult(dice){
+    bumpSession("sexDice","round");
+    const actions = el("div",{style:"margin-top:12px"});
+    rollArea.append(actions);
+    actions.append(el("div",{class:"consent-box"},"İkiniz de onaylıyor musunuz? İstediğinde her an durabilirsin."));
+    actions.append(el("div",{class:"row",style:"margin-top:10px"},
+      btn("Kabul","primary",()=>{toast("İyi eğlenceler.");rollArea.innerHTML=""}),
+      btn("Değiştir","ghost",roll)
+    ));
+    actions.append(el("div",{class:"row",style:"margin-top:8px"},
+      btn("Yumuşat","gold",()=>{
+        const soft = softenResult(dice);
+        rollArea.innerHTML="";
+        const g = el("div",{class:"dice-grid"});
+        Object.keys(soft).forEach(k=>{
+          g.append(el("div",{class:"die"},el("div",{class:"k"},k),el("div",{class:"v"},soft[k])));
+        });
+        rollArea.append(g);
+        showResult(soft);
+      }),
+      btn("Pas","ghost",()=>{bumpSession("sexDice","pass");rollArea.innerHTML=""})
+    ));
+    actions.append(el("div",{class:"row",style:"margin-top:8px"},
+      btn("Bir daha gösterme","danger",()=>{
+        Object.keys(dice).forEach(k=>disableDie(k,dice[k]));
+        toast("Bu öğeler kalıcı olarak kaldırıldı. Ayarlardan geri açabilirsin.");
+        rollArea.innerHTML="";
+      })
+    ));
+  }
+}
+
+route("/dice-custom",(app)=>{
+  app.append(topbar("Özel Kasa"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const custom = getCustomDice();
+  const poolSelect = el("select");
+  Object.keys(DICE).forEach(k=>poolSelect.append(el("option",{value:k},k)));
+  const input = el("input",{type:"text",placeholder:"Öğe metni…",maxlength:"80"});
+  box.append(el("label",null,"Havuz"),poolSelect);
+  box.append(el("label",null,"Yeni öğe"),input);
+  const addBtn = btn("Ekle","primary",()=>{
+    const p = poolSelect.value, v = input.value.trim().slice(0,80);
+    if(!v)return;
+    custom[p]=custom[p]||[];
+    if(!custom[p].includes(v))custom[p].push(v);
+    saveCustomDice(custom);
+    input.value="";
+    listBox.innerHTML="";
+    renderList();
+    toast("Eklendi.");
+  });
+  box.append(el("div",{style:"margin-top:12px"},addBtn));
+
+  const listBox = el("div",{style:"margin-top:16px"});
+  box.append(listBox);
+  function renderList(){
+    listBox.innerHTML="";
+    Object.keys(DICE).forEach(pool=>{
+      const items = custom[pool]||[];
+      if(!items.length)return;
+      listBox.append(el("h3",{style:"margin-top:12px"},pool));
+      items.forEach(v=>{
+        const row = el("div",{class:"kv"},
+          el("div",null,v),
+          el("button",{class:"btn small danger",onclick:()=>{
+            custom[pool]=custom[pool].filter(x=>x!==v);saveCustomDice(custom);renderList();
+          }},"Sil"));
+        listBox.append(row);
+      });
+    });
+  }
+  renderList();
+});
+
+/* ============================================================
+ * 18. Session summary
+ * ============================================================ */
+route("/summary",(app)=>{
+  app.append(topbar("Gece Özeti"));
+  const s = storage.get(K.activeSession,null) || storage.get(K.sessions,[])[0];
+  const box = el("div",{class:"card"});
+  app.append(box);
+  if(!s){
+    box.append(el("div",null,"Henüz özet oluşacak bir oturum yok."));
+    return;
+  }
+  const mods = s.modules||{};
+  const most = Object.keys(mods).sort((a,b)=>(mods[b].rounds||0)-(mods[a].rounds||0))[0];
+  box.append(el("h2",null,"Bu gece bizde neler oldu?"));
+  box.append(el("div",{style:"margin-top:10px"},
+    el("div",{class:"kv"},el("div",null,"Toplam tur"),el("div",null,String(s.totalRounds||0))),
+    el("div",{class:"kv"},el("div",null,"Toplam pas"),el("div",null,String(s.totalPasses||0))),
+    most && el("div",{class:"kv"},el("div",null,"En çok oynanan"),el("div",null,MODULES[most]?.name||most)),
+    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — aynı"),el("div",null,String(mods.okNok.matches||0))),
+    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — farklı"),el("div",null,String(mods.okNok.differences||0))),
+    mods.guessMe && el("div",{class:"kv"},el("div",null,"Beni Tahmin Et skoru"),el("div",null,String(mods.guessMe.score||0))),
+  ));
+  const favs = getFavorites();
+  const favCount = Object.values(favs).reduce((n,o)=>n+Object.keys(o||{}).length,0);
+  box.append(el("div",{class:"kv"},el("div",null,"Favori kart"),el("div",null,String(favCount))));
+  box.append(el("div",{class:"consent-box",style:"margin-top:14px"},
+    "Bu gece bazı cevaplarda aynı yerdeydiniz, bazılarında yeni şeyler öğrendiniz. Oyunun amacı zaten doğru cevabı bulmak değil, birbirinizi biraz daha keşfetmek."));
+  box.append(el("div",{class:"row",style:"margin-top:14px"},
+    btn("Oturumu kapat","gold",()=>{
+      openModal((mbox,close)=>{
+        mbox.append(el("h3",null,"Oturumu kapatalım mı?"));
+        mbox.append(el("div",{class:"muted",style:"margin-top:8px"},"Yeni bir gece başladığında yeni oturum açılır."));
+        mbox.append(el("div",{style:"margin-top:12px"},
+          btn("Evet, kapat","primary",()=>{endSession();close();toast("Oturum kaydedildi.");navigate("#/home")}),
+          el("div",{style:"height:8px"}),
+          btn("Vazgeç","ghost",close)
+        ));
+      });
+    }),
+    btn("Ana ekran","ghost",()=>navigate("#/home"))
+  ));
+});
+
+/* ============================================================
+ * 19. Settings
+ * ============================================================ */
+route("/settings",(app)=>{
+  app.append(topbar("Ayarlar"));
+  const s = getSettings();
+  const box = el("div",{class:"card"});
+  app.append(box);
+  box.append(el("h3",null,"Oyuncular"));
+  const p1 = el("input",{type:"text",value:s.player1,maxlength:"20"});
+  const p2 = el("input",{type:"text",value:s.player2,maxlength:"20"});
+  box.append(el("label",null,"Oyuncu 1"),p1);
+  box.append(el("label",null,"Oyuncu 2"),p2);
+  box.append(el("label",null,"Sertlik seviyesi (1-5)"));
+  const hardRow = el("div",{class:"pill-row"});
+  [1,2,3,4,5].forEach(n=>{
+    const b = el("button",{class:"pill"+(s.hardness===n?" active":""),onclick:()=>{
+      s.hardness=n;saveSettings(s);
+      hardRow.querySelectorAll(".pill").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+    }},String(n));
+    hardRow.append(b);
+  });
+  box.append(hardRow);
+
+  const saveBtn = btn("Kaydet","primary",()=>{
+    s.player1=(p1.value||"Ozzy").slice(0,20);
+    s.player2=(p2.value||"Su").slice(0,20);
+    saveSettings(s); toast("Kaydedildi.");
+  });
+  box.append(el("div",{style:"margin-top:14px"},saveBtn));
+
+  // Reduced motion
+  box.append(el("div",{class:"divider"}));
+  const rmBtn = btn(s.reducedMotion?"Az animasyon: AÇIK":"Az animasyon: KAPALI","ghost",()=>{
+    s.reducedMotion=!s.reducedMotion;saveSettings(s);
+    document.documentElement.style.setProperty("--rm",s.reducedMotion?"1":"0");
+    render();
+  });
+  box.append(rmBtn);
+
+  // custom cards
+  const cbox = el("div",{class:"card"});
+  app.append(cbox);
+  cbox.append(el("h3",null,"Özel Kart Ekle"));
+  const modSel = el("select");
+  [...LEVELS,...PARTY,"okNok"].forEach(k=>modSel.append(el("option",{value:k},MODULES[k]?.name || PARTY_NAMES[k] || k)));
+  const title = el("input",{type:"text",placeholder:"Başlık",maxlength:"80"});
+  const prompt = el("textarea",{placeholder:"Soru veya görev",maxlength:"280"});
+  const tags = el("input",{type:"text",placeholder:"etiketler, virgülle",maxlength:"80"});
+  const cat = el("input",{type:"text",placeholder:"kategori",maxlength:"32"});
+  const hard = el("select");
+  [1,2,3,4,5].forEach(n=>hard.append(el("option",{value:String(n)},"seviye "+n)));
+  cbox.append(el("label",null,"Modül"),modSel);
+  cbox.append(el("label",null,"Başlık"),title);
+  cbox.append(el("label",null,"Soru / Görev"),prompt);
+  cbox.append(el("label",null,"Etiketler"),tags);
+  cbox.append(el("label",null,"Kategori"),cat);
+  cbox.append(el("label",null,"Sertlik"),hard);
+  cbox.append(el("div",{style:"margin-top:12px"},btn("Kartı ekle","primary",()=>{
+    const t=(title.value||"").trim(); const pr=(prompt.value||"").trim();
+    if(!t||!pr){toast("Başlık ve soru şart.");return}
+    const card = {
+      title:t.slice(0,80), prompt:pr.slice(0,280),
+      tags:(tags.value||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,6),
+      category:(cat.value||"özel").slice(0,32),
+      hardness:parseInt(hard.value)||2, source:"custom"
+    };
+    const added = addCards(modSel.value,[card]);
+    toast(added?"Eklendi.":"Bu kart zaten var.");
+    title.value=prompt.value=tags.value=cat.value="";
+  })));
+
+  // custom cards list
+  const listBox = el("div",{class:"card"});
+  app.append(listBox);
+  listBox.append(el("h3",null,"Özel Kartlarım"));
+  function refreshList(){
+    listBox.innerHTML="";
+    listBox.append(el("h3",null,"Özel Kartlarım"));
+    let any=false;
+    [...LEVELS,...PARTY,"okNok"].forEach(m=>{
+      const pool = loadPool(m).filter(c=>c.source==="custom");
+      if(!pool.length)return;
+      any=true;
+      listBox.append(el("h4",{style:"margin-top:10px;color:var(--gold)"},MODULES[m]?.name||PARTY_NAMES[m]||m));
+      pool.forEach(c=>{
+        const row = el("div",{class:"kv"},
+          el("div",null,c.title),
+          el("button",{class:"btn small danger",onclick:()=>{
+            const arr = loadPool(m).filter(x=>x.id!==c.id);
+            savePool(m,arr); refreshList();
+          }},"Sil"));
+        listBox.append(row);
+      });
+    });
+    if(!any) listBox.append(el("div",{class:"muted",style:"margin-top:8px"},"Henüz özel kart eklemedin."));
+  }
+  refreshList();
+
+  // disabled cards
+  const dbox = el("div",{class:"card"});
+  app.append(dbox);
+  dbox.append(el("h3",null,"Kalıcı kaldırılanlar"));
+  function refreshDisabled(){
+    dbox.innerHTML="";
+    dbox.append(el("h3",null,"Kalıcı kaldırılanlar"));
+    const d = getDisabled();
+    let any=false;
+    Object.keys(d).forEach(m=>{
+      const ids = Object.keys(d[m]||{}).filter(id=>d[m][id]);
+      if(!ids.length)return;
+      any=true;
+      dbox.append(el("h4",{style:"margin-top:8px;color:var(--gold)"},MODULES[m]?.name||PARTY_NAMES[m]||m));
+      ids.forEach(id=>{
+        const pool = loadPool(m);
+        const c = pool.find(x=>x.id===id);
+        dbox.append(el("div",{class:"kv"},
+          el("div",null,c?c.title:id),
+          el("button",{class:"btn small ghost",onclick:()=>{enableCard(m,id);refreshDisabled()}},"Geri aç")));
+      });
+    });
+    // dice disabled
+    const dd = getDiceDisabled();
+    Object.keys(dd).forEach(pool=>{
+      const vals = Object.keys(dd[pool]||{}).filter(v=>dd[pool][v]);
+      if(!vals.length)return;
+      any=true;
+      dbox.append(el("h4",{style:"margin-top:8px;color:var(--gold)"},"Zar: "+pool));
+      vals.forEach(v=>{
+        dbox.append(el("div",{class:"kv"},
+          el("div",null,v),
+          el("button",{class:"btn small ghost",onclick:()=>{
+            const d2=getDiceDisabled();delete d2[pool][v];setDiceDisabled(d2);refreshDisabled();
+          }},"Geri aç")));
+      });
+    });
+    if(!any) dbox.append(el("div",{class:"muted",style:"margin-top:8px"},"Kaldırılan öğe yok."));
+  }
+  refreshDisabled();
+
+  // export / import
+  const ebox = el("div",{class:"card"});
+  app.append(ebox);
+  ebox.append(el("h3",null,"Veri Yedekleme"));
+  ebox.append(el("div",{class:"row",style:"margin-top:10px"},
+    btn("Dışa aktar","primary",exportData),
+    btn("İçe aktar","gold",importData)
+  ));
+  ebox.append(el("div",{class:"row",style:"margin-top:10px"},
+    btn("Tüm verileri sıfırla","danger",()=>{
+      openModal((m,c)=>{
+        m.append(el("h3",null,"Emin misin?"));
+        m.append(el("div",{class:"muted",style:"margin-top:8px"},"Bu, tüm kartları, oturumları ve ayarları siler."));
+        m.append(el("div",{style:"margin-top:12px"},btn("Evet, sıfırla","danger",()=>{
+          openModal((m2,c2)=>{
+            m2.append(el("h3",null,"Son onay"));
+            m2.append(el("div",{class:"muted",style:"margin-top:8px"},"Bu işlem geri alınamaz."));
+            m2.append(el("div",{style:"margin-top:12px"},btn("Sıfırla","danger",()=>{storage.reset();c();c2();navigate("#/home");location.reload()})));
+            m2.append(el("div",{style:"margin-top:8px"},btn("Vazgeç","ghost",c2)));
+          });
+        })));
+        m.append(el("div",{style:"margin-top:8px"},btn("Vazgeç","ghost",c)));
+      });
+    })
+  ));
+});
+
+/* ============================================================
+ * 20. Export / Import
+ * ============================================================ */
+function exportData(){
+  const data = storage.getAll();
+  const blob = new Blob([JSON.stringify({
+    app:"bizim-oyun", version:SCHEMA_VERSION,
+    exportedAt:nowIso(), data
+  },null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "bizim-oyun-yedek-"+today()+".json";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importData(){
+  const input = document.createElement("input");
+  input.type="file"; input.accept="application/json";
+  input.onchange = async ()=>{
+    const f = input.files && input.files[0]; if(!f) return;
+    if(f.size > 2*1024*1024){toast("Dosya çok büyük.");return}
+    try{
+      const text = await f.text();
+      const obj = JSON.parse(text);
+      if(obj.app!=="bizim-oyun") throw new Error("Yanlış dosya.");
+      if(obj.version!==SCHEMA_VERSION) throw new Error("Sürüm uyumsuz.");
+      const keys = Object.keys(obj.data||{}).filter(k=>k.startsWith("bizimOyun."));
+      openModal((box,close)=>{
+        box.append(el("h3",null,"İçe aktar"));
+        box.append(el("div",{class:"muted",style:"margin-top:8px"},keys.length+" anahtar bulundu. Nasıl yükleyelim?"));
+        box.append(el("div",{style:"margin-top:12px"},btn("Birleştir","primary",()=>{doImport(obj.data,"merge");close()})));
+        box.append(el("div",{style:"margin-top:8px"},btn("Tamamen değiştir","danger",()=>{doImport(obj.data,"replace");close()})));
+        box.append(el("div",{style:"margin-top:8px"},btn("Vazgeç","ghost",close)));
+      });
+    }catch(e){toast("Geçersiz dosya: "+e.message)}
+  };
+  input.click();
+}
+function doImport(data,mode){
+  if(mode==="replace"){storage.reset()}
+  for(const k in data){
+    if(!k.startsWith("bizimOyun."))continue;
+    if(mode==="merge" && k.startsWith("bizimOyun.pool.")){
+      const existing = storage.get(k,[]);
+      const seen = new Set(existing.map(c=>c.id));
+      const merged = existing.slice();
+      (data[k]||[]).forEach(c=>{
+        if(!c || !c.title || !c.prompt)return;
+        const id = c.id || cardId(c.title,c.prompt);
+        if(seen.has(id))return;
+        merged.push({...c,id});
+        seen.add(id);
+      });
+      storage.set(k,merged);
+    } else {
+      storage.set(k,data[k]);
+    }
+  }
+  toast("İçe aktarıldı."); render();
+}
+
+/* ============================================================
+ * 21. Boot
+ * ============================================================ */
+if(!runMigrations()){
+  document.getElementById("app").append(el("div",{class:"card"},
+    el("h3",null,"Veri okunamadı"),
+    el("div",{class:"muted",style:"margin-top:8px"},"Bir yedek almak ister misin?"),
+    el("div",{style:"margin-top:12px"},btn("Yedek al","primary",exportData))
+  ));
+} else {
+  // Init all pools with core
+  Object.keys(CORE).forEach(m=>loadPool(m));
+  loadGuessMePool();
+  // Ensure a session exists
+  if(!storage.get(K.activeSession,null)) startSession();
+  render();
+}
+
+// resume param from landing
+if(new URLSearchParams((location.hash.split("?")[1])||"").get("resume")==="1"){
+  // no-op; session persists in localStorage
+}
+</script>
+</body>
+</html>
