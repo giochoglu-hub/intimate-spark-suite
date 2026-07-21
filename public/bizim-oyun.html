@@ -467,16 +467,50 @@ const CORE = {
 };
 
 const DICE = {
-  oyuncu:["Ozzy","Su","İkiniz","Sırayla"],
-  eylem:["öpücük ver","masaj yap","fısılda","göz göze bak","tutuşarak yavaşça yaklaş","dinle, dokunma","sadece nefes al","yavaşça soyun"],
-  bolge:["boyun","kulak","el","omurga boyunca","bel","iç kol","alın","dizin arkası"],
-  pozisyon:["yan yana","karşılıklı diz üstü","kaşıklama","sarılarak","otururken","yüzüstü sırt masajı","kucakta oturma","ayakta sarılma","koltukta yaslanma","yatakta dik oturuş","yastıklarla yükseltilmiş bel","sırt sırta yaslanma"],
-  tarz:["yavaş","şefkatli","oyunlu","tutkulu","meraklı","utangaç ama cesur","sessiz","tamamen odaklı"],
-  tempo:["çok yavaş","yavaş","orta","artan","değişken","nefes ritminde"],
-  sure:["30 sn","1 dk","2 dk","3 dk","5 dk","şarkı süresi"],
-  yer:["yatak","kanepe","banyo","balkon","mutfak","yerde yastıklarda"],
-  kural:["gözler kapalı","kelime yok","sadece dokunuş","göz teması bozulmayacak","gülmek serbest","sen yönlendir"],
-  surpriz:["ışıkları kıs","bir şarkı aç","hafif parfüm","buz veya sıcak","tüy veya kumaş","aynanın önünde"],
+  oyuncu:["Ozzy başlatır","Su başlatır","İkiniz aynı anda","Sırayla — önce Ozzy","Sırayla — önce Su","Kim isterse o başlar"],
+  eylem:[
+    "yavaş, ıslak bir öpücükle başla",
+    "sırt boyunca parmak uçlarıyla gez",
+    "kulağa alçak sesle ne hissettiğini fısılda",
+    "gözlerini kaçırmadan yavaşça yaklaş",
+    "önce sadece nefesini teninde hissettir",
+    "bir parçasını yavaşça, tek tek çıkar",
+    "boynundan bele kadar öpücük hattı çiz",
+    "dilinle küçük daireler çiz",
+    "hafif ısırıklarla dolaş",
+    "avuçlarınla sıcak, baskılı bir masaj yap",
+    "saçlarını nazikçe çek",
+    "dinle — sadece dokun, konuşma",
+    "bir yerini dondur, oradan başlama"
+  ],
+  bolge:["boyun","kulakla ense arası","dudak kenarı","köprücük kemiği","göğüs uçları çevresi","karnın altı","iç kol","bel çukuru","kalça yanı","iç uyluk","dizin arkası","ayak bileği","omurga boyunca","el bileği içi"],
+  pozisyon:[
+    "Misyoner — yastıkla kalçayı hafif yükselt, göğüs göğüse, göz teması bozulmadan",
+    "Kaşık — arkadan sarılarak yan yatış, bir el karında bir el göğüste",
+    "Kovboy kız — Su üstte, elleri Ozzy'nin göğsünde, tempoyu Su belirler",
+    "Ters kovboy kız — Su sırtı dönük üstte, Ozzy belini tutar",
+    "Sandalyede kucak — Ozzy oturur, Su karşılıklı kucağında, alınlar birleşik",
+    "Yatak kenarı — biri kenarda oturur/uzanır, diğeri önünde diz çöker",
+    "Yüzüstü — Su yüzüstü, kalça altında yastık, Ozzy arkadan yaslanır",
+    "Yan yatarak makas — bacaklar iç içe geçmiş, yüzler karşılıklı",
+    "Ayakta duvara yaslı — biri duvarda, diğeri karşısında, bir bacak yukarıda",
+    "Köprü — Su sırtüstü, ayaklar yerde, kalça havada; Ozzy diz çökmüş",
+    "Duş/küvet — arkadan sarılış, sıcak su altında yavaş tempo",
+    "Kanepe kenarı — Su kanepenin koluna eğilir, Ozzy arkasında ayakta",
+    "Yerde yastık yığını — kalça altında iki yastık, dizler göğüste",
+    "Karşılıklı diz üstü — ikisi de diz çökmüş, göğüs göğüse sarılış",
+    "Yan yastıkla — Su bir omzuna dönük, bir bacak Ozzy'nin omzunda",
+    "Uzun sarılış — hareketsiz, sadece nefes ve kalp atışı",
+    "Şezlong — biri yaslanmış, diğeri üstünde, elleri yüzünde",
+    "69 — karşılıklı, yavaş tempo, ellerle bel tutulur",
+    "Doggy yavaşlatılmış — Su dirsekleri üstünde, Ozzy arkasında; her hareketten sonra 3 saniye durur"
+  ],
+  tarz:["yavaş ve şefkatli","oyunlu ve gülüşmeli","tutkulu ve baskın","meraklı ve keşfeden","utangaç ama cesur","tamamen sessiz","gözler bağlı gibi hissettiren","alevli ve aceleci"],
+  tempo:["çok yavaş — her hareket 5 sn","yavaş","orta","yavaştan hızlıya artan","hızlıdan yavaşa inen","nefes ritminde","3 sn dur / 3 sn hareket"],
+  sure:["30 saniye","1 dakika","2 dakika","3 dakika","5 dakika","bir şarkı boyunca","siz durana kadar"],
+  yer:["yatakta","kanepede","banyoda / duşta","balkonda (perde kapalı)","mutfak tezgahında","yerde yastıkların üstünde","aynanın önünde","halının üstünde"],
+  kural:["gözler kapalı","tek kelime yok — sadece nefes ve ses","sadece dokunuş, öpücük yok","göz teması hiç bozulmayacak","gülmek serbest","sen yönlendir, ben takip edeyim","3 dk boyunca sadece öpüşme","elleri kullanma"],
+  surpriz:["ışıkları kıs, sadece bir mum","yavaş bir şarkı aç","tenine hafif parfüm sür","bir buz küpü ve bir fincan sıcak çay hazır et","tüy ya da ipek bir kumaş getir","aynanın önüne geç","gözleri bir fularla bağla","bir kadeh şarap paylaşın"],
 };
 
 const DICE_MODES = {
@@ -761,28 +795,37 @@ route("/home",(app)=>{
   wrap.append(pointer,wheel,center);
   wheelCard.append(wrap);
   const wheelMods = Object.keys(MODULES);
-  wheelCard.append(btn("Çarkı Çevir","primary",()=>{
+  const wheelActions = el("div",{style:"margin-top:12px;min-height:52px"});
+  wheelCard.append(wheelActions);
+  let spinning = false;
+  const spinBtn = btn("Çarkı Çevir","primary",()=>{
+    if(spinning) return;
+    spinning = true;
+    wheelActions.innerHTML = "";
+    document.getElementById("wheel-val").textContent = "…";
+    spinBtn.disabled = true; spinBtn.style.opacity = ".6";
     const idx = Math.floor(Math.random()*wheelMods.length);
     const chosen = wheelMods[idx];
     const rotations = 3+Math.random()*3;
     const targetDeg = rotations*360 + Math.random()*360;
     wheel.style.transform = `rotate(${targetDeg}deg)`;
     setTimeout(()=>{
-      document.getElementById("wheel-val").textContent = MODULES[chosen].name;
+      const m = MODULES[chosen];
+      document.getElementById("wheel-val").textContent = m.icon+" "+m.name;
+      wheelActions.innerHTML = "";
+      wheelActions.append(
+        btn(m.name+"'e git","primary",()=>openModule(chosen)),
+        el("div",{style:"height:8px"}),
+        btn("Yeniden çevir","ghost",()=>{
+          spinning = false; spinBtn.disabled = false; spinBtn.style.opacity = "1";
+          document.getElementById("wheel-val").textContent = "Çevir!";
+          wheelActions.innerHTML = "";
+        })
+      );
+      spinning = false; spinBtn.disabled = false; spinBtn.style.opacity = "1";
     },3800);
-    setTimeout(()=>{
-      openModal((box,close)=>{
-        box.append(el("h3",null,"Çarktan çıktı"));
-        box.append(el("div",{class:"big",style:"margin:10px 0"},MODULES[chosen].icon+" "+MODULES[chosen].name));
-        box.append(el("div",{class:"muted"},MODULES[chosen].desc));
-        box.append(el("div",{style:"margin-top:16px"},
-          btn("Bu modüle git","primary",()=>{close();openModule(chosen)}),
-          el("div",{style:"height:8px"}),
-          btn("Vazgeç","ghost",close)
-        ));
-      });
-    },4000);
-  }));
+  });
+  wheelCard.append(spinBtn);
   app.append(wheelCard);
 
   // modules grid
@@ -1323,14 +1366,23 @@ function renderDice(app){
       showResult(dice);
     },900);
   }
+  function afterAction(msg){
+    rollArea.innerHTML="";
+    const done = el("div",{class:"card",style:"margin-top:4px;text-align:center"});
+    done.append(el("div",{class:"muted",style:"margin-bottom:10px"},msg));
+    done.append(btn("Yeniden Zar At","primary",()=>{rollArea.innerHTML="";roll()}));
+    done.append(el("div",{style:"height:8px"}));
+    done.append(btn("Bitir","ghost",()=>{rollArea.innerHTML=""}));
+    rollArea.append(done);
+  }
   function showResult(dice){
     bumpSession("sexDice","round");
     const actions = el("div",{style:"margin-top:12px"});
     rollArea.append(actions);
     actions.append(el("div",{class:"consent-box"},"İkiniz de onaylıyor musunuz? İstediğinde her an durabilirsin."));
     actions.append(el("div",{class:"row",style:"margin-top:10px"},
-      btn("Kabul","primary",()=>{toast("İyi eğlenceler.");rollArea.innerHTML=""}),
-      btn("Değiştir","ghost",roll)
+      btn("Kabul et","primary",()=>afterAction("İyi eğlenceler. Hazır olduğunuzda yeniden atın.")),
+      btn("Yeniden at","ghost",roll)
     ));
     actions.append(el("div",{class:"row",style:"margin-top:8px"},
       btn("Yumuşat","gold",()=>{
@@ -1343,13 +1395,13 @@ function renderDice(app){
         rollArea.append(g);
         showResult(soft);
       }),
-      btn("Pas","ghost",()=>{bumpSession("sexDice","pass");rollArea.innerHTML=""})
+      btn("Pas","ghost",()=>{bumpSession("sexDice","pass");afterAction("Pas geçildi. Hazır olduğunuzda yeniden atın.")})
     ));
     actions.append(el("div",{class:"row",style:"margin-top:8px"},
       btn("Bir daha gösterme","danger",()=>{
         Object.keys(dice).forEach(k=>disableDie(k,dice[k]));
         toast("Bu öğeler kalıcı olarak kaldırıldı. Ayarlardan geri açabilirsin.");
-        rollArea.innerHTML="";
+        afterAction("Kaldırıldı. Yeniden atabilirsin.");
       })
     ));
   }
