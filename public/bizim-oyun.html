@@ -795,28 +795,37 @@ route("/home",(app)=>{
   wrap.append(pointer,wheel,center);
   wheelCard.append(wrap);
   const wheelMods = Object.keys(MODULES);
-  wheelCard.append(btn("Çarkı Çevir","primary",()=>{
+  const wheelActions = el("div",{style:"margin-top:12px;min-height:52px"});
+  wheelCard.append(wheelActions);
+  let spinning = false;
+  const spinBtn = btn("Çarkı Çevir","primary",()=>{
+    if(spinning) return;
+    spinning = true;
+    wheelActions.innerHTML = "";
+    document.getElementById("wheel-val").textContent = "…";
+    spinBtn.disabled = true; spinBtn.style.opacity = ".6";
     const idx = Math.floor(Math.random()*wheelMods.length);
     const chosen = wheelMods[idx];
     const rotations = 3+Math.random()*3;
     const targetDeg = rotations*360 + Math.random()*360;
     wheel.style.transform = `rotate(${targetDeg}deg)`;
     setTimeout(()=>{
-      document.getElementById("wheel-val").textContent = MODULES[chosen].name;
+      const m = MODULES[chosen];
+      document.getElementById("wheel-val").textContent = m.icon+" "+m.name;
+      wheelActions.innerHTML = "";
+      wheelActions.append(
+        btn(m.name+"'e git","primary",()=>openModule(chosen)),
+        el("div",{style:"height:8px"}),
+        btn("Yeniden çevir","ghost",()=>{
+          spinning = false; spinBtn.disabled = false; spinBtn.style.opacity = "1";
+          document.getElementById("wheel-val").textContent = "Çevir!";
+          wheelActions.innerHTML = "";
+        })
+      );
+      spinning = false; spinBtn.disabled = false; spinBtn.style.opacity = "1";
     },3800);
-    setTimeout(()=>{
-      openModal((box,close)=>{
-        box.append(el("h3",null,"Çarktan çıktı"));
-        box.append(el("div",{class:"big",style:"margin:10px 0"},MODULES[chosen].icon+" "+MODULES[chosen].name));
-        box.append(el("div",{class:"muted"},MODULES[chosen].desc));
-        box.append(el("div",{style:"margin-top:16px"},
-          btn("Bu modüle git","primary",()=>{close();openModule(chosen)}),
-          el("div",{style:"height:8px"}),
-          btn("Vazgeç","ghost",close)
-        ));
-      });
-    },4000);
-  }));
+  });
+  wheelCard.append(spinBtn);
   app.append(wheelCard);
 
   // modules grid
