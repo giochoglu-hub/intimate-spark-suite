@@ -529,20 +529,23 @@ const DICE = {
   oyuncu:["Ozzy başlatır","Su başlatır","İkiniz aynı anda","Sırayla — önce Ozzy","Sırayla — önce Su","Kim isterse o başlar"],
   eylem:[
     "yavaş, ıslak bir öpücükle başla",
-    "sırt boyunca parmak uçlarıyla gez",
-    "kulağa alçak sesle ne hissettiğini fısılda",
+    "parmak uçlarıyla hafifçe gez",
+    "alçak sesle ne hissettiğini fısılda",
     "gözlerini kaçırmadan yavaşça yaklaş",
     "önce sadece nefesini teninde hissettir",
-    "bir parçasını yavaşça, tek tek çıkar",
-    "boynundan bele kadar öpücük hattı çiz",
+    "kıyafetin bir parçasını yavaşça çıkar",
+    "öpücük hattı çiz",
     "dilinle küçük daireler çiz",
     "hafif ısırıklarla dolaş",
     "avuçlarınla sıcak, baskılı bir masaj yap",
-    "saçlarını nazikçe çek",
-    "dinle — sadece dokun, konuşma",
-    "bir yerini dondur, oradan başlama"
+    "saçlarını nazikçe topla ve çek",
+    "sadece dokun — konuşma, öpme",
+    "önce bir yerini dondur, sonra oradan başla",
+    "iki elinle sabit tut, sadece bak",
+    "sıcak nefesle ısıt, sonra üfle",
+    "tırnaklarınla çok hafif iz bırak"
   ],
-  bolge:["boyun","kulakla ense arası","dudak kenarı","köprücük kemiği","göğüs uçları çevresi","karnın altı","iç kol","bel çukuru","kalça yanı","iç uyluk","dizin arkası","ayak bileği","omurga boyunca","el bileği içi"],
+  bolge:["boyun","kulakla ense arası","dudak kenarı","köprücük kemiği","göğüs uçları çevresi","karnın altı","iç kol","bel çukuru","kalça yanı","iç uyluk","dizin arkası","omurga boyunca","el bileği içi"],
   pozisyon:[
     "Misyoner — yastıkla kalçayı hafif yükselt, göğüs göğüse, göz teması bozulmadan",
     "Kaşık — arkadan sarılarak yan yatış, bir el karında bir el göğüste",
@@ -562,7 +565,20 @@ const DICE = {
     "Uzun sarılış — hareketsiz, sadece nefes ve kalp atışı",
     "Şezlong — biri yaslanmış, diğeri üstünde, elleri yüzünde",
     "69 — karşılıklı, yavaş tempo, ellerle bel tutulur",
-    "Doggy yavaşlatılmış — Su dirsekleri üstünde, Ozzy arkasında; her hareketten sonra 3 saniye durur"
+    "Doggy yavaşlatılmış — Su dirsekleri üstünde, Ozzy arkasında; her hareketten sonra 3 saniye durur",
+    "Kucakta karşılıklı — Ozzy yerde bağdaş, Su kucağında karşılıklı; hareket yerine sallanış",
+    "Masa kenarı — Su masaya oturur, Ozzy önünde ayakta; bacaklar bele dolanır",
+    "Yan yatıp bacak omuzda — Su yanda, bir bacak Ozzy'nin omzunda, göz teması korunur",
+    "Ayakta arkadan — Su bir mobilyaya yaslanır, Ozzy arkada, bir el karında",
+    "Diz üstü tersine — Ozzy oturur, Su sırtı dönük kucağında; ense öpülür",
+    "Sarmalayan misyoner — Su bacaklarını Ozzy'nin beline dolar, ayak bilekleri sırtta kilitlenir",
+    "Yavaş salıncak — biri kenarda oturur, diğeri kucağında; hareket yerine ritmik salınım",
+    "Yerde 'X' — sırtüstü, bacaklar V açılı; Ozzy dizleri arasında, elleri iç uylukta",
+    "Yastık kule — Su'nun kalçası altında 2-3 yastık; Ozzy dik durur, açı derinleşir",
+    "Sırt sırta oturuş — sırt sırta oturun, ellerinizi arkadan birleştirin; sadece dokunuş",
+    "Duş — duvarda karşılıklı — biri duvara yaslanır, diğeri karşısında; su ikinizin arasında",
+    "Halının üstünde yavaş — ikisi de dizüstü, alınlar birleşik; hareket minimal",
+    "Kilitli sarılma — yüz yüze, bacaklar iç içe, tam kilitli; 2 dk sadece nefes"
   ],
   tarz:["yavaş ve şefkatli","oyunlu ve gülüşmeli","tutkulu ve baskın","meraklı ve keşfeden","utangaç ama cesur","tamamen sessiz","gözler bağlı gibi hissettiren","alevli ve aceleci"],
   tempo:["çok yavaş — her hareket 5 sn","yavaş","orta","yavaştan hızlıya artan","hızlıdan yavaşa inen","nefes ritminde","3 sn dur / 3 sn hareket"],
@@ -571,6 +587,28 @@ const DICE = {
   kural:["gözler kapalı","tek kelime yok — sadece nefes ve ses","sadece dokunuş, öpücük yok","göz teması hiç bozulmayacak","gülmek serbest","sen yönlendir, ben takip edeyim","3 dk boyunca sadece öpüşme","elleri kullanma"],
   surpriz:["ışıkları kıs, sadece bir mum","yavaş bir şarkı aç","tenine hafif parfüm sür","bir buz küpü ve bir fincan sıcak çay hazır et","tüy ya da ipek bir kumaş getir","aynanın önüne geç","gözleri bir fularla bağla","bir kadeh şarap paylaşın"],
 };
+
+// Which body regions each action makes sense on. "*" = any region.
+// "SELF" = the action doesn't need a region (self-directed, e.g. hair pulling).
+const ACTION_ZONES = {
+  "yavaş, ıslak bir öpücükle başla":["boyun","kulakla ense arası","dudak kenarı","köprücük kemiği","göğüs uçları çevresi","iç uyluk","karnın altı"],
+  "parmak uçlarıyla hafifçe gez":["*"],
+  "alçak sesle ne hissettiğini fısılda":["kulakla ense arası","boyun"],
+  "gözlerini kaçırmadan yavaşça yaklaş":["dudak kenarı","boyun"],
+  "önce sadece nefesini teninde hissettir":["boyun","kulakla ense arası","köprücük kemiği","iç kol","iç uyluk","karnın altı","göğüs uçları çevresi"],
+  "kıyafetin bir parçasını yavaşça çıkar":["SELF"],
+  "öpücük hattı çiz":["boyun","köprücük kemiği","göğüs uçları çevresi","karnın altı","bel çukuru","omurga boyunca","iç uyluk","iç kol"],
+  "dilinle küçük daireler çiz":["boyun","kulakla ense arası","göğüs uçları çevresi","köprücük kemiği","iç uyluk","karnın altı","dudak kenarı"],
+  "hafif ısırıklarla dolaş":["boyun","kulakla ense arası","iç uyluk","köprücük kemiği","kalça yanı","dudak kenarı"],
+  "avuçlarınla sıcak, baskılı bir masaj yap":["kalça yanı","bel çukuru","omurga boyunca","iç uyluk","karnın altı","göğüs uçları çevresi"],
+  "saçlarını nazikçe topla ve çek":["SELF"],
+  "sadece dokun — konuşma, öpme":["*"],
+  "önce bir yerini dondur, sonra oradan başla":["*"],
+  "iki elinle sabit tut, sadece bak":["SELF"],
+  "sıcak nefesle ısıt, sonra üfle":["boyun","kulakla ense arası","köprücük kemiği","göğüs uçları çevresi","iç kol","el bileği içi","iç uyluk"],
+  "tırnaklarınla çok hafif iz bırak":["omurga boyunca","bel çukuru","kalça yanı","iç uyluk","göğüs uçları çevresi","karnın altı"],
+};
+
 
 const DICE_MODES = {
   klasik:{name:"Klasik",dice:["oyuncu","eylem","bolge","sure"]},
@@ -1443,24 +1481,53 @@ function renderDice(app){
     }
     return out;
   }
+  function reconcileDice(diceKeys, dice){
+    // Pozisyon + bölge birlikte olmasın (pozisyon zaten yönlendiriyor)
+    if(dice.pozisyon && dice.bolge && state.mode!=="kasa"){
+      delete dice.bolge;
+    }
+    // Eylem + bölge uyum kontrolü
+    if(dice.eylem && dice.bolge){
+      const allowed = ACTION_ZONES[dice.eylem];
+      if(allowed){
+        if(allowed[0]==="SELF"){
+          // Bu eylem bölgesizdir; bölgeyi düşür
+          delete dice.bolge;
+        } else if(!allowed.includes("*") && !allowed.includes(dice.bolge)){
+          const pool = poolValues("bolge").filter(v=>allowed.includes(v));
+          if(pool.length) dice.bolge = pick(pool);
+          else delete dice.bolge;
+        }
+      }
+    }
+    // Yer + pozisyon uyumu: duş pozisyonu geldiyse yer 'banyo/duş' olsun
+    if(dice.pozisyon && dice.yer){
+      const p = dice.pozisyon.toLowerCase();
+      if(p.startsWith("duş") || p.includes("küvet")) dice.yer = "banyoda / duşta";
+      if(p.startsWith("kanepe") && dice.yer==="banyoda / duşta") dice.yer = "kanepede";
+      if(p.startsWith("masa") && dice.yer==="banyoda / duşta") dice.yer = "mutfak tezgahında";
+    }
+  }
   function roll(){
     let diceKeys = pickDiceForMode(state.mode);
     if(state.mode==="kasa" && (!diceKeys || !diceKeys.length)){
       toast("Özel Kasa boş. Önce içerik ekle.");return;
     }
     rollArea.innerHTML="";
-    const grid = el("div",{class:"dice-grid"});
     const dice = {};
     diceKeys.forEach(k=>{
       const values = state.mode==="kasa"
         ? (getCustomDice()[k]||[]).filter(v=>!isDieDisabled(k,v))
         : poolValues(k);
       if(!values.length){return}
-      const val = pick(values);
-      dice[k]=val;
+      dice[k]=pick(values);
+    });
+    reconcileDice(diceKeys, dice);
+    const grid = el("div",{class:"dice-grid"});
+    Object.keys(dice).forEach(k=>{
       grid.append(el("div",{class:"die rolling","data-k":k},
         el("div",{class:"k"},k),
-        el("div",{class:"v"},val)
+        el("div",{class:"v"},dice[k])
       ));
     });
     rollArea.append(grid);
@@ -1469,6 +1536,7 @@ function renderDice(app){
       showResult(dice);
     },900);
   }
+
   function afterAction(msg){
     rollArea.innerHTML="";
     const done = el("div",{class:"card",style:"margin-top:4px;text-align:center"});
