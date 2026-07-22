@@ -3100,89 +3100,119 @@ function renderTruthDare(app){
  * ============================================================ */
 route("/ok-nok",(app)=>{
   app.append(topbar("OK mu NOK mu?"));
-  const box = el("div",{class:"card"});
-  app.append(box);
-  const state = { phase:"start", card:null, a1:null, a2:null };
+  const OK_NOK_CATS = [
+    ["all","Tümü"],
+    ["messaging","Mesajlaşma"],
+    ["social-media","Sosyal Medya"],
+    ["trust-jealousy","Güven"],
+    ["friends-nightlife","Arkadaşlar"],
+    ["personal-space","Özel Alan"],
+    ["romance-attention","Romantizm"],
+    ["daily-life","Günlük"],
+    ["money","Para"],
+    ["travel-plans","Tatil"],
+    ["communication","İletişim"],
+    ["boundaries","Sınırlar"],
+  ];
+  const state = { card:null, category:"all", lastChoice:null };
   const settings = getSettings();
 
-  function render(){
-    box.innerHTML="";
-    if(state.phase==="start"){
-      box.append(el("div",{class:"muted"},"İki oyuncu sırayla telefonu alacak. Cevaplar birlikte açılır."));
-      box.append(el("div",{style:"height:10px"}));
-      box.append(btn("Yeni kart çek","primary",()=>{
-        const c = drawCard("okNok");
-        if(!c || c.__exhausted){
-          box.innerHTML="";
-          box.append(el("div",null,"Tüm sorular gösterildi."));
-          box.append(el("div",{style:"height:10px"}));
-          box.append(btn("Sıfırla","ghost",()=>{resetSeen("okNok");state.phase="start";render()}));
-          if(aiAvailable()){
-            box.append(el("div",{style:"height:8px"}));
-            box.append(btn("Yeni kart üret (AI)","primary",()=>requestAi("okNok",box,()=>{state.phase="start";render()})));
-          }
-          return;
-        }
-        state.card=c;markSeen("okNok",c.id);bumpSession("okNok","round");
-        state.phase="pass1"; render();
-      }));
-    } else if(state.phase==="pass1"){
-      box.append(el("div",{class:"big center"},"Telefonu "+settings.player1+"'e ver"));
-      box.append(el("div",{class:"muted center",style:"margin-top:8px"},"Diğer oyuncu ekranı görmesin."));
-      box.append(el("div",{style:"height:14px"}));
-      box.append(btn("Hazırım","primary",()=>{state.phase="answer1";render()}));
-    } else if(state.phase==="answer1"){
-      box.append(el("h3",null,state.card.title));
-      box.append(el("div",{style:"margin-top:6px"},state.card.prompt));
-      box.append(el("div",{class:"muted",style:"margin-top:10px"},settings.player1+", gizlice seç:"));
-      box.append(el("div",{class:"answers",style:"margin-top:10px"},
-        btn("OK","primary",()=>{state.a1="ok";state.phase="pass2";render()}),
-        btn("Duruma göre","gold",()=>{state.a1="maybe";state.phase="pass2";render()}),
-        btn("NOK","danger",()=>{state.a1="nok";state.phase="pass2";render()})
-      ));
-      box.append(el("div",{style:"margin-top:10px"},btn("Pas","ghost",()=>{bumpSession("okNok","pass");state.phase="start";render()})));
-    } else if(state.phase==="pass2"){
-      box.append(el("div",{class:"big center"},"Telefonu "+settings.player2+"'e ver"));
-      box.append(el("div",{class:"muted center",style:"margin-top:8px"},settings.player1+"'in cevabı gizli."));
-      box.append(el("div",{style:"height:14px"}));
-      box.append(btn("Hazırım","primary",()=>{state.phase="answer2";render()}));
-    } else if(state.phase==="answer2"){
-      box.append(el("h3",null,state.card.title));
-      box.append(el("div",{style:"margin-top:6px"},state.card.prompt));
-      box.append(el("div",{class:"muted",style:"margin-top:10px"},settings.player2+", gizlice seç:"));
-      box.append(el("div",{class:"answers",style:"margin-top:10px"},
-        btn("OK","primary",()=>{state.a2="ok";state.phase="reveal";render()}),
-        btn("Duruma göre","gold",()=>{state.a2="maybe";state.phase="reveal";render()}),
-        btn("NOK","danger",()=>{state.a2="nok";state.phase="reveal";render()})
-      ));
-    } else if(state.phase==="reveal"){
-      box.append(el("h3",null,state.card.title));
-      const label={ok:"OK",nok:"NOK",maybe:"Duruma göre"};
-      const rowA = el("div",{class:"row",style:"margin-top:14px"},
-        el("div",{class:"card",style:"flex:1;text-align:center;padding:14px"},
-          el("div",{class:"muted"},settings.player1),
-          el("div",{class:"big",style:"margin-top:6px;color:var(--gold)"},label[state.a1])),
-        el("div",{class:"card",style:"flex:1;text-align:center;padding:14px"},
-          el("div",{class:"muted"},settings.player2),
-          el("div",{class:"big",style:"margin-top:6px;color:var(--gold)"},label[state.a2]))
-      );
-      box.append(rowA);
-      const same = state.a1===state.a2;
-      const s = getSession();
-      s.modules.okNok = s.modules.okNok || {rounds:0,passes:0,matches:0,differences:0};
-      if(same) s.modules.okNok.matches = (s.modules.okNok.matches||0)+1;
-      else s.modules.okNok.differences = (s.modules.okNok.differences||0)+1;
-      storage.set(K.activeSession,s);
-      box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
-        same ? "Aynı düşündünüz. Küçük bir kutlama hak ettiniz."
-             : "Burada farklı düşünüyorsunuz. Birbirinizi dinlemek için güzel bir soru olabilir."));
-      box.append(el("div",{class:"row",style:"margin-top:12px"},
-        btn("Bir daha gösterme","danger",()=>{disableCard("okNok",state.card.id);state.phase="start";state.a1=state.a2=null;render()}),
-        btn("Sonraki","primary",()=>{state.phase="start";state.a1=state.a2=null;render()})
-      ));
-    }
+  // Filter bar
+  const filterWrap = el("div",{class:"row",style:"gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;-webkit-overflow-scrolling:touch"});
+  OK_NOK_CATS.forEach(([id,label])=>{
+    const chip = el("button",{class:"btn ghost",style:"white-space:nowrap;padding:6px 12px;font-size:13px"},label);
+    chip.addEventListener("click",()=>{state.category=id;refreshChips();nextCard()});
+    chip._catId = id;
+    filterWrap.append(chip);
+  });
+  function refreshChips(){
+    [...filterWrap.children].forEach(c=>{
+      c.className = "btn " + (c._catId===state.category ? "primary" : "ghost");
+    });
   }
-  render();
+  refreshChips();
+  app.append(filterWrap);
+
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const progress = el("div",{class:"muted center",style:"margin-top:10px;font-size:13px"});
+  app.append(progress);
+
+  function drawFiltered(){
+    const opts = state.category==="all" ? {} : {category:state.category};
+    return drawCard("okNok",opts);
+  }
+  function unseenCount(){
+    return countUnseen("okNok", state.category==="all"?{}:{category:state.category});
+  }
+  function updateProgress(){
+    progress.textContent = unseenCount()+" kart kaldı";
+  }
+
+  function nextCard(){
+    state.lastChoice = null;
+    const c = drawFiltered();
+    state.card = c;
+    render();
+  }
+
+  function record(choice){
+    if(!state.card || state.card.__exhausted) return;
+    state.lastChoice = choice;
+    const s = getSession();
+    s.modules.okNok = s.modules.okNok || {rounds:0,passes:0,okCount:0,nokCount:0};
+    if(choice==="ok"){ s.modules.okNok.okCount = (s.modules.okNok.okCount||0)+1; bumpSession("okNok","round"); }
+    else if(choice==="nok"){ s.modules.okNok.nokCount = (s.modules.okNok.nokCount||0)+1; bumpSession("okNok","round"); }
+    else if(choice==="pass"){ bumpSession("okNok","pass"); }
+    storage.set(K.activeSession,s);
+    markSeen("okNok", state.card.id);
+    render();
+    const delay = settings.reducedMotion ? 0 : 450;
+    setTimeout(()=>{ nextCard(); }, delay);
+  }
+
+  function render(){
+    box.innerHTML = "";
+    updateProgress();
+    if(!state.card){
+      box.append(el("div",{class:"muted center"},"Başlamak için bir kategori seç ya da 'Tümü'nden çek."));
+      box.append(el("div",{style:"height:12px"}));
+      box.append(btn("Kart çek","primary",()=>nextCard()));
+      return;
+    }
+    if(state.card.__exhausted){
+      box.append(el("div",{class:"center"},"Bu kategoride tüm kartlar gösterildi."));
+      box.append(el("div",{style:"height:10px"}));
+      const row = el("div",{class:"row",style:"gap:8px;flex-wrap:wrap;justify-content:center"});
+      row.append(btn("Sıfırla","ghost",()=>{resetSeen("okNok");nextCard()}));
+      row.append(btn("Tümüne geç","primary",()=>{state.category="all";refreshChips();nextCard()}));
+      box.append(row);
+      return;
+    }
+    const catLabel = (OK_NOK_CATS.find(c=>c[0]===state.card.category)||["","·"])[1];
+    box.append(el("div",{class:"muted",style:"font-size:12px;letter-spacing:.4px;text-transform:uppercase"},catLabel));
+    box.append(el("div",{class:"big",style:"margin-top:14px;font-size:20px;line-height:1.5;min-height:80px"},state.card.prompt));
+    box.append(el("div",{style:"height:18px"}));
+
+    const okBtn = el("button",{class:"btn primary",style:"flex:1;padding:20px;font-size:18px;font-weight:600"},"OK");
+    const nokBtn = el("button",{class:"btn danger",style:"flex:1;padding:20px;font-size:18px;font-weight:600"},"NOK");
+    if(state.lastChoice==="ok") okBtn.style.transform = settings.reducedMotion ? "" : "scale(1.05)";
+    if(state.lastChoice==="nok") nokBtn.style.transform = settings.reducedMotion ? "" : "scale(1.05)";
+    if(state.lastChoice==="ok") okBtn.style.boxShadow = "0 0 0 3px var(--gold)";
+    if(state.lastChoice==="nok") nokBtn.style.boxShadow = "0 0 0 3px var(--danger,#c33)";
+    okBtn.addEventListener("click",()=>record("ok"));
+    nokBtn.addEventListener("click",()=>record("nok"));
+    box.append(el("div",{class:"row",style:"gap:10px"}, okBtn, nokBtn));
+
+    box.append(el("div",{style:"height:14px"}));
+    const secondaryRow = el("div",{class:"row",style:"gap:8px;flex-wrap:wrap"});
+    secondaryRow.append(btn("Pas","ghost",()=>record("pass")));
+    secondaryRow.append(btn("Sonraki","ghost",()=>{ markSeen("okNok",state.card.id); nextCard(); }));
+    secondaryRow.append(btn("Bir daha gösterme","ghost",()=>{disableCard("okNok",state.card.id); nextCard();}));
+    box.append(secondaryRow);
+  }
+
+  nextCard();
 });
 
 /* ============================================================
