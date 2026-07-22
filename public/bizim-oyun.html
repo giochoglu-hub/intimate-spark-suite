@@ -12,6 +12,22 @@
   --cream:#f5ead8; --muted:#bbaeb2; --danger:#c9505f; --success:#719b79;
   --radius:18px; --radius-lg:22px;
 }
+html[data-theme="gece"]{
+  --bg:#08070f; --surface:#141327; --surface-2:#1e1a3a;
+  --wine:#4b2a8a; --wine-light:#7a4dc7; --gold:#c3a6ff;
+  --cream:#efeaff; --muted:#a9a2c9;
+}
+html[data-theme="orman"]{
+  --bg:#0a0f0d; --surface:#12211a; --surface-2:#1a2f24;
+  --wine:#2f6b4a; --wine-light:#4d9770; --gold:#d9c56a;
+  --cream:#eef4e8; --muted:#a8b8ac;
+}
+.stop-fab{position:fixed;bottom:16px;right:16px;z-index:60;background:var(--danger);
+  color:#fff;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;
+  box-shadow:0 10px 30px -10px rgba(201,80,95,.8);border:1px solid rgba(255,255,255,.15)}
+.theme-chip{display:inline-block;width:22px;height:22px;border-radius:50%;
+  border:2px solid transparent;margin-right:8px;vertical-align:middle;cursor:pointer}
+.theme-chip.active{border-color:var(--gold)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--cream);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -160,10 +176,11 @@ const MODULES = {
 };
 
 const LEVELS = ["warmup","flirt","intimacy","memories"];
-const PARTY = ["truth","dare","whoAmI","taboo","charades","rapidFire","story"];
+const PARTY = ["truth","dare","whoAmI","taboo","charades","rapidFire","story","sameThought","secretMission","touchBingo"];
 const PARTY_NAMES = {
   truth:"Doğruluk", dare:"Cesaret", whoAmI:"Ben Kimim?", taboo:"Tabu-lite",
-  charades:"Sessiz Sinema", rapidFire:"Hızlı Ateş", story:"Hikâye Tamamla"
+  charades:"Sessiz Sinema", rapidFire:"Hızlı Ateş", story:"Hikâye Tamamla",
+  sameThought:"Aynı Anda", secretMission:"Gizli Görev", touchBingo:"Dokunma Bingo"
 };
 
 /* ============================================================
@@ -420,6 +437,48 @@ const CORE = {
     mk("Yıldızlar","Terasa çıktık, gökyüzüne baktık ve ikimiz de aynı anda aynı dileği tuttuk...",{tags:["hikaye"],hardness:1}),
     mk("Kayıp dükkan","Şehirde daha önce hiç görmediğimiz bir dükkan bulduk, kapısında yazan tek şey 'sadece çiftler için' idi...",{tags:["hikaye"],hardness:2}),
   ],
+  sameThought: [
+    mk("Renk","3-2-1 deyip aynı anda aklınıza gelen bir renk söyleyin.",{tags:["senkron"],hardness:1}),
+    mk("Şehir","İkiniz de aynı anda hayalinizdeki şehri söyleyin.",{tags:["senkron"],hardness:1}),
+    mk("İçecek","Aynı anda, şu an içmek istediğiniz içeceği söyleyin.",{tags:["senkron"],hardness:1}),
+    mk("Sayı 1-10","3-2-1... 1 ile 10 arası bir sayı söyleyin.",{tags:["senkron"],hardness:1}),
+    mk("İlk kelime","Birbirinizi düşününce ilk aklınıza gelen kelime.",{tags:["senkron","romantik"],hardness:2}),
+    mk("En sevdiğim yemek","Aynı anda, bu hafta canımın çektiği yemek.",{tags:["senkron"],hardness:1}),
+    mk("Şarkı","Aklınıza gelen bir şarkının adı.",{tags:["senkron","müzik"],hardness:1}),
+    mk("Anımız","Aynı anda ortak favori anımızı söyleyin.",{tags:["senkron","anı"],hardness:2}),
+    mk("Fantezi yeri","Şu an gitmek istediğimiz yer.",{tags:["senkron"],hardness:1}),
+    mk("Bugünkü ruh hâlim","Bugünü tek kelimeyle özetle.",{tags:["senkron"],hardness:1}),
+    mk("Öpüşmek nerede","Aynı anda: 'Şu an nereden öpüşürdün?'",{tags:["senkron","yakınlaşma"],hardness:3}),
+    mk("İlk aklına gelen","Ortak arkadaş listemizden bir isim.",{tags:["senkron","komik"],hardness:1}),
+  ],
+  secretMission: [
+    mk("Sabah bileti","Yarın sabah partnerine kahvesini önce sen getir, tek kelime etme.",{tags:["görev","sürpriz"],hardness:1}),
+    mk("Gizli not","Partnerinin cebine ya da çantasına küçük bir not sakla.",{tags:["görev","romantik"],hardness:1}),
+    mk("Fotoğraf","Bugün fark ettirmeden partnerinin bir fotoğrafını çek.",{tags:["görev"],hardness:2}),
+    mk("Şarkı gönder","Gece yatmadan önce ona anlamlı bir şarkı gönder.",{tags:["görev","müzik"],hardness:1}),
+    mk("Dokunuş","Bugün ilk sarılışı sen başlat ve 20 saniye kadar uzat.",{tags:["görev","fiziksel"],hardness:2}),
+    mk("Sürpriz masaj","Bir sonraki fırsatta 3 dakika omuz masajı yap.",{tags:["görev","fiziksel"],hardness:2}),
+    mk("İltifat operasyonu","Bugün en az 3 farklı iltifat et, tekrar edemezsin.",{tags:["görev"],hardness:2}),
+    mk("Yemek tercihi","Bir sonraki öğünde partnerinin sevdiğinden bir şey hazırla.",{tags:["görev"],hardness:1}),
+    mk("Ekran karartma","Gece 15 dakika birlikte telefonsuz kal.",{tags:["görev","yavaş"],hardness:2}),
+    mk("Öpücük tuzağı","Gün içinde beklemediği bir anda ensesinden öp.",{tags:["görev","yakınlaşma"],hardness:2}),
+    mk("Sessiz izle","Bir dakika boyunca konuşmadan sadece ona bak, o ne yaparsa yapsın.",{tags:["görev"],hardness:2}),
+    mk("Anı albümü","Ortak bir fotoğrafımızı bul ve ona yolla.",{tags:["görev","anı"],hardness:1}),
+  ],
+  touchBingo: [
+    mk("Ense — parmak uçları","Ensesine sadece parmak uçlarıyla dokun, 15 saniye.",{tags:["dokunuş"],hardness:2}),
+    mk("Bel çukuru","Bel çukurundan yavaşça omurga boyunca çık.",{tags:["dokunuş"],hardness:2}),
+    mk("İç kol","İç kolunu bilekten dirseğe kadar hafif hafif okşa.",{tags:["dokunuş"],hardness:2}),
+    mk("Saçlar","Saçlarının içinden 30 saniye parmaklarını gezdir.",{tags:["dokunuş"],hardness:1}),
+    mk("Alın alına","Alnınızı 20 saniye birleştirin, sadece nefesi dinleyin.",{tags:["dokunuş","yavaş"],hardness:1}),
+    mk("Kulak kenarı","Kulağın kenarını hafifçe öp.",{tags:["dokunuş","yakınlaşma"],hardness:3}),
+    mk("El üstü","Elinin üstünü tut, başparmağınla küçük daireler çiz.",{tags:["dokunuş"],hardness:1}),
+    mk("Diz altı","Dizinin arkasına 5 saniye parmak uçlarıyla dokun.",{tags:["dokunuş"],hardness:2}),
+    mk("Omuz baskı","Omuzlarına iki elinle sıkı ama nazik bir baskı uygula.",{tags:["dokunuş","masaj"],hardness:1}),
+    mk("Ayak bileği","Ayak bileğini avuç içine al, hafifçe bastır.",{tags:["dokunuş"],hardness:1}),
+    mk("Alın — burun ucu","Alnından burun ucuna bir öpücük çizgisi.",{tags:["dokunuş","romantik"],hardness:2}),
+    mk("Sadece nefes","Boynuna sadece nefesini hissettir, dokunma.",{tags:["dokunuş","yavaş"],hardness:3}),
+  ],
   okNok: [
     mk("Karşı cinsle mesajlaşma","Partnerinin karşı cinsten biriyle uzun süreli mesajlaşması senin için OK mu NOK mu?",{tags:["sosyal"]}),
     mk("Instagram DM","Partnerinin eski birine DM atması nasıl?",{tags:["sosyal"]}),
@@ -517,6 +576,7 @@ const DICE_MODES = {
   klasik:{name:"Klasik",dice:["oyuncu","eylem","bolge","sure"]},
   yavas:{name:"Yavaş",dice:["oyuncu","eylem","tarz","tempo","sure"]},
   vahsi:{name:"Vahşi",dice:["oyuncu","eylem","pozisyon","tarz","kural"]},
+  buGece:{name:"Sadece Bu Gece",dice:null},
   rulet:{name:"Rulet",dice:null},
   kasa:{name:"Özel Kasa",dice:null},
 };
@@ -537,7 +597,8 @@ function getSettings(){
   return storage.get(K.settings,{
     player1:"Ozzy",player2:"Su",hardness:3,
     enabledModules:{},enabledCategories:{},
-    consentReminder:true,soundEnabled:false,reducedMotion:false
+    consentReminder:true,soundEnabled:false,reducedMotion:false,
+    theme:"bordo",favoritesOnly:false
   });
 }
 function saveSettings(s){storage.set(K.settings,s)}
@@ -565,17 +626,21 @@ function markSeen(mod,id){
 function resetSeen(mod){storage.set(K.seen(mod),[])}
 
 function drawCard(mod){
-  const pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
+  let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
   if(!pool.length) return null;
+  const s = getSettings();
+  if(s.favoritesOnly){
+    const favs = getFavorites()[mod]||{};
+    const favPool = pool.filter(c=>favs[c.id]);
+    if(favPool.length) pool = favPool;
+  }
   const seen = new Set(getSeen(mod));
-  // priority: unseen ai > unseen custom > unseen core > any
   const unseenAi = pool.filter(c=>c.source==="ai" && !seen.has(c.id));
   if(unseenAi.length) return pick(unseenAi);
   const unseenCustom = pool.filter(c=>c.source==="custom" && !seen.has(c.id));
   if(unseenCustom.length) return pick(unseenCustom);
   const unseenCore = pool.filter(c=>c.source==="core" && !seen.has(c.id));
   if(unseenCore.length) return pick(unseenCore);
-  // exhausted
   return {__exhausted:true};
 }
 
@@ -690,9 +755,24 @@ function render(){
     app.append(el("div",{class:"card"},"Bir şey ters gitti. Ana ekrana dönebilirsin.",
       el("div",{style:"margin-top:12px"},btn("Ana ekran","primary",()=>navigate("#/home")))));
   }
+  // Stop / pause floating button on intimate paths
+  const oldFab = document.getElementById("stop-fab"); if(oldFab) oldFab.remove();
+  const intimate = path.startsWith("/level/intimacy") || path.startsWith("/sex-dice") || path.startsWith("/ok-nok");
+  if(intimate){
+    const fab = el("button",{id:"stop-fab",class:"stop-fab",onclick:()=>{
+      openModal((m,c)=>{
+        m.append(el("h3",null,"Mola verelim mi?"));
+        m.append(el("div",{class:"muted",style:"margin-top:8px"},"Her an durabilirsin. Ana ekrana dön ya da başka bir modüle geç."));
+        m.append(el("div",{style:"margin-top:12px"},btn("Ana ekrana dön","primary",()=>{c();navigate("#/home")})));
+        m.append(el("div",{style:"margin-top:8px"},btn("Devam","ghost",c)));
+      });
+    }},"⏸ Mola");
+    document.body.append(fab);
+  }
   window.scrollTo({top:0,behavior:"instant"});
 }
 window.addEventListener("hashchange",render);
+
 
 /* ============================================================
  * 10. Shared UI components
@@ -1010,7 +1090,10 @@ route("/party/*",(app,path)=>{
     taboo:"Bir kelime ve söylenmesi yasak 3 kelime çıkacak. 60 saniyede anlat.",
     charades:"Bir durum çıkacak. Kelime kullanmadan canlandır.",
     rapidFire:"5 kısa soru çıkacak. Hızlıca cevapla.",
-    story:"Bir hikâye başlangıcı çıkacak. Sırayla devam ettirin."
+    story:"Bir hikâye başlangıcı çıkacak. Sırayla devam ettirin.",
+    sameThought:"3-2-1 sayın, aynı anda söyleyin. Aynıysa küçük bir zafer!",
+    secretMission:"Kart çekilir, görev gün içinde uygulanır. Kabul et ya da pas.",
+    touchBingo:"Bir vücut bölgesi ve dokunuş çıkar. Rıza şart, süre sizin."
   };
   box.append(el("div",{class:"muted"},rules[k]));
   box.append(el("div",{style:"height:12px"}));
@@ -1296,20 +1379,36 @@ function poolValues(pool){
 }
 function renderDice(app){
   app.append(topbar("Sex Zarı"));
-  const state = { mode:"klasik", result:null };
+  const state = { mode:"klasik", result:null, nightPools:new Set(["oyuncu","eylem","bolge","sure"]) };
   const card = el("div",{class:"card"});
   app.append(card);
   card.append(el("div",{class:"muted"},"Bir mod seç. Her sonuçta ikiniz de onaylıyor musunuz sorusu çıkar."));
   const modeRow = el("div",{class:"pill-row",style:"margin-top:12px"});
+  const poolPicker = el("div",{style:"margin-top:12px",class:"hidden"});
   Object.keys(DICE_MODES).forEach(k=>{
     const b = el("button",{class:"pill"+(k===state.mode?" active":""),onclick:()=>{
       state.mode=k;
       modeRow.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
       b.classList.add("active");
+      poolPicker.classList.toggle("hidden", k!=="buGece");
     }},DICE_MODES[k].name);
     modeRow.append(b);
   });
   card.append(modeRow);
+  // Pool picker for "Sadece Bu Gece"
+  poolPicker.append(el("div",{class:"muted",style:"margin-bottom:8px"},"Bu geceye özel: hangi havuzlardan zar atılsın?"));
+  const poolPickRow = el("div",{class:"pill-row"});
+  Object.keys(DICE).forEach(pk=>{
+    const active = state.nightPools.has(pk);
+    const pb = el("button",{class:"pill"+(active?" active":""),onclick:()=>{
+      if(state.nightPools.has(pk)) state.nightPools.delete(pk);
+      else state.nightPools.add(pk);
+      pb.classList.toggle("active");
+    }},pk);
+    poolPickRow.append(pb);
+  });
+  poolPicker.append(poolPickRow);
+  card.append(poolPicker);
   const rollArea = el("div",{style:"margin-top:14px"});
   card.append(rollArea);
   card.append(btn("Zar At","primary",()=>roll()));
@@ -1322,6 +1421,10 @@ function renderDice(app){
       const shuffled = shuffle(keys);
       const n = 4+Math.floor(Math.random()*3);
       return shuffled.slice(0,n);
+    }
+    if(mode==="buGece"){
+      const picked = Array.from(state.nightPools);
+      return picked.length ? picked : ["oyuncu","eylem","sure"];
     }
     if(mode==="kasa"){
       const custom = getCustomDice();
@@ -1493,7 +1596,23 @@ route("/summary",(app)=>{
     }),
     btn("Ana ekran","ghost",()=>navigate("#/home"))
   ));
+  // Past sessions
+  const past = (storage.get(K.sessions,[])||[]).slice(0,8);
+  if(past.length){
+    const pbox = el("div",{class:"card",style:"margin-top:14px"});
+    app.append(pbox);
+    pbox.append(el("h3",null,"Geçmiş Geceler"));
+    past.forEach(ps=>{
+      const d = ps.endedAt||ps.startedAt||ps.date||0;
+      const label = d? new Date(d).toLocaleDateString("tr-TR",{day:"2-digit",month:"short"}) : "—";
+      pbox.append(el("div",{class:"kv"},
+        el("div",null,label),
+        el("div",{class:"muted"},(ps.totalRounds||0)+" tur · "+(ps.totalPasses||0)+" pas")
+      ));
+    });
+  }
 });
+
 
 /* ============================================================
  * 19. Settings
@@ -1527,6 +1646,27 @@ route("/settings",(app)=>{
   });
   box.append(el("div",{style:"margin-top:14px"},saveBtn));
 
+  // Theme picker
+  box.append(el("div",{class:"divider"}));
+  box.append(el("label",null,"Tema"));
+  const themes = [
+    {id:"bordo",name:"Bordo",colors:["#7d2138","#d9af61","#10090c"]},
+    {id:"gece",name:"Gece",colors:["#4b2a8a","#c3a6ff","#08070f"]},
+    {id:"orman",name:"Orman",colors:["#2f6b4a","#d9c56a","#0a0f0d"]},
+  ];
+  const themeRow = el("div",{class:"pill-row"});
+  themes.forEach(t=>{
+    const active = (s.theme||"bordo")===t.id;
+    const b = el("button",{class:"pill"+(active?" active":""),onclick:()=>{
+      s.theme=t.id;saveSettings(s);
+      document.documentElement.setAttribute("data-theme", t.id==="bordo"?"":t.id);
+      themeRow.querySelectorAll(".pill").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+    }},t.name);
+    themeRow.append(b);
+  });
+  box.append(themeRow);
+
   // Reduced motion
   box.append(el("div",{class:"divider"}));
   const rmBtn = btn(s.reducedMotion?"Az animasyon: AÇIK":"Az animasyon: KAPALI","ghost",()=>{
@@ -1535,6 +1675,14 @@ route("/settings",(app)=>{
     render();
   });
   box.append(rmBtn);
+
+  // Only favorites toggle
+  const favOnlyBtn = btn(s.favoritesOnly?"Sadece favoriler: AÇIK":"Sadece favoriler: KAPALI","ghost",()=>{
+    s.favoritesOnly=!s.favoritesOnly;saveSettings(s);
+    favOnlyBtn.textContent = s.favoritesOnly?"Sadece favoriler: AÇIK":"Sadece favoriler: KAPALI";
+    toast(s.favoritesOnly?"Sadece favori kartlar gösterilecek.":"Tüm kartlar gösterilecek.");
+  });
+  box.append(el("div",{style:"margin-top:10px"},favOnlyBtn));
 
   // custom cards
   const cbox = el("div",{class:"card"});
@@ -1734,6 +1882,10 @@ if(!runMigrations()){
     el("div",{style:"margin-top:12px"},btn("Yedek al","primary",exportData))
   ));
 } else {
+  // Apply saved theme + reduced motion
+  const _s = getSettings();
+  if(_s.theme && _s.theme!=="bordo") document.documentElement.setAttribute("data-theme", _s.theme);
+  document.documentElement.style.setProperty("--rm", _s.reducedMotion?"1":"0");
   // Init all pools with core
   Object.keys(CORE).forEach(m=>loadPool(m));
   loadGuessMePool();
