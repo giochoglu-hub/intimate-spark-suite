@@ -602,15 +602,6 @@ function getSettings(){
   });
 }
 function saveSettings(s){storage.set(K.settings,s)}
-function getFavorites(){return storage.get("bo:favorites",{})}
-function saveFavorites(f){storage.set("bo:favorites",f)}
-function toggleFavorite(mod,id){
-  const f = getFavorites(); f[mod]=f[mod]||{};
-  if(f[mod][id]) delete f[mod][id]; else f[mod][id]=true;
-  saveFavorites(f);
-  return !!f[mod][id];
-}
-function isFavorite(mod,id){const f=getFavorites();return !!(f[mod]&&f[mod][id])}
 
 function getDisabled(){return storage.get(K.disabled,{})}
 function setDisabled(d){storage.set(K.disabled,d)}
