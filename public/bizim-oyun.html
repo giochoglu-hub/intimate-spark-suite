@@ -1807,34 +1807,107 @@ const WARMUP_CATEGORIES = [
   {slug:"about-partner", label:"Tahmin"},
   {slug:"scenarios", label:"Senaryolar"},
 ];
+const FLIRT_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"first-attraction", label:"İlk Çekim"},
+  {slug:"compliments", label:"İltifat"},
+  {slug:"body-language", label:"Bakışlar"},
+  {slug:"messages-longing", label:"Mesajlar"},
+  {slug:"romantic-preferences", label:"Tercihler"},
+  {slug:"mini-flirt-dares", label:"Mini Görev"},
+  {slug:"sweet-dares", label:"Tatlı Cesaret"},
+  {slug:"how-you-see-me", label:"Beni Nasıl Görüyorsun?"},
+  {slug:"flirt-scenarios", label:"Senaryolar"},
+];
+const FLIRT_LEVELS = [
+  {slug:"sweet", label:"Tatlı", maxH:1},
+  {slug:"attractive", label:"Çekimli", maxH:2},
+  {slug:"bold", label:"Cesur", maxH:3},
+  {slug:"mixed", label:"Karışık", maxH:5},
+];
 const K_WARMUP_FILTER = "bo.warmupFilter.v1";
+const K_FLIRT_FILTER = "bo.flirtFilter.v1";
+const K_FLIRT_LEVEL = "bo.flirtLevel.v1";
+
+function chipButton(label,active,onClick){
+  return el("button",{
+    class:"tag"+(active?" gold":""),
+    style:"flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px",
+    onclick:onClick
+  }, label);
+}
+function chipRow(items,isActive,onSelect){
+  const row = el("div",{style:"display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;scrollbar-width:none"});
+  items.forEach(it=>row.append(chipButton(it.label, isActive(it), ()=>onSelect(it))));
+  return row;
+}
 
 function renderLevel(app,mod){
   app.append(topbar(MODULES[mod].name));
 
+  const isWarmup = mod === "warmup";
+  const isFlirt = mod === "flirt";
+  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : null;
+  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : null;
+
   let filter = "";
-  let filterBar = null;
-  let countLine = null;
+  if(FILTER_KEY){ try { filter = localStorage.getItem(FILTER_KEY) || ""; } catch(e){ filter = ""; } }
+
+  // Flirt-only: level selection
+  let flirtLevel = "mixed";
+  if(isFlirt){
+    try { flirtLevel = localStorage.getItem(K_FLIRT_LEVEL) || "mixed"; } catch(e){}
+  }
+  const settings = getSettings();
+  const globalCap = clamp(settings.hardness||3,1,5);
+  function effectiveMaxH(){
+    if(!isFlirt) return globalCap;
+    const lvl = FLIRT_LEVELS.find(l=>l.slug===flirtLevel) || FLIRT_LEVELS[3];
+    return Math.min(lvl.maxH, globalCap);
+  }
+
+  let levelBar = null, filterBar = null, countLine = null;
   const cardBox = el("div",{class:"card"});
 
-  if(mod === "warmup"){
-    try { filter = localStorage.getItem(K_WARMUP_FILTER) || ""; } catch(e){ filter = ""; }
-    filterBar = el("div",{class:"card",style:"padding:10px 12px"});
-    const chipRow = el("div",{style:"display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;scrollbar-width:none"});
-    WARMUP_CATEGORIES.forEach(cat=>{
-      const active = filter === cat.slug;
-      const chip = el("button",{
-        class:"tag"+(active?" gold":""),
-        style:"flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px",
-        onclick:()=>{
-          filter = cat.slug;
-          try { localStorage.setItem(K_WARMUP_FILTER, filter); } catch(e){}
-          drawAndShow();
+  if(isFlirt){
+    levelBar = el("div",{class:"card",style:"padding:10px 12px"});
+    levelBar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:6px"},"Flört seviyesi"));
+    const row = chipRow(FLIRT_LEVELS, (l)=>flirtLevel===l.slug, (l)=>{
+      const wasBold = flirtLevel==="bold";
+      const goingBold = l.slug==="bold";
+      const apply = ()=>{
+        flirtLevel = l.slug;
+        try{ localStorage.setItem(K_FLIRT_LEVEL, flirtLevel) }catch(e){}
+        drawAndShow();
+      };
+      if(goingBold && !wasBold){
+        const consent = storage.get(K.consent,{});
+        if(!consent.flirtBold){
+          openModal((box,close)=>{
+            box.append(el("h3",null,"Küçük hatırlatma"));
+            box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
+              "Flörtün güzel tarafı karşılıklı olmasıdır. Her görev değiştirilebilir, yumuşatılabilir veya pas geçilebilir."));
+            box.append(el("div",{style:"margin-top:16px"},btn("Tamam, başlayalım","primary",()=>{
+              consent.flirtBold=true;storage.set(K.consent,consent);close();apply();
+            })));
+          });
+          return;
         }
-      }, cat.label);
-      chipRow.append(chip);
+      }
+      apply();
     });
-    filterBar.append(chipRow);
+    levelBar.append(row);
+    app.append(levelBar);
+  }
+
+  if(CATS){
+    filterBar = el("div",{class:"card",style:"padding:10px 12px"});
+    const row = chipRow(CATS, (cat)=>filter===cat.slug, (cat)=>{
+      filter = cat.slug;
+      try{ localStorage.setItem(FILTER_KEY, filter) }catch(e){}
+      drawAndShow();
+    });
+    filterBar.append(row);
     countLine = el("div",{class:"muted",style:"margin-top:8px;font-size:12px"},"");
     filterBar.append(countLine);
     app.append(filterBar);
@@ -1842,32 +1915,47 @@ function renderLevel(app,mod){
 
   app.append(cardBox);
 
-  function refreshChips(){
-    if(!filterBar) return;
-    // Re-render chip active state
-    const chips = filterBar.querySelectorAll("button.tag");
-    chips.forEach((chip,i)=>{
-      const cat = WARMUP_CATEGORIES[i];
-      const active = filter === cat.slug;
-      chip.className = "tag"+(active?" gold":"");
-      chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
-    });
-  }
-  function refreshCount(){
-    if(!countLine) return;
-    const n = countUnseen(mod, filter?{category:filter}:undefined);
-    const label = filter ? (WARMUP_CATEGORIES.find(c=>c.slug===filter)?.label || "") : "Tümü";
-    countLine.textContent = `Görülmemiş ${n} kart kaldı · ${label}`;
+  function refreshBars(){
+    if(levelBar){
+      const chips = levelBar.querySelectorAll("button.tag");
+      chips.forEach((chip,i)=>{
+        const lvl = FLIRT_LEVELS[i];
+        const active = flirtLevel === lvl.slug;
+        chip.className = "tag"+(active?" gold":"");
+        chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
+      });
+    }
+    if(filterBar){
+      const chips = filterBar.querySelectorAll("button.tag");
+      chips.forEach((chip,i)=>{
+        const cat = CATS[i];
+        const active = filter === cat.slug;
+        chip.className = "tag"+(active?" gold":"");
+        chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
+      });
+    }
+    if(countLine){
+      const opts = {};
+      if(filter) opts.category = filter;
+      if(isFlirt) opts.maxHardness = effectiveMaxH();
+      const n = countUnseen(mod, opts);
+      const label = filter ? (CATS.find(c=>c.slug===filter)?.label || "") : "Tümü";
+      const suffix = isFlirt ? " · "+(FLIRT_LEVELS.find(l=>l.slug===flirtLevel)?.label||"") : "";
+      countLine.textContent = `Görülmemiş ${n} kart kaldı · ${label}${suffix}`;
+    }
   }
 
   function drawAndShow(){
-    refreshChips();
-    refreshCount();
+    refreshBars();
     cardBox.innerHTML="";
-    const c = drawCard(mod, filter?{category:filter}:undefined);
+    const opts = {};
+    if(filter) opts.category = filter;
+    if(isFlirt) opts.maxHardness = effectiveMaxH();
+    const c = drawCard(mod, opts);
     if(!c){cardBox.append(el("div",null,"Bu modülde henüz kart yok."));return}
     if(c.__exhausted){
-      cardBox.append(el("div",{class:"muted"},filter?"Bu kategorinin tüm kartlarını gördünüz.":"Bu modülün tüm kartlarını gördünüz."));
+      const msg = filter ? "Bu kategorinin uygun tüm kartlarını gördünüz." : "Bu modülün tüm kartlarını gördünüz.";
+      cardBox.append(el("div",{class:"muted"},msg));
       cardBox.append(el("div",{style:"height:12px"}));
       if(aiAvailable()){
         cardBox.append(btn("Yeni sorular üret (AI)","primary",()=>requestAi(mod,cardBox,drawAndShow)));
@@ -1879,25 +1967,45 @@ function renderLevel(app,mod){
       if(filter){
         cardBox.append(el("div",{style:"height:8px"}));
         cardBox.append(btn("Karışık moda dön","ghost",()=>{
-          filter="";try{localStorage.setItem(K_WARMUP_FILTER,"")}catch(e){}drawAndShow();
+          filter="";try{localStorage.setItem(FILTER_KEY,"")}catch(e){}drawAndShow();
         }));
       }
       return;
     }
     bumpSession(mod,"round");
     markSeen(mod,c.id);
-    renderCardUI(cardBox,mod,c,drawAndShow);
-    refreshCount();
+    renderCardUI(cardBox,mod,c,drawAndShow,{
+      filter, isFlirt, effectiveMaxH:isFlirt?effectiveMaxH():undefined,
+      onSoften:isFlirt ? (card)=>{
+        const soft = softenCard(mod, card, {category:filter||undefined, maxHardness:effectiveMaxH()});
+        if(!soft || soft.__exhausted){ toast("Daha yumuşak kart bulunamadı."); return; }
+        bumpSession(mod,"soften");
+        markSeen(mod,soft.id);
+        renderCardUI(cardBox,mod,soft,drawAndShow,{
+          filter, isFlirt, effectiveMaxH:effectiveMaxH(),
+          onSoften:(c2)=>{ toast("Zaten yumuşatıldı."); },
+          onDone:()=>{ bumpSession(mod,"done"); drawAndShow(); }
+        });
+        refreshBars();
+      } : undefined,
+      onDone:isFlirt ? ()=>{ bumpSession(mod,"done"); drawAndShow(); } : undefined,
+    });
+    refreshBars();
   }
   drawAndShow();
 }
 
-function renderCardUI(box,mod,c,onNext){
+function renderCardUI(box,mod,c,onNext,ext){
+  ext = ext||{};
+  const isTask = c && (c.type==="dare" || c.type==="moment");
   box.innerHTML="";
-  const head = el("div",{style:"display:flex;justify-content:space-between;align-items:center"},
+  const head = el("div",{style:"display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"},
     el("div",{class:"badge"},"#"+(c.category||"kart")),
-    el("div",{style:"display:flex;gap:6px"},
+    el("div",{style:"display:flex;gap:6px;flex-wrap:wrap"},
+      c.type ? el("span",{class:"tag"},c.type) : null,
       el("span",{class:"tag gold"},"seviye "+(c.hardness||"?")),
+      c.source==="ai" ? el("span",{class:"tag ai"},"AI") : null,
+      c.source==="custom" ? el("span",{class:"tag custom"},"özel") : null,
     )
   );
   box.append(head);
@@ -1905,11 +2013,21 @@ function renderCardUI(box,mod,c,onNext){
   box.append(el("div",{style:"margin-top:8px;font-size:16px"},c.prompt));
   box.append(tagList(c));
 
-  const row1 = el("div",{class:"row",style:"margin-top:16px"},
-    btn("Pas","ghost",()=>{bumpSession(mod,"pass");onNext()}),
-    btn("Sonraki kart","primary",onNext)
-  );
-  box.append(row1);
+  if(isTask && ext.isFlirt){
+    const rowDare = el("div",{class:"row",style:"margin-top:16px"},
+      btn("Yaptık","primary",()=>{ (ext.onDone||onNext)(c); }),
+      btn("Yumuşat","gold",()=>{ if(ext.onSoften) ext.onSoften(c); else onNext(); }),
+      btn("Pas","ghost",()=>{ bumpSession(mod,"pass"); onNext(); })
+    );
+    box.append(rowDare);
+  } else {
+    const row1 = el("div",{class:"row",style:"margin-top:16px"},
+      btn("Pas","ghost",()=>{bumpSession(mod,"pass");onNext()}),
+      btn("Sonraki kart","primary",onNext)
+    );
+    box.append(row1);
+  }
+
   const row2 = el("div",{class:"row",style:"margin-top:10px"},
     btn(isFav(mod,c.id)?"★ Favori":"☆ Favori","ghost",(e)=>{
       const on = toggleFav(mod,c.id);
