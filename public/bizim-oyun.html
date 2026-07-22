@@ -281,9 +281,10 @@ function runMigrations(){
 /* ============================================================
  * 5. Core card pools
  * ============================================================ */
-function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core",type="question"}={}){
-  return {id:cardId(title,prompt),title,prompt,tags,category,hardness,type,source,disabled:false};
+function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core",type="question",consentRequired=false}={}){
+  return {id:cardId(title,prompt),title,prompt,tags,category,hardness,type,source,disabled:false,consentRequired:!!consentRequired};
 }
+
 
 const CORE = {
   warmup: [
