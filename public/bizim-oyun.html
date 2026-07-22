@@ -281,9 +281,10 @@ function runMigrations(){
 /* ============================================================
  * 5. Core card pools
  * ============================================================ */
-function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core",type="question"}={}){
-  return {id:cardId(title,prompt),title,prompt,tags,category,hardness,type,source,disabled:false};
+function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core",type="question",consentRequired=false}={}){
+  return {id:cardId(title,prompt),title,prompt,tags,category,hardness,type,source,disabled:false,consentRequired:!!consentRequired};
 }
+
 
 const CORE = {
   warmup: [
@@ -595,21 +596,205 @@ const CORE = {
     mk("Son metro","Son metroda karşılıklı oturuyoruz, sadece iki durak var. İlk cümleni söyle.",{tags:["flört","metro"],category:"flirt-scenarios",hardness:3,type:"dare"}),
   ],
   intimacy: [
-    mk("Sınır","Bu oyunda her an 'pas' diyebilirsin. Şu an kendini nasıl hissediyorsun, 1-5 arası?",{tags:["rıza","sınır"],category:"rıza",hardness:1}),
-    mk("Yakınlık haritası","Sana kendini en yakın hissettiğim an bugün ne zamandı? Ben tahmin edeyim, sen düzelt.",{tags:["yakınlık"],hardness:2}),
-    mk("Bir dokunuş","Şu an bir yerine dokunmam gerekse nereye dokunmamı isterdin, sadece söyle.",{tags:["dokunuş","rıza"],hardness:3}),
-    mk("Sessiz nefes","Alnımızı birleştirip 30 saniye sadece nefesimizi dinleyelim.",{tags:["görev","yavaş"],hardness:2}),
-    mk("Küçük korku","Yakınlıkla ilgili küçük bir korkunu paylaşabilir misin?",{tags:["içsel","kırılganlık"],hardness:3}),
-    mk("İhtiyaç","Bu hafta senin ihmal ettiğim küçük bir ihtiyacın oldu mu?",{tags:["ihtiyaç"],hardness:3}),
-    mk("Güvenli kelime","Bu geceye ait bir 'yavaşla' kelimesi seçelim. Söyleyen olduğunda hemen mola.",{tags:["rıza","güvenlik"],hardness:2}),
-    mk("Yavaş öpücük","Kelime yok. 20 saniye, mümkün olduğunca yavaş bir öpücük.",{tags:["görev","fiziksel"],hardness:3}),
-    mk("Şu anki arzu","Şu an bir arzun varsa, 1'den 10'a şiddeti kaç? Sadece rakam söyle, istersen sonra anlat.",{tags:["arzu"],hardness:3}),
-    mk("İki sınır","Bu geceye ait iki sınır belirle: ne olmasın, neyi denemek istemezsin?",{tags:["sınır","rıza"],hardness:2}),
-    mk("Küçük ritüel","Sadece ikimize ait, birlikte olduğumuzu hatırlatan bir küçük ritüel önerir misin?",{tags:["ritüel"],hardness:2}),
-    mk("Fısıltı","Kulağıma en son ne zaman gerçekten sıcak bir şey fısıldadığımı hatırlıyor musun?",{tags:["anı"],hardness:3}),
-    mk("Beden dinleme","Şu an bedeninin sana söylediği bir şey var mı? Yorgun mu, gergin mi, açık mı?",{tags:["farkındalık"],hardness:2}),
-    mk("İzin","Bu gece sana özel izin verdiğin bir şey ne olurdu? Suçluluk duymamak da olabilir.",{tags:["izin"],hardness:3}),
-    mk("Sırt sırta","Bir dakika sırt sırta oturup sessizce kalalım.",{tags:["görev","yavaş"],hardness:2}),
+    // ——— Duygusal Yakınlık (emotional-closeness) · 20 · hardness 1
+    mk("Kendim gibi","Benim yanımda tam olarak kendin gibi hissettiğin bir anı anlat.",{tags:["yakınlaşma","duygu"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Yakınlık anı","Sana gerçekten yakın olduğumu en çok hangi anlarda hissediyorsun?",{tags:["yakınlaşma","bağ"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Kelimesiz duygu","Bazen kelimelere dökemediğin ama benim anlamamı istediğin bir duygu var mı?",{tags:["yakınlaşma","duygu"],category:"emotional-closeness",hardness:1,type:"reflection"}),
+    mk("Sessiz huzur","Birlikte sessiz kaldığımız hangi an sana huzurlu gelir?",{tags:["yakınlaşma","huzur"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Kalbimin ısındığı","Yanında kalbinin ısındığını hissettiğin küçük bir sahne söyler misin?",{tags:["yakınlaşma","sevgi"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Beni özlemek","Beni en çok hangi anlarda özlediğini fark ediyorsun?",{tags:["yakınlaşma","özlem"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Sevildiğim an","Bu hafta sana kendini sevildiğini en çok ne hissettirdi?",{tags:["yakınlaşma","sevgi"],category:"emotional-closeness",hardness:1,type:"reflection"}),
+    mk("İçindeki ses","Benim yanımda içindeki eleştirmen sustuğunda ne oluyor?",{tags:["yakınlaşma","içsel"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Küçük mutluluk","Beraberken fark ettiğin ama söylemediğin küçük bir mutluluk var mı?",{tags:["yakınlaşma","gündelik"],category:"emotional-closeness",hardness:1,type:"reflection"}),
+    mk("Görünmek","Benim yanımda görüldüğünü hissettiğin en son an neydi?",{tags:["yakınlaşma","görülmek"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Duygusal ev","Benim yanımı bir ev gibi hissettiren şey sence ne?",{tags:["yakınlaşma","ev"],category:"emotional-closeness",hardness:1,type:"reflection"}),
+    mk("Kırılganlık","Benim yanımda kırılgan olabilmenin sana ne kattığını düşünüyorsun?",{tags:["yakınlaşma","kırılganlık"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Sarılmadan önce","Sana sarılmadan önce yüzünde en çok neyi görmek istersin?",{tags:["yakınlaşma","yakın"],category:"emotional-closeness",hardness:1,type:"choice"}),
+    mk("Bir cümle","Bugün duyman en iyi gelen bir cümle söylemem gerekseydi, hangi cümle olurdu?",{tags:["yakınlaşma","söz"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Sessizce yakın","Birlikte hiçbir şey yapmadan yakın olduğumuz an sana ne hissettiriyor?",{tags:["yakınlaşma","huzur"],category:"emotional-closeness",hardness:1,type:"reflection"}),
+    mk("Gözünle anlat","Şu an gözünle bana anlatmak istediğin duyguyu tek kelimeyle söyle.",{tags:["yakınlaşma","duygu"],category:"emotional-closeness",hardness:1,type:"moment"}),
+    mk("Anlaşılmak","Anlaşıldığını en çok hangi konuda hissediyorsun benim yanımda?",{tags:["yakınlaşma","anlaşılmak"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Sığındığın an","Yorulduğunda içinden bana sığınmayı istediğin bir an oldu mu son zamanlarda?",{tags:["yakınlaşma","sığınmak"],category:"emotional-closeness",hardness:1,type:"reflection"}),
+    mk("Küçük söz yeter","Bugün senin için hangi küçük söz yeterli gelirdi?",{tags:["yakınlaşma","söz"],category:"emotional-closeness",hardness:1,type:"question"}),
+    mk("Bağın rengi","Şu anki bağımızı bir renge benzetsen hangi renk olurdu ve neden?",{tags:["yakınlaşma","bağ"],category:"emotional-closeness",hardness:1,type:"question"}),
+
+    // ——— Güven ve Açıklık (trust-openness) · 18 · hardness 1-2
+    mk("Rahat konu","Benimle konuşurken kendini en rahat açabildiğin konu ne?",{tags:["güven","açıklık"],category:"trust-openness",hardness:1,type:"question"}),
+    mk("Güvende hissetmek","Bir anlaşmazlık sırasında benden ne duyman seni daha güvende hissettirir?",{tags:["güven","iletişim"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("Küçük güven","Sana verdiğim güveni artıran küçük bir davranışım ne?",{tags:["güven"],category:"trust-openness",hardness:1,type:"question"}),
+    mk("Yanlış anlama","Bir konuda seni yanlış anlamamdan en çok ne zaman çekinirsin?",{tags:["güven","iletişim"],category:"trust-openness",hardness:2,type:"reflection"}),
+    mk("Zayıf yön","Yanımda gösterebildiğin bir zayıf yönün var mı, hangisi?",{tags:["güven","kırılganlık"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("Hata kabul","Hata ettiğimi kabul ettiğim bir an sana ne hissettirdi?",{tags:["güven","hata"],category:"trust-openness",hardness:2,type:"reflection"}),
+    mk("Söz tutmak","Sana verdiğim küçük sözlerden hangisini tutmam senin için önemli?",{tags:["güven","söz"],category:"trust-openness",hardness:1,type:"question"}),
+    mk("Zor konu","Aramızda konuşmakta zorlandığın ama konuşmak istediğin bir konu var mı?",{tags:["güven","iletişim"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("Dinlemek","Kendini gerçekten dinlendiğini hissettiğin son an neydi?",{tags:["güven","dinlemek"],category:"trust-openness",hardness:1,type:"question"}),
+    mk("Savunma","Ne zaman savunmaya geçme ihtiyacı hissediyorsun, fark ediyor musun?",{tags:["güven","savunma"],category:"trust-openness",hardness:2,type:"reflection"}),
+    mk("Dürüstlük sınırı","Benden hangi konuda daha çok dürüstlük duymak istersin?",{tags:["güven","dürüstlük"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("Zayıf gün","Zayıf bir gününde benden nasıl bir tepki seni daha güvende hissettirir?",{tags:["güven","destek"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("Beklenti sinyali","Benden beklediğin ama söylemediğin bir şey var mı?",{tags:["güven","beklenti"],category:"trust-openness",hardness:2,type:"reflection"}),
+    mk("Küçük sır","Benimle paylaştığın en önemsiz ama seni rahatlatan bir sır oldu mu?",{tags:["güven","sır"],category:"trust-openness",hardness:1,type:"question"}),
+    mk("Konuşmama","Bazen konuşmak istemediğin zamanlarda sana nasıl yaklaşmamı istersin?",{tags:["güven","alan"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("Fikrini değiştirmek","Fikrini değiştirdiğinde bunu çekinmeden söyleyebilmen için benden neye ihtiyacın var?",{tags:["güven","rıza"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("İçini açmak","İçini açtığında en çok neyi duymaya ihtiyaç duyuyorsun?",{tags:["güven","dinlemek"],category:"trust-openness",hardness:2,type:"question"}),
+    mk("Küçük itiraf","Bugüne dair benimle paylaşmak istediğin küçük bir itirafın var mı?",{tags:["güven","açıklık"],category:"trust-openness",hardness:2,type:"moment"}),
+
+    // ——— Şefkat ve Destek (care-support) · 18 · hardness 1-2
+    mk("Zor gün","Zor bir gün geçirdiğinde sana nasıl yaklaşmamı istersin?",{tags:["şefkat","destek"],category:"care-support",hardness:1,type:"question"}),
+    mk("Yalnız çözüm","Bazen çözüm değil yalnızca şefkat istediğin oluyor mu, bunu nasıl anlayabilirim?",{tags:["şefkat","dinlemek"],category:"care-support",hardness:2,type:"question"}),
+    mk("Rahatlatan davranış","Seni rahatlatan küçük bir davranışım ne?",{tags:["şefkat"],category:"care-support",hardness:1,type:"question"}),
+    mk("Başarıyı kutlamak","Bir başarını birlikte nasıl kutlamamız seni daha mutlu eder?",{tags:["şefkat","kutlama"],category:"care-support",hardness:1,type:"question"}),
+    mk("Hastalık","Hasta olduğun zamanlarda yanında nasıl olmam işine yarar?",{tags:["şefkat","bakım"],category:"care-support",hardness:1,type:"question"}),
+    mk("Yorgun akşam","Çok yorgun döndüğün akşamlar nasıl bir karşılama iyi gelir?",{tags:["şefkat","yorgun"],category:"care-support",hardness:1,type:"question"}),
+    mk("Sessiz destek","Yanında sadece sessizce oturmam yeterli olduğu anlar oldu mu?",{tags:["şefkat","sessizlik"],category:"care-support",hardness:1,type:"reflection"}),
+    mk("Küçük yük","Bu hafta senin yükünü hafifletmemi istediğin küçük bir şey var mı?",{tags:["şefkat","destek"],category:"care-support",hardness:1,type:"question"}),
+    mk("İyi hissettirmek","Kendini iyi hissetmediğinde seni güldüren küçük bir hareketim var mı?",{tags:["şefkat","gülümseme"],category:"care-support",hardness:1,type:"question"}),
+    mk("Sarılarak destek","Bir sarılmanın seni gerçekten rahatlattığı bir günü hatırlıyor musun?",{tags:["şefkat","sarılma"],category:"care-support",hardness:1,type:"reflection"}),
+    mk("Moral cümlesi","Moralin bozukken sana söylediğim hangi cümle iyi geliyor?",{tags:["şefkat","söz"],category:"care-support",hardness:1,type:"question"}),
+    mk("Ufak sürpriz","Zor bir günde küçük bir sürprizim seni nasıl etkilerdi, örnek ver.",{tags:["şefkat","sürpriz"],category:"care-support",hardness:1,type:"question"}),
+    mk("Yanında olmak","'Yanındayım' demenin ötesinde ne yapmam yanında olduğumu daha çok hissettirir?",{tags:["şefkat","destek"],category:"care-support",hardness:2,type:"question"}),
+    mk("Stresli gün","Stresli günlerinde en çok neyi duymaya ihtiyacın oluyor?",{tags:["şefkat","stres"],category:"care-support",hardness:2,type:"question"}),
+    mk("Kendine şefkat","Kendine şefkat göstermekte zorlandığında sana nasıl hatırlatayım?",{tags:["şefkat","içsel"],category:"care-support",hardness:2,type:"question"}),
+    mk("Küçük bakım","Senin için yapabileceğim küçük bir bakım hareketi söyler misin?",{tags:["şefkat","bakım"],category:"care-support",hardness:1,type:"question"}),
+    mk("Yumuşak ses","Sana en iyi gelen ses tonum nasıl bir tonda?",{tags:["şefkat","ses"],category:"care-support",hardness:1,type:"question"}),
+    mk("Şükran","Bu hafta bana teşekkür etmek istediğin küçük bir şey var mı?",{tags:["şefkat","şükran"],category:"care-support",hardness:1,type:"reflection"}),
+
+    // ——— Sınırlar ve Rıza (boundaries-consent) · 18 · hardness 1-2
+    mk("Hoşuna gitmediğinde","Bir şey hoşuna gitmediğinde bunu sana en rahat nasıl sorabilirim?",{tags:["rıza","sınır"],category:"boundaries-consent",hardness:1,type:"question"}),
+    mk("Yavaşla demek","Yakınlık sırasında 'yavaşla' demeni kolaylaştıracak bir yaklaşımım ne olabilir?",{tags:["rıza","yavaş"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Önce konuşmak","Önce konuşmak mı, anın içinde ilerlemek mi seni daha güvende hissettirir?",{tags:["rıza","iletişim"],category:"boundaries-consent",hardness:2,type:"choice"}),
+    mk("Fikir değişikliği","Fikrini değiştirdiğinde bunu çekinmeden söylemen için benden neye ihtiyacın var?",{tags:["rıza","sınır"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Küçük dur","'Dur' demenin sana ağır gelmediği bir dil var mı, hangisi?",{tags:["rıza","güvenlik"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Duygusal sınır","Aramızda duygusal olarak korumak istediğin bir alan var mı?",{tags:["rıza","duygu"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Fiziksel alan","Fiziksel olarak sana yaklaşmadan önce senden bir işaret ister misin?",{tags:["rıza","fiziksel"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Gizlilik","Aramızda kalması senin için önemli olan bir konu var mı?",{tags:["rıza","gizlilik"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Yeni bir şey","Yeni bir şey denemeden önce hangi tür konuşma sana iyi gelir?",{tags:["rıza","yeni"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Rahatlık kontrolü","Aralarda kısaca 'iyi misin' diye sormam sana nasıl gelir?",{tags:["rıza","kontrol"],category:"boundaries-consent",hardness:1,type:"question"}),
+    mk("Sinyal","İstemediğinde beden dilinde belirginleşen bir sinyalin var mı?",{tags:["rıza","beden"],category:"boundaries-consent",hardness:2,type:"reflection"}),
+    mk("Açık onay","Onay verirken ne söylemek sana en doğal geliyor?",{tags:["rıza","onay"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Pas hakkı","Bu oyunda pas geçme hakkını nasıl kullanmak istersin?",{tags:["rıza","pas"],category:"boundaries-consent",hardness:1,type:"question"}),
+    mk("Yorgunluk sınırı","Yorgun olduğun zamanlarda yakınlığı ertelemek sana nasıl geliyor?",{tags:["rıza","yorgun"],category:"boundaries-consent",hardness:1,type:"reflection"}),
+    mk("Yumuşak hayır","'Hayır' demek yerine tercih ettiğin daha yumuşak bir ifade var mı?",{tags:["rıza","sınır"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("İki sınır","Bu geceye ait iki sınır belirle: ne olmasın, neyi denemek istemezsin?",{tags:["rıza","sınır"],category:"boundaries-consent",hardness:2,type:"question"}),
+    mk("Güvenli kelime","İkimize ait bir 'yavaşla' kelimesi seçelim. Söyleyen olduğunda hemen mola.",{tags:["rıza","güvenlik"],category:"boundaries-consent",hardness:2,type:"moment"}),
+    mk("Kendi tempom","Kendi tempoma saygı gösterildiğini en çok hangi davranışımda hissediyorsun?",{tags:["rıza","tempo"],category:"boundaries-consent",hardness:2,type:"question"}),
+
+    // ——— Romantik Yakınlık (romantic-intimacy) · 20 · hardness 1-2
+    mk("Uzun sarılma","Benimle en uzun sarılmak istediğin anlar genelde ne zaman oluyor?",{tags:["romantik","sarılma"],category:"romantic-intimacy",hardness:1,type:"question"}),
+    mk("Romantik an","Romantik bir anı özel yapan şey sence ortam mı, sözler mi, temas mı?",{tags:["romantik"],category:"romantic-intimacy",hardness:1,type:"choice"}),
+    mk("Uykudan önce","Birlikte uykuya dalmadan önce nasıl bir yakınlık sana iyi gelir?",{tags:["romantik","gece"],category:"romantic-intimacy",hardness:1,type:"question"}),
+    mk("Sabah yakınlığı","Sabah uyandığında yanında nasıl bir yakınlık huzur veriyor?",{tags:["romantik","sabah"],category:"romantic-intimacy",hardness:1,type:"question"}),
+    mk("Küçük öpücük","Beklenmedik küçük öpücüklerimi hangi anlarda daha çok seviyorsun?",{tags:["romantik","öpücük"],category:"romantic-intimacy",hardness:2,type:"question"}),
+    mk("El ele","El ele tutuşmayı en çok hangi ortamlarda özel bulursun?",{tags:["romantik","el"],category:"romantic-intimacy",hardness:1,type:"question"}),
+    mk("Yakın oturmak","Yakın oturduğumuz an bedeninin sana söylediği ne oluyor?",{tags:["romantik","yakın"],category:"romantic-intimacy",hardness:1,type:"reflection"}),
+    mk("Kokum","Bende sana huzur veren bir koku ya da alışkanlık var mı?",{tags:["romantik","koku"],category:"romantic-intimacy",hardness:1,type:"question"}),
+    mk("Yavaş dans","Odada müzik açsam benimle yavaş bir dans etmek ister misin?",{tags:["romantik","dans"],category:"romantic-intimacy",hardness:2,type:"choice"}),
+    mk("Alın alına","Alın alına oturduğumuz bir an sana ne hissettirir?",{tags:["romantik","yakın"],category:"romantic-intimacy",hardness:2,type:"question"}),
+    mk("Işık","Romantik bir an için tercih ettiğin ışık nasıl bir ışık?",{tags:["romantik","ortam"],category:"romantic-intimacy",hardness:1,type:"choice"}),
+    mk("Ses tonu","Sana romantik geldiğim ses tonumu tarif eder misin?",{tags:["romantik","ses"],category:"romantic-intimacy",hardness:2,type:"question"}),
+    mk("Sessiz oda","Sessiz bir odada yanında oturmak sana ne çağrıştırır?",{tags:["romantik","huzur"],category:"romantic-intimacy",hardness:1,type:"reflection"}),
+    mk("Küçük iltifat","Yakın anlarda duymayı sevdiğin küçük bir iltifat cümlem hangisi?",{tags:["romantik","iltifat"],category:"romantic-intimacy",hardness:2,type:"question"}),
+    mk("Kısa temas","Kısa ama anlamlı bir teması ne zaman en çok özlüyorsun?",{tags:["romantik","temas"],category:"romantic-intimacy",hardness:2,type:"question"}),
+    mk("Yağmurlu akşam","Yağmurlu bir akşamda birlikte yapmak istediğin en romantik şey ne?",{tags:["romantik","senaryo"],category:"romantic-intimacy",hardness:1,type:"question"}),
+    mk("Küçük ritüel","Sadece ikimize ait, birlikte olduğumuzu hatırlatan küçük bir ritüel önerir misin?",{tags:["romantik","ritüel"],category:"romantic-intimacy",hardness:1,type:"question"}),
+    mk("Beklenmedik yakınlık","Gün ortasında beklenmedik bir yakınlık senin için nasıl olurdu?",{tags:["romantik","spontane"],category:"romantic-intimacy",hardness:2,type:"question"}),
+    mk("Küçük bakış","Kalabalıkta göz göze geldiğimizde ne hissediyorsun?",{tags:["romantik","bakış"],category:"romantic-intimacy",hardness:2,type:"reflection"}),
+    mk("İki dakika","İkiniz de istiyorsanız iki dakika hiç konuşmadan yan yana oturun.",{tags:["romantik","görev","yavaş"],category:"romantic-intimacy",hardness:2,type:"moment",consentRequired:true}),
+
+    // ——— Dokunuş ve Temas (touch-contact) · 20 · hardness 2-3
+    mk("Sevdiğin küçük hareket","Sana dokunduğumda en çok hangi küçük hareketim hoşuna gidiyor?",{tags:["dokunuş","tercih"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Rahatlatan temas","Rahatlamak istediğinde nasıl bir temas sana iyi gelir?",{tags:["dokunuş","rahatlama"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Yaklaşma","Beklenmedik bir sarılma mı, önce yaklaşacağımı belli etmem mi?",{tags:["dokunuş","tercih"],category:"touch-contact",hardness:2,type:"choice"}),
+    mk("El tutmak","El tutmayı en çok hangi yoğunlukta seviyorsun: sıkı, yumuşak, oynayarak?",{tags:["dokunuş","el"],category:"touch-contact",hardness:2,type:"choice"}),
+    mk("Saça dokunmak","Saçına dokunulmasını en çok nasıl seviyorsun?",{tags:["dokunuş","saç"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Yüzü okşamak","Yüzüne dokunmamın senin için ne anlamı var?",{tags:["dokunuş","yüz"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Sırt","Sırtına yapılan hangi hareket en çok gevşetiyor seni?",{tags:["dokunuş","sırt"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Omuz","Omuzlarına dokunulmasını sever misin, nasıl?",{tags:["dokunuş","omuz"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Boyun","Boynuna yakınlık sana ne hissettirir?",{tags:["dokunuş","boyun"],category:"touch-contact",hardness:3,type:"question"}),
+    mk("Alın","Alnına yapılan küçük bir öpücüğün senin için anlamı ne?",{tags:["dokunuş","alın"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Yanak","Yanağına yapılan yumuşak bir dokunuşun sende bıraktığı hissi anlatır mısın?",{tags:["dokunuş","yanak"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Süre","Kısa mı, uzun mu, yavaşça uzayan mı: en sevdiğin temas süresi hangisi?",{tags:["dokunuş","süre"],category:"touch-contact",hardness:2,type:"choice"}),
+    mk("Yoğunluk","Temasın yoğunluğunu 1-10 arası hangi seviyede seviyorsun?",{tags:["dokunuş","yoğunluk"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Rahatlatıcı ritim","Sana en iyi gelen rahatlatıcı bir dokunuş ritmi tarif eder misin?",{tags:["dokunuş","ritim"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Sürpriz temas","Gün içinde beklenmedik küçük temaslardan hangisini seviyorsun?",{tags:["dokunuş","spontane"],category:"touch-contact",hardness:2,type:"question"}),
+    mk("Yakınlıkta el","Yakınlık sırasında elin nerede olması sana iyi gelir?",{tags:["dokunuş","el"],category:"touch-contact",hardness:3,type:"question"}),
+    mk("Elini tut","İkiniz de istiyorsanız partnerinin elini tut ve seni rahatlatan bir özelliğini söyle.",{tags:["dokunuş","görev"],category:"touch-contact",hardness:2,type:"dare",consentRequired:true}),
+    mk("Sırt okşama","İkiniz de istiyorsanız partnerinin sırtını bir dakika yavaşça okşa.",{tags:["dokunuş","görev","sırt"],category:"touch-contact",hardness:3,type:"dare",consentRequired:true}),
+    mk("Saça dokun","İkiniz de istiyorsanız partnerinin saçına yumuşakça dokun ve sevdiğin bir yönünü söyle.",{tags:["dokunuş","görev","saç"],category:"touch-contact",hardness:2,type:"dare",consentRequired:true}),
+    mk("Alın alına","İkiniz de istiyorsanız alınlarınızı birleştirip 20 saniye birlikte nefes alın.",{tags:["dokunuş","görev","yavaş"],category:"touch-contact",hardness:2,type:"moment",consentRequired:true}),
+
+    // ——— Öpüşme ve Çekim (kissing-attraction) · 20 · hardness 2-3
+    mk("Unutulmaz öpüşme","Bir öpüşmeyi senin için unutulmaz yapan şey ne?",{tags:["öpüşme","tercih"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Yavaş mı ani mi","Yavaş başlayan bir öpüşme mi, aniden gelen bir öpücük mü?",{tags:["öpüşme","tercih"],category:"kissing-attraction",hardness:2,type:"choice"}),
+    mk("Öncesindeki an","Öpüşmeden hemen önceki hangi küçük hareket çekimi artırır?",{tags:["öpüşme","çekim"],category:"kissing-attraction",hardness:3,type:"question"}),
+    mk("Alın öpücüğü","Alına verilen bir öpücüğün sende bıraktığı his ne?",{tags:["öpüşme","alın"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Yanağa öpücük","Yanağa verilen küçük öpücüklerimi hangi anlarda daha çok seviyorsun?",{tags:["öpüşme","yanak"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Dudak","Dudaktan öpüşmeyi en çok hangi tarzda seviyorsun?",{tags:["öpüşme","dudak"],category:"kissing-attraction",hardness:3,type:"question"}),
+    mk("Kısa mı uzun mu","Kısa peş peşe öpücükler mi, uzun tek bir öpücük mü?",{tags:["öpüşme","tercih"],category:"kissing-attraction",hardness:3,type:"choice"}),
+    mk("Göz teması","Öpüşmeden önce göz teması sana ne katıyor?",{tags:["öpüşme","bakış"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Yaklaşma biçimi","Öpüşmeden önce yaklaşma biçimimden en çok neyi seviyorsun?",{tags:["öpüşme","yaklaşma"],category:"kissing-attraction",hardness:3,type:"question"}),
+    mk("Beklenmedik öpücük","Gün içinde beklenmedik bir öpücük seni nasıl etkiler?",{tags:["öpüşme","spontane"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Ateşli mi romantik mi","Öpüşmede ateşli mi romantik mi senin için daha çekici?",{tags:["öpüşme","tarz"],category:"kissing-attraction",hardness:3,type:"choice"}),
+    mk("Sevdiğim öpücüğün","Bende en sevdiğin öpücük tarzını iki kelimeyle söyler misin?",{tags:["öpüşme","tercih"],category:"kissing-attraction",hardness:3,type:"question"}),
+    mk("Öpüşme sonrası","Bir öpücükten sonra en çok neyi hissetmek istersin?",{tags:["öpüşme","sonrası"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Öpücükle 'iyi geceler'","'İyi geceler' öpücüğünün senin için anlamı ne?",{tags:["öpüşme","gece"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Sabah öpücüğü","Sabah öpücüğünde tercih ettiğin bir tarz var mı?",{tags:["öpüşme","sabah"],category:"kissing-attraction",hardness:2,type:"question"}),
+    mk("Kısa an","İkiniz de istiyorsanız birbirinize yavaş bir yanak öpücüğü verin.",{tags:["öpüşme","görev","yanak"],category:"kissing-attraction",hardness:2,type:"dare",consentRequired:true}),
+    mk("Alın öpücüğü ver","İkiniz de istiyorsanız partnerinin alnına küçük bir öpücük ver.",{tags:["öpüşme","görev","alın"],category:"kissing-attraction",hardness:2,type:"dare",consentRequired:true}),
+    mk("Yavaş dudak","İkiniz de istiyorsanız 10 saniye boyunca yavaş bir dudak öpücüğü paylaşın.",{tags:["öpüşme","görev","yavaş"],category:"kissing-attraction",hardness:3,type:"dare",consentRequired:true}),
+    mk("Sevdiği tarzı göster","İkiniz de istiyorsanız birbirinize en sevdiğiniz öpücük türünü kısaca gösterin.",{tags:["öpüşme","görev","tercih"],category:"kissing-attraction",hardness:3,type:"dare",consentRequired:true}),
+    mk("Boyun öpücüğü","İkiniz de istiyorsanız partnerinin boynuna kısa bir öpücük ver.",{tags:["öpüşme","görev","boyun"],category:"kissing-attraction",hardness:3,type:"dare",consentRequired:true}),
+
+    // ——— Yakınlık Tercihleri (intimacy-preferences) · 18 · hardness 2-3
+    mk("Yavaş mı akış mı","Yakınlıkta yavaş ilerlemek mi, doğal akışa bırakmak mı sana daha iyi gelir?",{tags:["tercih","tempo"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Ortam mı spontane mi","Romantik bir ortam mı, tamamen spontane bir an mı seni daha çok etkiler?",{tags:["tercih","spontane"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Konuşmak mı sessizlik mi","Yakınlık sırasında konuşmak mı, sessiz kalmak mı sana daha doğal gelir?",{tags:["tercih","iletişim"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Küçük adımlar","Yeni bir şey denemeden önce konuşmak mı, küçük adımlarla keşfetmek mi?",{tags:["tercih","yeni"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Müzik","Yakınlıkta müzik olmasını sever misin, hangi türde?",{tags:["tercih","müzik"],category:"intimacy-preferences",hardness:2,type:"question"}),
+    mk("Işık tercihi","Loş ışık mı, karanlık mı, mum ışığı mı?",{tags:["tercih","ışık"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Yatak mı kanepe mi","Yakınlaşma için tercih ettiğin bir alan var mı?",{tags:["tercih","ortam"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Sarılma süresi","Sarılmanın ideal süresi senin için kaç saniye civarı?",{tags:["tercih","sarılma"],category:"intimacy-preferences",hardness:2,type:"question"}),
+    mk("Yakınlığın başlangıcı","Yakınlığın nasıl başlaması senin için daha doğal: dokunuşla mı, sözle mi, bakışla mı?",{tags:["tercih","başlangıç"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Yönlendirme","Yakınlıkta yönlendirmeyi kimin yapması sana daha rahat geliyor?",{tags:["tercih","yönlendirme"],category:"intimacy-preferences",hardness:3,type:"choice"}),
+    mk("Birlikte karar","Yeni bir şeye birlikte karar vermek sana nasıl hissettiriyor?",{tags:["tercih","birlikte"],category:"intimacy-preferences",hardness:2,type:"question"}),
+    mk("Küçük ısınma","Yakınlık öncesi küçük bir ısınma anı ister misin?",{tags:["tercih","ısınma"],category:"intimacy-preferences",hardness:2,type:"question"}),
+    mk("Konuşarak keşif","Denemek istediğin bir şeyi önce konuşarak paylaşmak sana nasıl geliyor?",{tags:["tercih","iletişim"],category:"intimacy-preferences",hardness:3,type:"question"}),
+    mk("Göz teması","Yakınlıkta göz temasının senin için önemi ne?",{tags:["tercih","bakış"],category:"intimacy-preferences",hardness:3,type:"question"}),
+    mk("Sabah mı gece mi","Yakınlık için sabah mı gece mi sana daha uygun geliyor?",{tags:["tercih","zaman"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Kısa mı uzun mu","Kısa ve yoğun bir an mı, uzun ve yavaş bir an mı?",{tags:["tercih","süre"],category:"intimacy-preferences",hardness:3,type:"choice"}),
+    mk("Sonrası","Yakınlıktan sonra en çok neyi istersin: sarılmak, konuşmak, sessizlik?",{tags:["tercih","sonrası"],category:"intimacy-preferences",hardness:2,type:"choice"}),
+    mk("Kısa gerekçe","Bir tercihinin arkasındaki nedeni kısaca paylaşmak sana nasıl geliyor?",{tags:["tercih","içsel"],category:"intimacy-preferences",hardness:2,type:"question"}),
+
+    // ——— Cesur Sorular (bold-questions) · 14 · hardness 3-4
+    mk("Arzulanan hissetmek","Yakınlık sırasında sana kendini daha çok arzulanan hissettiren davranış ne?",{tags:["cesur","arzu"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Söylenmeyen cümle","Benden duymak isteyip de söylemeye çekindiğin flörtöz bir cümle var mı?",{tags:["cesur","söz"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Kontrol dengesi","Yakınlaşırken kontrolün sende olması mı, bende olması mı, birlikte ilerlemek mi daha çekici?",{tags:["cesur","kontrol"],category:"bold-questions",hardness:3,type:"choice"}),
+    mk("Rahat yönlendirme","Bana yakınlık sırasında rahatça söyleyebilmek istediğin bir yönlendirme ne?",{tags:["cesur","yönlendirme"],category:"bold-questions",hardness:4,type:"question"}),
+    mk("Sevgi ve arzu","Yakınlıkta sevgi ve arzu dengesini nasıl kurmayı seviyorsun?",{tags:["cesur","denge"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Yavaşlama sinyali","Yavaşlamak istediğinde tercih ettiğin bir küçük sinyal var mı?",{tags:["cesur","tempo"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Daha yakın","Sana kendini daha yakın hissettiren küçük bir davranışım ne?",{tags:["cesur","yakın"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Bilmemi istediğin","Yakınlıkta benim bilmemi çok istediğin bir tercihin var mı?",{tags:["cesur","tercih"],category:"bold-questions",hardness:4,type:"question"}),
+    mk("Yeni bir şey","Birlikte konuşmak istediğin ama başlatmakta zorlandığın bir konu var mı?",{tags:["cesur","yeni"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Çekim anı","Beni en çok çekici bulduğun bir anı tarif eder misin?",{tags:["cesur","çekim"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Ritim","Yakınlıkta seni en çok rahatlatan ritim nasıl bir ritim?",{tags:["cesur","ritim"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Küçük itiraf","Yakınlıkla ilgili söylemekten çekindiğin küçük bir itirafın var mı?",{tags:["cesur","itiraf"],category:"bold-questions",hardness:4,type:"reflection"}),
+    mk("Rahat sınır","Şu an aşmak istemediğin bir sınırını rahatça söyler misin?",{tags:["cesur","sınır"],category:"bold-questions",hardness:3,type:"question"}),
+    mk("Birlikte konuşmak","Yakınlıkla ilgili birlikte konuşmayı en çok istediğin konu hangisi?",{tags:["cesur","iletişim"],category:"bold-questions",hardness:3,type:"question"}),
+
+    // ——— Yakınlaşma Görevleri (intimacy-dares) · 14 · hardness 2-4
+    mk("Bir dakika sarılma","Bir dakika boyunca partnerine sarılın. İkiniz de istiyorsanız konuşmadan yalnızca o ana odaklanın.",{tags:["görev","sarılma"],category:"intimacy-dares",hardness:2,type:"dare",consentRequired:true}),
+    mk("Güvende an","Partnerinin gözlerine bak ve yanında en güvende hissettiğin anı söyle.",{tags:["görev","güven"],category:"intimacy-dares",hardness:2,type:"dare",consentRequired:true}),
+    mk("Küçük öpücük","İkiniz de istiyorsanız partnerinin yüzünde sevdiğin bir yere küçük bir öpücük ver.",{tags:["görev","öpücük"],category:"intimacy-dares",hardness:3,type:"dare",consentRequired:true}),
+    mk("Kulağa iltifat","Partnerinin kulağına onda seni çeken bir özelliği fısılda.",{tags:["görev","iltifat"],category:"intimacy-dares",hardness:3,type:"dare",consentRequired:true}),
+    mk("İhtiyaç sorusu","Birbirinize şu an daha rahat hissetmek için neye ihtiyacınız olduğunu sorun.",{tags:["görev","ihtiyaç"],category:"intimacy-dares",hardness:2,type:"dare"}),
+    mk("Yavaş nefes","İkiniz de istiyorsanız alın alına 30 saniye birlikte yavaş nefes alın.",{tags:["görev","yavaş","nefes"],category:"intimacy-dares",hardness:2,type:"moment",consentRequired:true}),
+    mk("Sırt sırta","Bir dakika sırt sırta oturup sessizce kalın.",{tags:["görev","sessizlik"],category:"intimacy-dares",hardness:2,type:"moment"}),
+    mk("El okşama","İkiniz de istiyorsanız partnerinin elini 30 saniye yavaşça okşa.",{tags:["görev","el"],category:"intimacy-dares",hardness:2,type:"dare",consentRequired:true}),
+    mk("Alına öpücük","İkiniz de istiyorsanız partnerinin alnına yumuşak bir öpücük ver.",{tags:["görev","alın","öpücük"],category:"intimacy-dares",hardness:2,type:"dare",consentRequired:true}),
+    mk("Boyna dokunuş","İkiniz de istiyorsanız partnerinin boynuna hafifçe dokun ve yüzüne bak.",{tags:["görev","boyun"],category:"intimacy-dares",hardness:3,type:"dare",consentRequired:true}),
+    mk("Yumuşak yanak","İkiniz de istiyorsanız partnerinin yanağına dudağını yavaşça değdir.",{tags:["görev","yanak"],category:"intimacy-dares",hardness:3,type:"dare",consentRequired:true}),
+    mk("Küçük tercih","Şu an partnerine dokunmamı istediğin bir yeri kısaca söyle.",{tags:["görev","tercih"],category:"intimacy-dares",hardness:3,type:"dare",consentRequired:true}),
+    mk("Yavaş dudak","İkiniz de istiyorsanız 10 saniye yavaş bir dudak öpücüğü paylaşın.",{tags:["görev","öpücük","yavaş"],category:"intimacy-dares",hardness:4,type:"dare",consentRequired:true}),
+    mk("Yönlendirme cümlesi","İkiniz de istiyorsanız birbirinize yakınlıkta duymak istediğiniz kısa bir cümle söyleyin.",{tags:["görev","söz","yönlendirme"],category:"intimacy-dares",hardness:4,type:"dare",consentRequired:true}),
   ],
   memories: [
     mk("İlk kez","Bizimle ilgili yaşadığın 'bu adam/bu kadın benim' dediğin ilk an neydi?",{tags:["ilk"],hardness:2}),
@@ -1547,6 +1732,12 @@ function getDailyQuestion(){
         if(t!=="question" && t!=="choice" && t!=="guess") continue;
         if((c.hardness||2) > 2) continue;
       }
+      if(m==="intimacy"){
+        const t = c.type||"question";
+        if(t!=="question" && t!=="reflection") continue;
+        if((c.hardness||2) > 2) continue;
+        if(c.consentRequired) continue;
+      }
       all.push({card:c,mod:m});
     }
   }
@@ -1782,13 +1973,17 @@ function maybeConsentReminder(kind,onDone){
   if(!s.consentReminder || consent[kind]) return onDone();
   openModal((box,close)=>{
     box.append(el("h3",null,"Küçük hatırlatma"));
-    box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
-      "Bu oyunda her şey karşılıklı istekle güzel. Her kartta pas diyebilir, görevi değiştirebilir veya oyunu durdurabilirsiniz."));
-    box.append(el("div",{style:"margin-top:16px"},btn("Anladık, başlayalım","primary",()=>{
+    const msg = kind==="intimacy"
+      ? "Bu bölümde duygusal ve fiziksel yakınlık içeren kartlar bulunur. Her kart değiştirilebilir, yumuşatılabilir veya pas geçilebilir. Daha önce onay vermiş olmak, her yeni kartı kabul etmek zorunda olduğunuz anlamına gelmez."
+      : "Bu oyunda her şey karşılıklı istekle güzel. Her kartta pas diyebilir, görevi değiştirebilir veya oyunu durdurabilirsiniz.";
+    box.append(el("div",{class:"consent-box",style:"margin-top:12px"}, msg));
+    const btnLabel = kind==="intimacy" ? "Anladık, birlikte seçeriz" : "Anladık, başlayalım";
+    box.append(el("div",{style:"margin-top:16px"},btn(btnLabel,"primary",()=>{
       consent[kind]=true;storage.set(K.consent,consent);close();onDone();
     })));
   });
 }
+
 
 route("/level/*",(app,path)=>{
   const mod = path.split("/")[2];
@@ -1828,6 +2023,28 @@ const FLIRT_LEVELS = [
 const K_WARMUP_FILTER = "bo.warmupFilter.v1";
 const K_FLIRT_FILTER = "bo.flirtFilter.v1";
 const K_FLIRT_LEVEL = "bo.flirtLevel.v1";
+const INTIMACY_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"emotional-closeness", label:"Duygusal"},
+  {slug:"trust-openness", label:"Güven"},
+  {slug:"care-support", label:"Şefkat"},
+  {slug:"boundaries-consent", label:"Sınırlar"},
+  {slug:"romantic-intimacy", label:"Romantik"},
+  {slug:"touch-contact", label:"Dokunuş"},
+  {slug:"kissing-attraction", label:"Öpüşme"},
+  {slug:"intimacy-preferences", label:"Tercihler"},
+  {slug:"bold-questions", label:"Cesur"},
+  {slug:"intimacy-dares", label:"Görevler"},
+];
+const INTIMACY_LEVELS = [
+  {slug:"emotional", label:"Duygusal", minH:1, maxH:1},
+  {slug:"romantic", label:"Romantik", minH:1, maxH:2},
+  {slug:"sensual", label:"Tensel", minH:2, maxH:3},
+  {slug:"bold", label:"Cesur", minH:3, maxH:4},
+  {slug:"mixed", label:"Karışık", minH:1, maxH:4},
+];
+const K_INTIMACY_FILTER = "bo.intimacyFilter.v1";
+const K_INTIMACY_LEVEL = "bo.intimacyLevel.v1";
 
 function chipButton(label,active,onClick){
   return el("button",{
@@ -1847,48 +2064,63 @@ function renderLevel(app,mod){
 
   const isWarmup = mod === "warmup";
   const isFlirt = mod === "flirt";
-  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : null;
-  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : null;
+  const isIntimacy = mod === "intimacy";
+  const hasLevels = isFlirt || isIntimacy;
+  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : isIntimacy ? INTIMACY_CATEGORIES : null;
+  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : isIntimacy ? K_INTIMACY_FILTER : null;
+  const LVL_SET = isFlirt ? FLIRT_LEVELS : isIntimacy ? INTIMACY_LEVELS : null;
+  const LVL_KEY = isFlirt ? K_FLIRT_LEVEL : isIntimacy ? K_INTIMACY_LEVEL : null;
+  const LVL_DEFAULT = isIntimacy ? "romantic" : "mixed";
+  const LVL_LABEL = isFlirt ? "Flört seviyesi" : "Yakınlaşma seviyesi";
 
   let filter = "";
   if(FILTER_KEY){ try { filter = localStorage.getItem(FILTER_KEY) || ""; } catch(e){ filter = ""; } }
 
-  // Flirt-only: level selection
-  let flirtLevel = "mixed";
-  if(isFlirt){
-    try { flirtLevel = localStorage.getItem(K_FLIRT_LEVEL) || "mixed"; } catch(e){}
+  let curLevel = LVL_DEFAULT;
+  if(hasLevels){
+    try { curLevel = localStorage.getItem(LVL_KEY) || LVL_DEFAULT; } catch(e){}
   }
   const settings = getSettings();
   const globalCap = clamp(settings.hardness||3,1,5);
   function effectiveMaxH(){
-    if(!isFlirt) return globalCap;
-    const lvl = FLIRT_LEVELS.find(l=>l.slug===flirtLevel) || FLIRT_LEVELS[3];
+    if(!hasLevels) return globalCap;
+    const lvl = LVL_SET.find(l=>l.slug===curLevel) || LVL_SET[LVL_SET.length-1];
     return Math.min(lvl.maxH, globalCap);
+  }
+  function effectiveMinH(){
+    if(!hasLevels) return undefined;
+    const lvl = LVL_SET.find(l=>l.slug===curLevel) || LVL_SET[LVL_SET.length-1];
+    return lvl.minH || undefined;
   }
 
   let levelBar = null, filterBar = null, countLine = null;
   const cardBox = el("div",{class:"card"});
 
-  if(isFlirt){
+  if(hasLevels){
     levelBar = el("div",{class:"card",style:"padding:10px 12px"});
-    levelBar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:6px"},"Flört seviyesi"));
-    const row = chipRow(FLIRT_LEVELS, (l)=>flirtLevel===l.slug, (l)=>{
-      const wasBold = flirtLevel==="bold";
-      const goingBold = l.slug==="bold";
+    levelBar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:6px"},LVL_LABEL));
+    const row = chipRow(LVL_SET, (l)=>curLevel===l.slug, (l)=>{
+      const boldSlugs = isFlirt ? ["bold"] : ["sensual","bold"];
+      const consentKey = isFlirt ? "flirtBold" : "intimacyBold";
+      const wasBold = boldSlugs.includes(curLevel);
+      const goingBold = boldSlugs.includes(l.slug);
       const apply = ()=>{
-        flirtLevel = l.slug;
-        try{ localStorage.setItem(K_FLIRT_LEVEL, flirtLevel) }catch(e){}
+        curLevel = l.slug;
+        try{ localStorage.setItem(LVL_KEY, curLevel) }catch(e){}
         drawAndShow();
       };
       if(goingBold && !wasBold){
         const consent = storage.get(K.consent,{});
-        if(!consent.flirtBold){
+        if(!consent[consentKey]){
           openModal((box,close)=>{
             box.append(el("h3",null,"Küçük hatırlatma"));
-            box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
-              "Flörtün güzel tarafı karşılıklı olmasıdır. Her görev değiştirilebilir, yumuşatılabilir veya pas geçilebilir."));
-            box.append(el("div",{style:"margin-top:16px"},btn("Tamam, başlayalım","primary",()=>{
-              consent.flirtBold=true;storage.set(K.consent,consent);close();apply();
+            const msg = isFlirt
+              ? "Flörtün güzel tarafı karşılıklı olmasıdır. Her görev değiştirilebilir, yumuşatılabilir veya pas geçilebilir."
+              : "Bu seviyede fiziksel yakınlık içeren kartlar gelebilir. Her kart değiştirilebilir, yumuşatılabilir veya pas geçilebilir; onay her kart için ayrıdır.";
+            box.append(el("div",{class:"consent-box",style:"margin-top:12px"}, msg));
+            sessionSet(mod,{consentCardsShown:(getSession().modules[mod]?.consentCardsShown||0)+1});
+            box.append(el("div",{style:"margin-top:16px"},btn("Anladık, birlikte seçeriz","primary",()=>{
+              consent[consentKey]=true;storage.set(K.consent,consent);close();apply();
             })));
           });
           return;
@@ -1919,8 +2151,8 @@ function renderLevel(app,mod){
     if(levelBar){
       const chips = levelBar.querySelectorAll("button.tag");
       chips.forEach((chip,i)=>{
-        const lvl = FLIRT_LEVELS[i];
-        const active = flirtLevel === lvl.slug;
+        const lvl = LVL_SET[i];
+        const active = curLevel === lvl.slug;
         chip.className = "tag"+(active?" gold":"");
         chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
       });
@@ -1937,12 +2169,36 @@ function renderLevel(app,mod){
     if(countLine){
       const opts = {};
       if(filter) opts.category = filter;
-      if(isFlirt) opts.maxHardness = effectiveMaxH();
+      if(hasLevels) opts.maxHardness = effectiveMaxH();
       const n = countUnseen(mod, opts);
       const label = filter ? (CATS.find(c=>c.slug===filter)?.label || "") : "Tümü";
-      const suffix = isFlirt ? " · "+(FLIRT_LEVELS.find(l=>l.slug===flirtLevel)?.label||"") : "";
+      const suffix = hasLevels ? " · "+(LVL_SET.find(l=>l.slug===curLevel)?.label||"") : "";
       countLine.textContent = `Görülmemiş ${n} kart kaldı · ${label}${suffix}`;
     }
+  }
+
+  function buildExt(){
+    return {
+      filter, isFlirt, isIntimacy, hasSoften: hasLevels,
+      effectiveMaxH:hasLevels?effectiveMaxH():undefined,
+      onSoften: hasLevels ? (card)=>{
+        const soft = softenCard(mod, card, {category:filter||undefined, maxHardness:effectiveMaxH()});
+        if(!soft || soft.__exhausted){ toast("Daha yumuşak kart bulunamadı."); return; }
+        bumpSession(mod,"soften");
+        sessionSet(mod,{softenedCards:(getSession().modules[mod]?.softenedCards||0)+1});
+        markSeen(mod,soft.id);
+        renderCardUI(cardBox,mod,soft,drawAndShow, Object.assign(buildExt(),{
+          onSoften:()=>{ toast("Zaten yumuşatıldı."); },
+        }));
+        refreshBars();
+      } : undefined,
+      onDone: hasLevels ? ()=>{
+        bumpSession(mod,"done");
+        sessionSet(mod,{completedDares:(getSession().modules[mod]?.completedDares||0)+1});
+        drawAndShow();
+      } : undefined,
+      onReplace: hasLevels ? ()=>{ drawAndShow(); } : undefined,
+    };
   }
 
   function drawAndShow(){
@@ -1950,7 +2206,7 @@ function renderLevel(app,mod){
     cardBox.innerHTML="";
     const opts = {};
     if(filter) opts.category = filter;
-    if(isFlirt) opts.maxHardness = effectiveMaxH();
+    if(hasLevels) opts.maxHardness = effectiveMaxH();
     const c = drawCard(mod, opts);
     if(!c){cardBox.append(el("div",null,"Bu modülde henüz kart yok."));return}
     if(c.__exhausted){
@@ -1974,22 +2230,7 @@ function renderLevel(app,mod){
     }
     bumpSession(mod,"round");
     markSeen(mod,c.id);
-    renderCardUI(cardBox,mod,c,drawAndShow,{
-      filter, isFlirt, effectiveMaxH:isFlirt?effectiveMaxH():undefined,
-      onSoften:isFlirt ? (card)=>{
-        const soft = softenCard(mod, card, {category:filter||undefined, maxHardness:effectiveMaxH()});
-        if(!soft || soft.__exhausted){ toast("Daha yumuşak kart bulunamadı."); return; }
-        bumpSession(mod,"soften");
-        markSeen(mod,soft.id);
-        renderCardUI(cardBox,mod,soft,drawAndShow,{
-          filter, isFlirt, effectiveMaxH:effectiveMaxH(),
-          onSoften:(c2)=>{ toast("Zaten yumuşatıldı."); },
-          onDone:()=>{ bumpSession(mod,"done"); drawAndShow(); }
-        });
-        refreshBars();
-      } : undefined,
-      onDone:isFlirt ? ()=>{ bumpSession(mod,"done"); drawAndShow(); } : undefined,
-    });
+    renderCardUI(cardBox,mod,c,drawAndShow, buildExt());
     refreshBars();
   }
   drawAndShow();
@@ -2004,6 +2245,7 @@ function renderCardUI(box,mod,c,onNext,ext){
     el("div",{style:"display:flex;gap:6px;flex-wrap:wrap"},
       c.type ? el("span",{class:"tag"},c.type) : null,
       el("span",{class:"tag gold"},"seviye "+(c.hardness||"?")),
+      c.consentRequired ? el("span",{class:"tag",style:"background:rgba(217,175,97,.14);color:var(--gold);border-color:rgba(217,175,97,.35)"},"rıza gerekli") : null,
       c.source==="ai" ? el("span",{class:"tag ai"},"AI") : null,
       c.source==="custom" ? el("span",{class:"tag custom"},"özel") : null,
     )
@@ -2013,10 +2255,12 @@ function renderCardUI(box,mod,c,onNext,ext){
   box.append(el("div",{style:"margin-top:8px;font-size:16px"},c.prompt));
   box.append(tagList(c));
 
-  if(isTask && ext.isFlirt){
+  const canDareUi = isTask && (ext.isFlirt || ext.isIntimacy || ext.hasSoften);
+  if(canDareUi){
     const rowDare = el("div",{class:"row",style:"margin-top:16px"},
-      btn("Yaptık","primary",()=>{ (ext.onDone||onNext)(c); }),
+      btn("Yap","primary",()=>{ (ext.onDone||onNext)(c); }),
       btn("Yumuşat","gold",()=>{ if(ext.onSoften) ext.onSoften(c); else onNext(); }),
+      btn("Değiştir","ghost",()=>{ if(ext.onReplace) ext.onReplace(c); else onNext(); }),
       btn("Pas","ghost",()=>{ bumpSession(mod,"pass"); onNext(); })
     );
     box.append(rowDare);
