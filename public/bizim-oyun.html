@@ -258,7 +258,15 @@ const storage = {
  * 4. Migrations
  * ============================================================ */
 const migrations = {
-  1(data){ return data; }
+  1(){ return; },
+  2(){
+    // v2: introduce savedMemories. Preserve every existing key; only add if missing.
+    try{
+      if(localStorage.getItem(K.savedMemories) == null){
+        localStorage.setItem(K.savedMemories, JSON.stringify([]));
+      }
+    }catch(e){}
+  }
 };
 function runMigrations(){
   const meta = storage.get(K.meta,null);
