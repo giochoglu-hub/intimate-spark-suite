@@ -1218,8 +1218,17 @@ const DICE_MODES = {
  * ============================================================ */
 function loadPool(mod){
   const stored = storage.get(K.pool(mod),null);
-  if(stored && Array.isArray(stored) && stored.length) return stored;
   const core = (CORE[mod]||[]).slice();
+  if(stored && Array.isArray(stored) && stored.length){
+    // Merge new core cards without touching user's ai/custom/seen/favorites/disabled state.
+    const have = new Set(stored.map(c=>c && c.id).filter(Boolean));
+    let changed = false;
+    for(const c of core){
+      if(!have.has(c.id)){ stored.push(c); have.add(c.id); changed = true; }
+    }
+    if(changed) storage.set(K.pool(mod),stored);
+    return stored;
+  }
   storage.set(K.pool(mod),core);
   return core;
 }
