@@ -1531,6 +1531,7 @@ function renderDice(app){
       el("div",{class:"k"},k),
       el("div",{class:"v"},v)
     );
+  }
   function reconcileDice(diceKeys, dice){
     // Pozisyon + bölge birlikte olmasın (pozisyon zaten yönlendiriyor)
     if(dice.pozisyon && dice.bolge && state.mode!=="kasa"){
