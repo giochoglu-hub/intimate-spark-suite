@@ -111,7 +111,7 @@ function Landing() {
           }}
         >
           <a
-            href="/bizim-oyun.html"
+            href="/bizim-oyun.html?v=8"
             style={{
               display: "block",
               padding: "16px 20px",
