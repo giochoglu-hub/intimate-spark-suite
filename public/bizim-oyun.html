@@ -1732,6 +1732,12 @@ function getDailyQuestion(){
         if(t!=="question" && t!=="choice" && t!=="guess") continue;
         if((c.hardness||2) > 2) continue;
       }
+      if(m==="intimacy"){
+        const t = c.type||"question";
+        if(t!=="question" && t!=="reflection") continue;
+        if((c.hardness||2) > 2) continue;
+        if(c.consentRequired) continue;
+      }
       all.push({card:c,mod:m});
     }
   }
