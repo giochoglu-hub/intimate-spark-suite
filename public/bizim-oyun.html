@@ -3464,8 +3464,7 @@ route("/summary",(app)=>{
     el("div",{class:"kv"},el("div",null,"Toplam tur"),el("div",null,String(s.totalRounds||0))),
     el("div",{class:"kv"},el("div",null,"Toplam pas"),el("div",null,String(s.totalPasses||0))),
     most && el("div",{class:"kv"},el("div",null,"En çok oynanan"),el("div",null,MODULES[most]?.name||most)),
-    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — aynı"),el("div",null,String(mods.okNok.matches||0))),
-    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — farklı"),el("div",null,String(mods.okNok.differences||0))),
+    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — değerlendirilen"),el("div",null,String((mods.okNok.okCount||0)+(mods.okNok.nokCount||0))+" kart")),
     mods.guessMe && el("div",{class:"kv"},el("div",null,"Beni Tahmin Et skoru"),el("div",null,String(mods.guessMe.score||0))),
   ));
   const favs = getFavorites();
