@@ -1625,6 +1625,27 @@ route("/settings",(app)=>{
   });
   box.append(el("div",{style:"margin-top:14px"},saveBtn));
 
+  // Theme picker
+  box.append(el("div",{class:"divider"}));
+  box.append(el("label",null,"Tema"));
+  const themes = [
+    {id:"bordo",name:"Bordo",colors:["#7d2138","#d9af61","#10090c"]},
+    {id:"gece",name:"Gece",colors:["#4b2a8a","#c3a6ff","#08070f"]},
+    {id:"orman",name:"Orman",colors:["#2f6b4a","#d9c56a","#0a0f0d"]},
+  ];
+  const themeRow = el("div",{class:"pill-row"});
+  themes.forEach(t=>{
+    const active = (s.theme||"bordo")===t.id;
+    const b = el("button",{class:"pill"+(active?" active":""),onclick:()=>{
+      s.theme=t.id;saveSettings(s);
+      document.documentElement.setAttribute("data-theme", t.id==="bordo"?"":t.id);
+      themeRow.querySelectorAll(".pill").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+    }},t.name);
+    themeRow.append(b);
+  });
+  box.append(themeRow);
+
   // Reduced motion
   box.append(el("div",{class:"divider"}));
   const rmBtn = btn(s.reducedMotion?"Az animasyon: AÇIK":"Az animasyon: KAPALI","ghost",()=>{
@@ -1633,6 +1654,14 @@ route("/settings",(app)=>{
     render();
   });
   box.append(rmBtn);
+
+  // Only favorites toggle
+  const favOnlyBtn = btn(s.favoritesOnly?"Sadece favoriler: AÇIK":"Sadece favoriler: KAPALI","ghost",()=>{
+    s.favoritesOnly=!s.favoritesOnly;saveSettings(s);
+    favOnlyBtn.textContent = s.favoritesOnly?"Sadece favoriler: AÇIK":"Sadece favoriler: KAPALI";
+    toast(s.favoritesOnly?"Sadece favori kartlar gösterilecek.":"Tüm kartlar gösterilecek.");
+  });
+  box.append(el("div",{style:"margin-top:10px"},favOnlyBtn));
 
   // custom cards
   const cbox = el("div",{class:"card"});
