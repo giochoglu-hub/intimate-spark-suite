@@ -2785,7 +2785,7 @@ route("/memories-story",(app)=>{
   render();
 });
 
-
+async function requestAi(mod,box,onNext){
   const settings = getSettings();
   const pool = loadPool(mod);
   const avoidTitles = pool.slice(-50).map(c=>c.title);
