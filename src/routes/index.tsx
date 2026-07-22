@@ -111,7 +111,7 @@ function Landing() {
           }}
         >
           <a
-            href="/bizim-oyun.html?v=10"
+            href="/bizim-oyun.html?v=11"
             style={{
               display: "block",
               padding: "16px 20px",
@@ -128,7 +128,7 @@ function Landing() {
           </a>
           {hasSession && (
             <a
-              href="/bizim-oyun.html?v=10#/home?resume=1"
+              href="/bizim-oyun.html?v=11#/home?resume=1"
               style={{
                 display: "block",
                 padding: "14px 20px",
