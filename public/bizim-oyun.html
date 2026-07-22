@@ -1359,20 +1359,36 @@ function poolValues(pool){
 }
 function renderDice(app){
   app.append(topbar("Sex Zarı"));
-  const state = { mode:"klasik", result:null };
+  const state = { mode:"klasik", result:null, nightPools:new Set(["oyuncu","eylem","bolge","sure"]) };
   const card = el("div",{class:"card"});
   app.append(card);
   card.append(el("div",{class:"muted"},"Bir mod seç. Her sonuçta ikiniz de onaylıyor musunuz sorusu çıkar."));
   const modeRow = el("div",{class:"pill-row",style:"margin-top:12px"});
+  const poolPicker = el("div",{style:"margin-top:12px",class:"hidden"});
   Object.keys(DICE_MODES).forEach(k=>{
     const b = el("button",{class:"pill"+(k===state.mode?" active":""),onclick:()=>{
       state.mode=k;
       modeRow.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
       b.classList.add("active");
+      poolPicker.classList.toggle("hidden", k!=="buGece");
     }},DICE_MODES[k].name);
     modeRow.append(b);
   });
   card.append(modeRow);
+  // Pool picker for "Sadece Bu Gece"
+  poolPicker.append(el("div",{class:"muted",style:"margin-bottom:8px"},"Bu geceye özel: hangi havuzlardan zar atılsın?"));
+  const poolPickRow = el("div",{class:"pill-row"});
+  Object.keys(DICE).forEach(pk=>{
+    const active = state.nightPools.has(pk);
+    const pb = el("button",{class:"pill"+(active?" active":""),onclick:()=>{
+      if(state.nightPools.has(pk)) state.nightPools.delete(pk);
+      else state.nightPools.add(pk);
+      pb.classList.toggle("active");
+    }},pk);
+    poolPickRow.append(pb);
+  });
+  poolPicker.append(poolPickRow);
+  card.append(poolPicker);
   const rollArea = el("div",{style:"margin-top:14px"});
   card.append(rollArea);
   card.append(btn("Zar At","primary",()=>roll()));
@@ -1385,6 +1401,10 @@ function renderDice(app){
       const shuffled = shuffle(keys);
       const n = 4+Math.floor(Math.random()*3);
       return shuffled.slice(0,n);
+    }
+    if(mode==="buGece"){
+      const picked = Array.from(state.nightPools);
+      return picked.length ? picked : ["oyuncu","eylem","sure"];
     }
     if(mode==="kasa"){
       const custom = getCustomDice();
