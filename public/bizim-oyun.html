@@ -2350,6 +2350,95 @@ route("/settings",(app)=>{
   ));
 });
 
+route("/pos-images",(app)=>{
+  app.append(topbar("Pozisyon Görselleri"));
+  const info = el("div",{class:"card"});
+  info.append(el("h3",null,"Kendi görsellerini ekle"));
+  info.append(el("div",{class:"muted",style:"margin-top:6px"},
+    "Aşağıdaki listedeki her pozisyon için bir resim seç. Görseller sıkıştırılıp (max 800px, JPEG) sadece bu tarayıcıda saklanır. Zar attığında ilgili pozisyona düşerse görsel otomatik gösterilir."
+  ));
+  const search = el("input",{type:"text",placeholder:"Ara: pozisyon adı..."});
+  info.append(el("div",{style:"margin-top:10px"},search));
+  const filterRow = el("div",{class:"pill-row",style:"margin-top:8px"});
+  let filter = "all";
+  const mkFilter=(id,label)=>{
+    const b = el("button",{class:"pill"+(filter===id?" active":""),onclick:()=>{
+      filter=id; filterRow.querySelectorAll(".pill").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active"); refresh();
+    }},label);
+    filterRow.append(b);
+  };
+  mkFilter("all","Tümü");
+  mkFilter("missing","Görseli olmayan");
+  mkFilter("mine","Benim yüklediğim");
+  info.append(filterRow);
+  app.append(info);
+
+  const listBox = el("div",{class:"card"});
+  app.append(listBox);
+
+  search.addEventListener("input",()=>refresh());
+
+  function refresh(){
+    listBox.innerHTML="";
+    const q = (search.value||"").toLowerCase().trim();
+    const user = getUserImages();
+    const positions = (DICE.pozisyon||[]);
+    let shown = 0;
+    positions.forEach(text=>{
+      const key = positionKey(text);
+      const name = text.split(" — ")[0];
+      const hasUser = !!user[key];
+      const hasBuiltin = (()=>{ const low=text.toLowerCase(); for(const k in POSITION_IMAGES){ if(low.startsWith(k)) return true; } return false; })();
+      if(q && !name.toLowerCase().includes(q)) return;
+      if(filter==="missing" && (hasUser||hasBuiltin)) return;
+      if(filter==="mine" && !hasUser) return;
+      shown++;
+      const row = el("div",{class:"card",style:"margin-top:10px;padding:12px"});
+      const head = el("div",{class:"kv"},
+        el("div",null, el("div",{style:"font-weight:600"},name),
+          el("div",{class:"muted",style:"font-size:12px;margin-top:2px"},
+            hasUser?"✓ Kendi görselin":(hasBuiltin?"Yerleşik illüstrasyon":"Görsel yok"))),
+        el("div",null)
+      );
+      row.append(head);
+      const preview = el("div",{style:"margin-top:8px"});
+      const cur = hasUser ? user[key] : (hasBuiltin ? positionImage(text) : null);
+      if(cur){
+        const img = document.createElement("img");
+        img.src = cur; img.alt = name;
+        img.style.cssText = "max-width:220px;max-height:160px;border-radius:8px;display:block";
+        preview.append(img);
+      }
+      row.append(preview);
+      const fileInp = el("input",{type:"file",accept:"image/*",style:"display:none"});
+      fileInp.addEventListener("change", async ()=>{
+        const f = fileInp.files && fileInp.files[0]; if(!f) return;
+        try{
+          const dataUrl = await compressImageFile(f);
+          const u = getUserImages(); u[key] = dataUrl;
+          if(setUserImages(u)){ toast("Yüklendi."); refresh(); }
+        }catch(e){ toast("Resim okunamadı."); }
+      });
+      const actions = el("div",{class:"row",style:"margin-top:10px;gap:8px;flex-wrap:wrap"});
+      actions.append(fileInp);
+      actions.append(btn(hasUser?"Değiştir":"Görsel yükle","primary",()=>fileInp.click()));
+      if(hasUser){
+        actions.append(btn("Kaldır","danger",()=>{
+          const u = getUserImages(); delete u[key]; setUserImages(u); refresh();
+        }));
+      }
+      row.append(actions);
+      listBox.append(row);
+    });
+    if(!shown) listBox.append(el("div",{class:"muted",style:"padding:12px"},"Eşleşen pozisyon yok."));
+    else listBox.prepend(el("div",{class:"muted",style:"padding:0 0 8px"},shown+" pozisyon"));
+  }
+  refresh();
+});
+
+
+
 /* ============================================================
  * 20. Export / Import
  * ============================================================ */
