@@ -1897,8 +1897,8 @@ function renderDice(app){
   card.append(btn("Zar At","primary",()=>roll()));
 
   function roll(){
-    const values = poolValues("pozisyon");
-    if(!values.length){ toast("Pozisyon havuzu boş."); return; }
+    const values = poolValues("pozisyon").filter(v=>!!positionImage(v));
+    if(!values.length){ toast("Görselli pozisyon yok. Ayarlar → Pozisyon Görselleri'nden ekleyebilirsin."); return; }
     const v = pick(values);
     rollArea.innerHTML="";
     const name = v.split(" — ")[0];
