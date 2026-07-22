@@ -2341,7 +2341,7 @@ function renderLevel(app,mod){
     levelBar = el("div",{class:"card",style:"padding:10px 12px"});
     levelBar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:6px"},LVL_LABEL));
     const row = chipRow(LVL_SET, (l)=>curLevel===l.slug, (l)=>{
-      const boldSlugs = isFlirt ? ["bold"] : ["sensual","bold"];
+      const boldSlugs = isFlirt ? ["bold"] : isIntimacy ? ["sensual","bold"] : [];
       const consentKey = isFlirt ? "flirtBold" : "intimacyBold";
       const wasBold = boldSlugs.includes(curLevel);
       const goingBold = boldSlugs.includes(l.slug);
