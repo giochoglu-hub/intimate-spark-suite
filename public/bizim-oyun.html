@@ -750,9 +750,24 @@ function render(){
     app.append(el("div",{class:"card"},"Bir şey ters gitti. Ana ekrana dönebilirsin.",
       el("div",{style:"margin-top:12px"},btn("Ana ekran","primary",()=>navigate("#/home")))));
   }
+  // Stop / pause floating button on intimate paths
+  const oldFab = document.getElementById("stop-fab"); if(oldFab) oldFab.remove();
+  const intimate = path.startsWith("/level/intimacy") || path.startsWith("/sex-dice") || path.startsWith("/ok-nok");
+  if(intimate){
+    const fab = el("button",{id:"stop-fab",class:"stop-fab",onclick:()=>{
+      openModal((m,c)=>{
+        m.append(el("h3",null,"Mola verelim mi?"));
+        m.append(el("div",{class:"muted",style:"margin-top:8px"},"Her an durabilirsin. Ana ekrana dön ya da başka bir modüle geç."));
+        m.append(el("div",{style:"margin-top:12px"},btn("Ana ekrana dön","primary",()=>{c();navigate("#/home")})));
+        m.append(el("div",{style:"margin-top:8px"},btn("Devam","ghost",c)));
+      });
+    }},"⏸ Mola");
+    document.body.append(fab);
+  }
   window.scrollTo({top:0,behavior:"instant"});
 }
 window.addEventListener("hashchange",render);
+
 
 /* ============================================================
  * 10. Shared UI components
