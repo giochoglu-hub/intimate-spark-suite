@@ -2566,7 +2566,8 @@ async function requestAi(mod,box,onNext){
     });
     const normalized = cards.map(c=>({
       title:c.title,prompt:c.prompt,tags:c.tags||[],
-      category:c.category||"ai",hardness:c.hardness||3,source:"ai"
+      category:c.category||"ai",hardness:c.hardness||3,
+      type:c.type||"question",source:"ai"
     }));
     const added = addCards(mod,normalized);
     toast(`${added} yeni kart eklendi.`);
