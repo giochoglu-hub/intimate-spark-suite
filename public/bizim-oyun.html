@@ -281,8 +281,8 @@ function runMigrations(){
 /* ============================================================
  * 5. Core card pools
  * ============================================================ */
-function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core"}={}){
-  return {id:cardId(title,prompt),title,prompt,tags,category,hardness,source,disabled:false};
+function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core",type="question"}={}){
+  return {id:cardId(title,prompt),title,prompt,tags,category,hardness,type,source,disabled:false};
 }
 
 const CORE = {
@@ -426,21 +426,173 @@ const CORE = {
     mk("Film türümüz","İkimizi tanıyan bir yönetmen bize film çekse hangi tür yakışırdı?",{tags:["ısınma","film"],category:"scenarios",hardness:1}),
   ],
   flirt: [
-    mk("Bakış","Sana ilk baktığımda ne düşünmüştün, dürüstçe?",{tags:["ilk","dürüstlük"],hardness:2}),
-    mk("Sekiz saniye","Sekiz saniyeliğine gözlerime bak, sonra ilk aklına gelen şeyi söyle.",{tags:["oyun","göz"],hardness:2}),
-    mk("Hangi kıyafet","Beni hangi kıyafetimle görmek özellikle hoşuna gidiyor?",{tags:["stil"],hardness:2}),
-    mk("Küçük hareket","Yaptığım hangi küçük hareket seni etkiler ama muhtemelen fark etmediğimi düşünürsün?",{tags:["farkındalık"],hardness:3}),
-    mk("Mesaj","Bana şu an bir mesaj yazsan, üç kelimeden fazla değil, ne yazardın?",{tags:["mesaj"],hardness:2}),
-    mk("Parfüm","Kokum sana ne çağrıştırıyor?",{tags:["duyusal"],hardness:2}),
-    mk("Dokunuş haritası","Omuz mu, ense mi, bel mi, saç mı? Sıralamak zorundasın.",{tags:["dokunuş"],hardness:3}),
-    mk("Sessiz flört","Kelime kullanmadan, sadece bir hareketle 'seni istiyorum' de.",{tags:["görev"],hardness:3}),
-    mk("Bir dakika","Bir dakika boyunca sadece bana bak, gülmek yasak.",{tags:["görev","göz"],hardness:2}),
-    mk("Playlist","Bize özel bir flört playlistinin ilk üç şarkısı ne olurdu?",{tags:["müzik"],hardness:2}),
-    mk("Kur yapma","Bugün ilk kez tanışıyor gibi bana kur yap, sadece bir cümle.",{tags:["görev","roleplay"],hardness:3}),
-    mk("Randevu","Bir gecelik gizli bir randevu planla: yer, saat, ne giyeceğim.",{tags:["hayal"],hardness:2}),
-    mk("Kulağa fısılda","Kulağıma sadece bir kelime fısılda, hangi kelimeyi seçtin?",{tags:["görev"],hardness:3}),
-    mk("Ne çekici","Sende son zamanlarda en çekici bulduğum şeyi tahmin etmeni istiyorum. Ben de sonra söyleyeceğim.",{tags:["tahmin"],hardness:2}),
-    mk("Küçük itiraf","Söylemekten çekindiğin küçük bir 'seni istiyorum' cümlesi var mı bugünlerde?",{tags:["itiraf"],hardness:3}),
+    // ——— İlk Çekim (first-attraction) · 16
+    mk("İlk dikkat","Bende ilk dikkatini çeken ama o an söylemediğin şey neydi?",{tags:["flört","ilk","çekim"],category:"first-attraction",hardness:1,type:"question"}),
+    mk("İlk üç kelime","Beni ilk gördüğünde kafanda oluşan ilk üç kelime neydi?",{tags:["flört","ilk"],category:"first-attraction",hardness:1,type:"question"}),
+    mk("Gerçek çekim anı","Beni ilk kez sadece 'güzel/yakışıklı' değil, gerçekten çekici bulduğun an neydi?",{tags:["flört","çekim"],category:"first-attraction",hardness:2,type:"question"}),
+    mk("İlk konuşma detayı","İlk konuşmalarımızdan aklında kalan küçük bir detay ne?",{tags:["flört","anı"],category:"first-attraction",hardness:1,type:"question"}),
+    mk("Sesime tepki","İlk kez sesimi duyduğunda içinde ne oldu?",{tags:["flört","ses"],category:"first-attraction",hardness:2,type:"question"}),
+    mk("İlk uzun bakış","Bana ilk uzunca baktığında ne düşünüyordun, dürüstçe?",{tags:["flört","bakış"],category:"first-attraction",hardness:2,type:"question"}),
+    mk("Beklenmedik özellik","Bende bulmayı beklemediğin ama görünce hoşuna giden bir şey neydi?",{tags:["flört","sürpriz"],category:"first-attraction",hardness:1,type:"question"}),
+    mk("Yakalayan gülüş","Bir gülüşümü hatırla — hangisiydi seni içten yakalayan?",{tags:["flört","gülüş"],category:"first-attraction",hardness:2,type:"question"}),
+    mk("İlk mesaj hali","İlk mesajlaşmalarımızda benim hangi tarafım seni çekmişti?",{tags:["flört","mesaj"],category:"first-attraction",hardness:1,type:"question"}),
+    mk("Adı konmamış tavır","Bende gördüğün, adını koyamadığın ama çekici bulduğun bir tavır var mı?",{tags:["flört","tavır"],category:"first-attraction",hardness:2,type:"question"}),
+    mk("İlk samimi gülümseme","Sence sana ilk kez samimi gülümsediğim an neydi? Tahmin et.",{tags:["flört","tahmin"],category:"first-attraction",hardness:1,type:"guess"}),
+    mk("Yakınlaşma anı","Sana ilk kez yakınlaşmayı istediğim anı tahmin et.",{tags:["flört","tahmin"],category:"first-attraction",hardness:2,type:"guess"}),
+    mk("Daha çok vakit","Beni ilk kez 'bu insanla daha çok vakit geçirmek istiyorum' dediğin an ne zamandı?",{tags:["flört","istek"],category:"first-attraction",hardness:2,type:"question"}),
+    mk("Sevdiğin enerji","Bende enerjimi en çok sevdiğin bir an hangisi?",{tags:["flört","enerji"],category:"first-attraction",hardness:1,type:"question"}),
+    mk("Yeniden tanışsak","Şu an ilk kez tanışıyor olsak dikkatini önce nem çekerdi?",{tags:["flört","hayal"],category:"first-attraction",hardness:2,type:"question"}),
+    mk("İlk yakın oturuş","İlk kez yan yana çok yakın oturduğumuz anı hatırlıyor musun, o an ne hissettin?",{tags:["flört","yakınlık"],category:"first-attraction",hardness:2,type:"question"}),
+
+    // ——— İltifatlar (compliments) · 16
+    mk("Beş kelime iltifat","Bana yalnızca beş kelimeyle içten bir iltifat et.",{tags:["flört","iltifat"],category:"compliments",hardness:1,type:"dare"}),
+    mk("Farkına varmadığım","Bende benim fark etmediğim ama senin çok çekici bulduğun bir özellik ne?",{tags:["flört","iltifat"],category:"compliments",hardness:2,type:"question"}),
+    mk("Sesimin sevdiği","Sesimde en sevdiğin şey ne?",{tags:["flört","ses"],category:"compliments",hardness:1,type:"question"}),
+    mk("Hangi halim çekici","Beni hangi halimde özellikle çekici buluyorsun?",{tags:["flört","hal"],category:"compliments",hardness:1,type:"question"}),
+    mk("Zekâ iltifatı","Bende zekâm ya da mizahım tarafımdan hoşuna giden bir şeyi söyle.",{tags:["flört","zeka"],category:"compliments",hardness:1,type:"dare"}),
+    mk("Uyandıran bakış","Bende hangi bakışım seni uyandırıyor?",{tags:["flört","bakış"],category:"compliments",hardness:2,type:"question"}),
+    mk("Elin sevdiği","Elimin nesini seviyorsun — dürüst ol.",{tags:["flört","el"],category:"compliments",hardness:1,type:"question"}),
+    mk("Küçük etkileyen","Bende çok küçük ama seni her seferinde etkileyen bir detay ne?",{tags:["flört","detay"],category:"compliments",hardness:2,type:"question"}),
+    mk("Gülüşümü tarif","Gülüşümü sana bakmadan tarif et.",{tags:["flört","gülüş"],category:"compliments",hardness:2,type:"dare"}),
+    mk("Sana özel yapan","Beni sana özel yapan bir hareketimi söyle.",{tags:["flört","biz"],category:"compliments",hardness:1,type:"question"}),
+    mk("Güven veren tavır","Sende güven uyandıran bir tavrım var mı? Hangisi?",{tags:["flört","güven"],category:"compliments",hardness:1,type:"question"}),
+    mk("Yeni iltifat","Bana daha önce hiç kullanmadığın kısa bir iltifat et.",{tags:["flört","iltifat"],category:"compliments",hardness:2,type:"dare"}),
+    mk("Hiç söylemediğin","Bende hoşuna giden ama utandığın için hiç söylemediğin bir şey var mı?",{tags:["flört","itiraf"],category:"compliments",hardness:2,type:"question"}),
+    mk("Kokum ve çağrışım","Kokumun sende ne çağrıştırdığını tek bir cümlede söyle.",{tags:["flört","koku"],category:"compliments",hardness:1,type:"dare"}),
+    mk("İçten büyüleyen","Bende seni içten içe büyüleyen bir şey söyle — abartma, gerçek olan.",{tags:["flört","içten"],category:"compliments",hardness:2,type:"dare"}),
+    mk("Üç kelime çekici","Beni üç kelimeyle çekici yapan şeyleri söyle.",{tags:["flört","iltifat"],category:"compliments",hardness:1,type:"dare"}),
+
+    // ——— Bakışlar ve Beden Dili (body-language) · 16
+    mk("Utangaç bakış","Benim sana baktığım hangi anlarda utanıp gülmek istiyorsun?",{tags:["flört","bakış"],category:"body-language",hardness:2,type:"question"}),
+    mk("Sessiz iletişim","Birbirimize hiç konuşmadan yalnızca bakışlarla ne anlatabiliyoruz?",{tags:["flört","beden"],category:"body-language",hardness:2,type:"question"}),
+    mk("Hoşuna giden hareket","Bende hoşuna giden bir beden dili hareketi ne?",{tags:["flört","beden"],category:"body-language",hardness:1,type:"question"}),
+    mk("Yaklaşma anı","Sana yaklaştığımda ilk fark ettiğin şey ne oluyor?",{tags:["flört","yakınlık"],category:"body-language",hardness:2,type:"question"}),
+    mk("On saniye göz","10 saniye boyunca birbirinizin gözlerine bakın, sonra ilk aklınıza geleni söyleyin.",{tags:["flört","göz"],category:"body-language",hardness:2,type:"moment"}),
+    mk("Alın alına nefes","Alnınızı birleştirip 15 saniye sadece nefesinizi dinleyin.",{tags:["flört","nefes"],category:"body-language",hardness:2,type:"moment"}),
+    mk("Elimi tutuş","Elimi nasıl tutmam sende ısınma hissi yaratıyor?",{tags:["flört","el"],category:"body-language",hardness:2,type:"question"}),
+    mk("Sarılış tarzı","Hangi sarılışım seni en çok yumuşatıyor: kısa-sıkı, uzun-sessiz, arkadan?",{tags:["flört","sarılma"],category:"body-language",hardness:2,type:"question"}),
+    mk("Yakın oturuş","Şu an ne kadar yakın oturmak istersin — sadece söyle, uygulama sana kalsın.",{tags:["flört","yakınlık"],category:"body-language",hardness:2,type:"question"}),
+    mk("Sessiz gülümseme","Karşımda hiç konuşmadan 20 saniye gülümse; gözünü ayırma.",{tags:["flört","gülüş"],category:"body-language",hardness:2,type:"moment"}),
+    mk("Saça dokunma","Saçıma dokunulmasını seviyor musun, nasıl?",{tags:["flört","saç"],category:"body-language",hardness:2,type:"question"}),
+    mk("Bileğe iki parmak","Bileğime hafifçe iki parmakla dokun ve orada bir an bırak.",{tags:["flört","dokunuş"],category:"body-language",hardness:3,type:"dare"}),
+    mk("Kelimesiz istek","Kelime kullanmadan, sadece bir hareketle 'seni istiyorum' de.",{tags:["flört","beden"],category:"body-language",hardness:3,type:"dare"}),
+    mk("Otuz saniye yüz","30 saniye boyunca sadece yüzüme bak; sonra üç kelimeyle tarif et.",{tags:["flört","gözlem"],category:"body-language",hardness:2,type:"moment"}),
+    mk("Yanağa nefes","Yanağıma hafifçe eğil, konuşmadan bir an dur, sonra geri çekil.",{tags:["flört","yakınlık"],category:"body-language",hardness:3,type:"dare"}),
+    mk("Heyecan işareti","Heyecanlandığında bedeninde ilk beliren küçük işaret ne?",{tags:["flört","farkındalık"],category:"body-language",hardness:2,type:"question"}),
+
+    // ——— Mesajlaşma ve Özlem (messages-longing) · 16
+    mk("Gülümseten mesaj","Benden gelen nasıl bir mesaj seni istemsizce gülümsetir?",{tags:["flört","mesaj"],category:"messages-longing",hardness:1,type:"question"}),
+    mk("Yazmadığın","Beni çok özlediğinde yazmak isteyip bazen yazmadığın şey ne?",{tags:["flört","özlem"],category:"messages-longing",hardness:2,type:"question"}),
+    mk("Sesli mesaj tonu","Sesli mesajlarımda en çok hangi tonumu seviyorsun?",{tags:["flört","ses"],category:"messages-longing",hardness:1,type:"question"}),
+    mk("Gece beklenmedik","Gece beklenmedik bir mesaj atsam içinde ne yazmasını isterdin?",{tags:["flört","gece"],category:"messages-longing",hardness:2,type:"question"}),
+    mk("Günaydın stili","Nasıl bir günaydın mesajı sabahını gerçekten güzelleştirir?",{tags:["flört","sabah"],category:"messages-longing",hardness:1,type:"question"}),
+    mk("Emoji dili","Sadece emojiyle bana 'seni düşünüyorum' mesajı kur — üç emoji.",{tags:["flört","emoji"],category:"messages-longing",hardness:1,type:"dare"}),
+    mk("Özlem işareti","Beni özlediğini bedeninde nasıl fark edersin?",{tags:["flört","özlem"],category:"messages-longing",hardness:2,type:"question"}),
+    mk("Geri okurken","Bir gün eski mesajlarımızı geri okusan hangi konuşma seni gülümsetirdi?",{tags:["flört","anı"],category:"messages-longing",hardness:1,type:"question"}),
+    mk("Ara beni",'Hangi anlarda benim seni aramamı bekliyorsun ama söylemiyorsun?',{tags:["flört","arama"],category:"messages-longing",hardness:2,type:"question"}),
+    mk("İyi geceler stili","Nasıl bir 'iyi geceler' seni gerçekten uykuya taşır?",{tags:["flört","gece"],category:"messages-longing",hardness:1,type:"question"}),
+    mk("Üç kelime flört","Bana şu an gönderilmiş gibi düşün: üç kelimeyle bir flört mesajı yaz.",{tags:["flört","mesaj"],category:"messages-longing",hardness:2,type:"dare"}),
+    mk("Yazmayı sevdiğin an","Bana en çok mesaj yazmayı canının istediği an genelde ne zaman oluyor?",{tags:["flört","mesaj"],category:"messages-longing",hardness:1,type:"question"}),
+    mk("Sesli uzunluk","Sesli mesaj uzun mu kısa mı hoşuna gidiyor, neden?",{tags:["flört","ses"],category:"messages-longing",hardness:1,type:"question"}),
+    mk("Uzaktan flört","Bir hafta uzakta olsak seni içten çekecek nasıl bir mesaj atardım?",{tags:["flört","uzak"],category:"messages-longing",hardness:2,type:"question"}),
+    mk("Kısa itiraf yaz","Bana bir cümlelik küçük bir 'seni istiyorum' cümlesi yaz — atma, sadece söyle.",{tags:["flört","itiraf"],category:"messages-longing",hardness:3,type:"dare"}),
+    mk("Merak tonu","Seni merak ettiğimi hangi mesaj tarzımdan anlıyorsun?",{tags:["flört","merak"],category:"messages-longing",hardness:1,type:"question"}),
+
+    // ——— Romantik Tercihler (romantic-preferences) · 16
+    mk("Mükemmel akşam başı","Mükemmel bir flört akşamı senin için nasıl başlar?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"question"}),
+    mk("Kalabalıkta temas","Kalabalığın içinde küçük bir temas mı, yalnızken uzun bir sarılma mı? Neden?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:2,type:"choice"}),
+    mk("Sürpriz mi plan mı","Sürpriz bir buluşma mı, birlikte planladığımız bir akşam mı? Neden?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Sessiz mi sohbet mi","Birlikte sessizce oturmak mı, sabaha kadar konuşmak mı?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Ev mi sokak mı","Romantizm için ev-mumlar mı, gecenin sokağı mı? Neden?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Yemek mi dans mı","Uzun yemek mi, tek şarkılık bir dans mı?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Hediye mi not mu","Küçük düşünülmüş bir hediye mi, kısa el yazısı bir not mu?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Yakınlaşma tempo","Yavaş bir yakınlaşma mı, hızlı ve oyunlu bir çekim mi? Neden?",{tags:["flört","tempo"],category:"romantic-preferences",hardness:2,type:"choice"}),
+    mk("Film mi müzik mi","Sarılmalı film gecesi mi, gözümüz kapalı müzik dinleme mi?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Gece yürüyüşü türü","Sahilde gece yürüyüşü mü, arabada uzun yol mu?",{tags:["flört","gece"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Öpücük başlangıcı","İlk bir öpücük için: alın, yanak, boyun, dudak — nereden başlamak sana daha keyifli gelir? Sadece söyle.",{tags:["flört","öpücük"],category:"romantic-preferences",hardness:3,type:"choice"}),
+    mk("Yakınlık ritmi","Fiziksel yakınlıkta uzun ve yavaş mı, kısa ve oyunlu mu?",{tags:["flört","tempo"],category:"romantic-preferences",hardness:2,type:"choice"}),
+    mk("Işık tercihi","Loş ışık mı, mum ışığı mı, yarı karanlık mı?",{tags:["flört","ortam"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Sürpriz tipi","Sürpriz kısa tatil mi, sürpriz ev akşamı mı?",{tags:["flört","tercih"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Not mu sesli mi","Sana daha çok dokunan: sabah bırakılan not mu, gece gelen sesli mesaj mı?",{tags:["flört","jest"],category:"romantic-preferences",hardness:1,type:"choice"}),
+    mk("Ziyaret şekli","Habersiz ziyaret mi, önceden söylenmiş buluşma mı? Neden?",{tags:["flört","sürpriz"],category:"romantic-preferences",hardness:1,type:"choice"}),
+
+    // ——— Mini Flört Görevleri (mini-flirt-dares) · 18
+    mk("On saniye göz teması","Partnerinin gözlerine 10 saniye bak ve ilk aklına gelen güzel şeyi söyle.",{tags:["flört","göz"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Yeni tek cümle","Partnerine daha önce hiç kullanmadığın kısa bir iltifat et.",{tags:["flört","iltifat"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Flörtöz davet","Bir sonraki buluşmanız için tek cümlelik flörtöz bir davet oluştur.",{tags:["flört","davet"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+    mk("Elini tut","Partnerinin elini tut ve onda sana güven veren bir şeyi söyle.",{tags:["flört","el"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Bu geceye takma ad","Partnerin için sadece bu geceye ait yeni bir takma ad üret.",{tags:["flört","isim"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Kısa dans","Bir şarkının bir bölümünde birlikte kısa bir dans edin.",{tags:["flört","dans"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+    mk("Aynada poz","Aynada birlikte bir poz verin — sadece ikinize ait, göndermek zorunda değilsiniz.",{tags:["flört","foto"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Anıyı romantik anlat","Ortak bir anımızı sanki bir filmde anlatıyormuş gibi kısa ve romantik anlat.",{tags:["flört","anı"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Yirmi saniye güldür","Partnerini bir şaka veya tuhaf yüzle güldürmeye çalış — 20 saniyen var.",{tags:["flört","gülüş"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Kulağa tatlı söz","Partnerinin kulağına yalnızca onun duyabileceği tatlı bir cümle söyle.",{tags:["flört","kulak"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+    mk("Beş kelimeyle","Partnerine yalnızca beş kelimeyle bir iltifat et — ne az, ne fazla.",{tags:["flört","iltifat"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Aynı anda üç kelime","Üçe kadar sayın; partneriniz için en çekici üç kelimenizi aynı anda söyleyin.",{tags:["flört","oyun"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+    mk("Sessiz iltifat","Kelime kullanmadan, sadece bir hareketle partnerine iltifat et.",{tags:["flört","beden"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+    mk("İki dakika dinle","İki dakika boyunca kesintisiz sadece partnerini dinle, telefon yok.",{tags:["flört","dikkat"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Bu hafta yakalayan","Partnerine bu hafta onda seni yakalayan bir anı söyle.",{tags:["flört","itiraf"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+    mk("Omza dokun teşekkür","Partnerinin omzuna hafifçe dokun ve gözünün içine bakarak bir teşekkür söyle.",{tags:["flört","dokunuş"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+    mk("Sürpriz söz ver","Yarın için partnerine küçük bir flörtöz sürpriz planla — sadece söz ver, detayı sakla.",{tags:["flört","plan"],category:"mini-flirt-dares",hardness:1,type:"dare"}),
+    mk("Bakış selfie","Birlikte bir selfie çekin; sadece bakışlarınızla flört edin, göndermek zorunda değilsiniz.",{tags:["flört","foto"],category:"mini-flirt-dares",hardness:2,type:"dare"}),
+
+    // ——— Tatlı Cesaretler (sweet-dares) · 18
+    mk("Otuz saniye göz","İkiniz de istiyorsanız 30 saniye kesintisiz göz teması kurun, gülmek serbest.",{tags:["flört","göz"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("Yakın fısıltı iltifat","Partnerine yaklaş ve yalnızca onun duyacağı şekilde en çekici bulduğun özelliğini söyle.",{tags:["flört","yakınlık"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("Yirmi saniye sarılma","İkiniz de istiyorsanız 20 saniye boyunca birbirinize sıkıca sarılın.",{tags:["flört","sarılma"],category:"sweet-dares",hardness:2,type:"dare"}),
+    mk("Yüzde nokta","Partnerinin yüzünde öpmeyi en sevdiğin yeri söyle; ikiniz de istiyorsanız uygula.",{tags:["flört","öpücük"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("On beş saniye ciddi","Birbirinize hiç gülmeden 15 saniye bakmayı deneyin.",{tags:["flört","göz"],category:"sweet-dares",hardness:2,type:"dare"}),
+    mk("Kulağa üç saniye","Partnerinin kulağına yaklaş, konuşmadan üç saniye kal, sonra tek kelime söyle.",{tags:["flört","kulak"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("Alına öpücük","İkiniz de istiyorsanız partnerinin alnına yumuşak bir öpücük ver.",{tags:["flört","öpücük"],category:"sweet-dares",hardness:2,type:"dare"}),
+    mk("Elden öpücük","İkiniz de istiyorsanız partnerinin elini tut ve el üstüne yumuşak bir öpücük bırak.",{tags:["flört","el"],category:"sweet-dares",hardness:2,type:"dare"}),
+    mk("Yanağa yumuşak","İkiniz de istiyorsanız yanağına yumuşak, kısa bir öpücük ver.",{tags:["flört","yanak"],category:"sweet-dares",hardness:2,type:"dare"}),
+    mk("Öpücük tarifi","Şu an bir öpücük istiyorsan onu tarif et: nerede, ne kadar, nasıl?",{tags:["flört","öpücük"],category:"sweet-dares",hardness:3,type:"question"}),
+    mk("Boyun mesafesi","Partnerinin boynuna 3 cm yaklaş, konuşmadan 5 saniye dur, sonra geri çekil.",{tags:["flört","yakınlık"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("En sıcak söz","Partnerine yaklaş ve şu ana kadar aklında tuttuğun en sıcak sözünü fısılda.",{tags:["flört","söz"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("Turu kısa öpücükle","İkiniz de istiyorsanız çok kısa, tek bir öpücükle bu turu kapatın.",{tags:["flört","öpücük"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("Diz üstü küçük söz","Karşılıklı diz çök, ellerinizi tutun ve bu hafta için partnerine küçük bir söz ver.",{tags:["flört","söz"],category:"sweet-dares",hardness:2,type:"dare"}),
+    mk("Bakışla yakınlaşma","Yavaşça birbirinize yaklaşın; hangi mesafede duracağınızı bakışlarınız söylesin.",{tags:["flört","göz"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("Beş saniye poz","Birbirinize sarılıp beş saniye o pozda kalın; sonra gülmeden gözünüzü ayırın.",{tags:["flört","poz"],category:"sweet-dares",hardness:2,type:"dare"}),
+    mk("Kısa kur yapma","Bugün ilk kez tanışıyor gibi bana kur yap, sadece iki cümle.",{tags:["flört","roleplay"],category:"sweet-dares",hardness:3,type:"dare"}),
+    mk("Fısıltı üç kelime","Kulağıma yaklaş ve yalnızca üç kelime fısılda — hangileri olduğunu sana bırakıyorum.",{tags:["flört","fısıltı"],category:"sweet-dares",hardness:3,type:"dare"}),
+
+    // ——— Beni Nasıl Görüyorsun? (how-you-see-me) · 16
+    mk("Flört silahım","Sence benim en güçlü flört silahım ne?",{tags:["flört","tahmin"],category:"how-you-see-me",hardness:1,type:"guess"}),
+    mk("Üç kelime çekim","Beni üç kelimeyle çekici yapan şeyleri söyle.",{tags:["flört","iltifat"],category:"how-you-see-me",hardness:1,type:"question"}),
+    mk("Kendime kör hal","Kendimi çekici bulmadığım ama senin çok beğendiğin halim hangisi sence?",{tags:["flört","farkındalık"],category:"how-you-see-me",hardness:2,type:"question"}),
+    mk("Film karakterim","Beni bir romantik film karakteri olarak düşünsen nasıl biri olurdum?",{tags:["flört","hayal"],category:"how-you-see-me",hardness:1,type:"question"}),
+    mk("Görünmeyen çekicilik","Bende dışarıdan görünmeyen ama seni yakalayan bir yön ne?",{tags:["flört","içten"],category:"how-you-see-me",hardness:2,type:"question"}),
+    mk("Flört tarzım tek kelime","Benim flört tarzımı bir kelimeyle tarif etsen ne olurdu?",{tags:["flört","tarz"],category:"how-you-see-me",hardness:1,type:"question"}),
+    mk("Gülüşümün sırrı","Gülüşümün seni yakalayan tarafını tahmin et — sonra ben söyleyeceğim.",{tags:["flört","gülüş"],category:"how-you-see-me",hardness:1,type:"guess"}),
+    mk("Ses tonum çekici","Hangi ses tonumda beni daha çekici bulduğunu söyle.",{tags:["flört","ses"],category:"how-you-see-me",hardness:2,type:"question"}),
+    mk("En güzel ışık","Beni en güzel hangi ışıkta, hangi anda gördüğünü söyle.",{tags:["flört","hal"],category:"how-you-see-me",hardness:2,type:"question"}),
+    mk("Komik ve çekici","Bende komik ama aynı anda çekici bulduğun bir yön ne?",{tags:["flört","komik"],category:"how-you-see-me",hardness:1,type:"question"}),
+    mk("Güven ve çekim","Bende sana güven veren, çekimi güçlendiren bir şeyi söyle.",{tags:["flört","güven"],category:"how-you-see-me",hardness:2,type:"question"}),
+    mk("Farkında değilim","Sence en fazla farkında olmadığım çekici tarafım hangisi?",{tags:["flört","farkındalık"],category:"how-you-see-me",hardness:2,type:"question"}),
+    mk("Üç cümlede beni","Beni tanımayan birine üç cümlede çekici tarafımı anlat.",{tags:["flört","iltifat"],category:"how-you-see-me",hardness:2,type:"dare"}),
+    mk("Hava durumu","Bende enerjimi tek bir hava durumuyla tarif etsen ne derdin?",{tags:["flört","enerji"],category:"how-you-see-me",hardness:1,type:"question"}),
+    mk("Bu geceki halim","Bu geceki halimin en çekici tarafı sence ne? Tahmin et.",{tags:["flört","şimdi"],category:"how-you-see-me",hardness:1,type:"guess"}),
+    mk("Sana da çekim","Bende sana kendini de çekici hissettiren bir şey var mı?",{tags:["flört","biz"],category:"how-you-see-me",hardness:2,type:"question"}),
+
+    // ——— Flört Senaryoları (flirt-scenarios) · 18
+    mk("Barda yeniden tanış","Bir barda birbirimizi hiç tanımıyor gibi tanışsak, ilk cümlen ne olurdu?",{tags:["flört","senaryo"],category:"flirt-scenarios",hardness:2,type:"question"}),
+    mk("Film ilk sahne","Bir filmde ilk kez karşılaşan iki karakter olsak sahnemiz nerede geçerdi?",{tags:["flört","senaryo"],category:"flirt-scenarios",hardness:1,type:"question"}),
+    mk("Yağmur altında","Yağmur altında kalmış olsak hangimiz romantik davranır, hangimiz kaçacak yer arardı?",{tags:["flört","yağmur"],category:"flirt-scenarios",hardness:1,type:"question"}),
+    mk("Gizli hayran notu","Bana gizli bir hayran notu bıraksan içinde yalnızca hangi cümle yazardı?",{tags:["flört","not"],category:"flirt-scenarios",hardness:2,type:"dare"}),
+    mk("Havaalanı rastlaşma","Havaalanında rastlaştık, uçuşlar farklı — ilk 60 saniyede ne yaparsın?",{tags:["flört","senaryo"],category:"flirt-scenarios",hardness:2,type:"question"}),
+    mk("Otel lobisi","Bir otel lobisinde yabancı iki insan olsak, senin yanıma gelme bahanen ne olurdu?",{tags:["flört","senaryo"],category:"flirt-scenarios",hardness:2,type:"question"}),
+    mk("Sahil gece yürüyüş","Sahilde gece yürüyüşündeyiz; sen sessiz ol, ben konuşuyorum. Aklında ne gezerdi?",{tags:["flört","gece"],category:"flirt-scenarios",hardness:2,type:"question"}),
+    mk("Tren yolculuğu","Karşılıklı oturduğumuz uzun bir tren yolculuğundayız — ilk soruyu hangimiz sorar, ne sorar?",{tags:["flört","tren"],category:"flirt-scenarios",hardness:1,type:"question"}),
+    mk("Elektrik kesintisi","Evde ışıklar kesildi, sadece mum var — hangi konuya yönelirdik?",{tags:["flört","ev"],category:"flirt-scenarios",hardness:2,type:"question"}),
+    mk("Dans gecesi daveti","Bir dans gecesindeyiz, sen dansı bilmiyorsun. Beni davet etme cümlen ne olurdu?",{tags:["flört","dans"],category:"flirt-scenarios",hardness:2,type:"dare"}),
+    mk("Maskeli balo","Maskeli balodayız, birbirimizi tanımıyoruz gibi. Beni tanımanı sağlayacak ilk üç kelimen ne?",{tags:["flört","balo"],category:"flirt-scenarios",hardness:2,type:"dare"}),
+    mk("Tatilde restoran","Tatilde tesadüfen aynı restorandayız. Yanıma gelmek için nasıl bir bahane bulurdun?",{tags:["flört","tatil"],category:"flirt-scenarios",hardness:1,type:"question"}),
+    mk("Parfüm reklamı","Birlikte kısa bir parfüm reklamı çektiriyoruz — sahnenin son karesinde ne oluyor?",{tags:["flört","hayal"],category:"flirt-scenarios",hardness:2,type:"question"}),
+    mk("Romcom klişesi","Bir romantik komedi sahnesi yazacaksan bize hangi klişeyi yaptırırdın?",{tags:["flört","komedi"],category:"flirt-scenarios",hardness:1,type:"question"}),
+    mk("Balkon konuşması","Farklı dairelerde oturuyoruz, ilk kez balkondan gözlerimiz karşılaştı. Ne dersin?",{tags:["flört","balkon"],category:"flirt-scenarios",hardness:2,type:"dare"}),
+    mk("Kütüphane fısıltısı","Kütüphanede yan yana oturduk, konuşmak yasak. Aramızda nasıl bir dilsiz flört başlar?",{tags:["flört","beden"],category:"flirt-scenarios",hardness:2,type:"question"}),
+    mk("Bir hafta mesaj","Bir hafta sadece kısa mesajla tanışmış olsak, seni en çok hangi mesaj tarzım kalbinden yakalardı?",{tags:["flört","mesaj"],category:"flirt-scenarios",hardness:1,type:"question"}),
+    mk("Son metro","Son metroda karşılıklı oturuyoruz, sadece iki durak var. İlk cümleni söyle.",{tags:["flört","metro"],category:"flirt-scenarios",hardness:3,type:"dare"}),
   ],
   intimacy: [
     mk("Sınır","Bu oyunda her an 'pas' diyebilirsin. Şu an kendini nasıl hissediyorsun, 1-5 arası?",{tags:["rıza","sınır"],category:"rıza",hardness:1}),
@@ -1268,8 +1420,14 @@ function resetSeen(mod){storage.set(K.seen(mod),[])}
 
 function drawCard(mod,opts){
   const category = opts && opts.category;
+  const maxHardness = opts && opts.maxHardness;
+  const minHardness = opts && opts.minHardness;
+  const excludeId = opts && opts.excludeId;
   let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
   if(category) pool = pool.filter(c=>c.category===category);
+  if(typeof maxHardness === "number") pool = pool.filter(c=>(c.hardness||2)<=maxHardness);
+  if(typeof minHardness === "number") pool = pool.filter(c=>(c.hardness||2)>=minHardness);
+  if(excludeId) pool = pool.filter(c=>c.id!==excludeId);
   if(!pool.length) return null;
   const s = getSettings();
   if(s.favoritesOnly){
@@ -1284,15 +1442,32 @@ function drawCard(mod,opts){
   if(unseenCustom.length) return pick(unseenCustom);
   const unseenCore = pool.filter(c=>c.source==="core" && !seen.has(c.id));
   if(unseenCore.length) return pick(unseenCore);
+  // Fallback: allow already-seen cards for soften/replacement paths.
+  if(opts && opts.allowSeen && pool.length) return pick(pool);
   return {__exhausted:true};
 }
 
 function countUnseen(mod,opts){
   const category = opts && opts.category;
+  const maxHardness = opts && opts.maxHardness;
   let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
   if(category) pool = pool.filter(c=>c.category===category);
+  if(typeof maxHardness === "number") pool = pool.filter(c=>(c.hardness||2)<=maxHardness);
   const seen = new Set(getSeen(mod));
   return pool.filter(c=>!seen.has(c.id)).length;
+}
+
+function softenCard(mod,currentCard,opts){
+  // Find a lower-hardness card in the same category first, then fall back to module-wide.
+  const currentH = currentCard && (currentCard.hardness||2);
+  const targetMax = Math.max(1, (currentH||2) - 1);
+  const category = opts && opts.category;
+  const maxHardness = opts && opts.maxHardness;
+  const cap = Math.min(targetMax, typeof maxHardness==="number"?maxHardness:5);
+  let c = drawCard(mod,{category, maxHardness:cap, excludeId:currentCard?.id});
+  if(!c || c.__exhausted) c = drawCard(mod,{maxHardness:cap, excludeId:currentCard?.id});
+  if(!c || c.__exhausted) c = drawCard(mod,{maxHardness:cap, excludeId:currentCard?.id, allowSeen:true});
+  return c;
 }
 
 function addCards(mod,newCards){
@@ -1362,11 +1537,17 @@ function getDailyQuestion(){
       if(found) return {card:found,mod:m};
     }
   }
-  // pick a fresh one from any level
+  // pick a fresh one from any level, guarding flirt to only question-type & hardness<=2
   const all=[];
   for(const m of LEVELS){
     for(const c of loadPool(m)){
-      if(!isDisabled(m,c.id))all.push({card:c,mod:m});
+      if(isDisabled(m,c.id)) continue;
+      if(m==="flirt"){
+        const t = c.type||"question";
+        if(t!=="question" && t!=="choice" && t!=="guess") continue;
+        if((c.hardness||2) > 2) continue;
+      }
+      all.push({card:c,mod:m});
     }
   }
   if(!all.length) return null;
@@ -1626,34 +1807,107 @@ const WARMUP_CATEGORIES = [
   {slug:"about-partner", label:"Tahmin"},
   {slug:"scenarios", label:"Senaryolar"},
 ];
+const FLIRT_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"first-attraction", label:"İlk Çekim"},
+  {slug:"compliments", label:"İltifat"},
+  {slug:"body-language", label:"Bakışlar"},
+  {slug:"messages-longing", label:"Mesajlar"},
+  {slug:"romantic-preferences", label:"Tercihler"},
+  {slug:"mini-flirt-dares", label:"Mini Görev"},
+  {slug:"sweet-dares", label:"Tatlı Cesaret"},
+  {slug:"how-you-see-me", label:"Beni Nasıl Görüyorsun?"},
+  {slug:"flirt-scenarios", label:"Senaryolar"},
+];
+const FLIRT_LEVELS = [
+  {slug:"sweet", label:"Tatlı", maxH:1},
+  {slug:"attractive", label:"Çekimli", maxH:2},
+  {slug:"bold", label:"Cesur", maxH:3},
+  {slug:"mixed", label:"Karışık", maxH:5},
+];
 const K_WARMUP_FILTER = "bo.warmupFilter.v1";
+const K_FLIRT_FILTER = "bo.flirtFilter.v1";
+const K_FLIRT_LEVEL = "bo.flirtLevel.v1";
+
+function chipButton(label,active,onClick){
+  return el("button",{
+    class:"tag"+(active?" gold":""),
+    style:"flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px",
+    onclick:onClick
+  }, label);
+}
+function chipRow(items,isActive,onSelect){
+  const row = el("div",{style:"display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;scrollbar-width:none"});
+  items.forEach(it=>row.append(chipButton(it.label, isActive(it), ()=>onSelect(it))));
+  return row;
+}
 
 function renderLevel(app,mod){
   app.append(topbar(MODULES[mod].name));
 
+  const isWarmup = mod === "warmup";
+  const isFlirt = mod === "flirt";
+  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : null;
+  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : null;
+
   let filter = "";
-  let filterBar = null;
-  let countLine = null;
+  if(FILTER_KEY){ try { filter = localStorage.getItem(FILTER_KEY) || ""; } catch(e){ filter = ""; } }
+
+  // Flirt-only: level selection
+  let flirtLevel = "mixed";
+  if(isFlirt){
+    try { flirtLevel = localStorage.getItem(K_FLIRT_LEVEL) || "mixed"; } catch(e){}
+  }
+  const settings = getSettings();
+  const globalCap = clamp(settings.hardness||3,1,5);
+  function effectiveMaxH(){
+    if(!isFlirt) return globalCap;
+    const lvl = FLIRT_LEVELS.find(l=>l.slug===flirtLevel) || FLIRT_LEVELS[3];
+    return Math.min(lvl.maxH, globalCap);
+  }
+
+  let levelBar = null, filterBar = null, countLine = null;
   const cardBox = el("div",{class:"card"});
 
-  if(mod === "warmup"){
-    try { filter = localStorage.getItem(K_WARMUP_FILTER) || ""; } catch(e){ filter = ""; }
-    filterBar = el("div",{class:"card",style:"padding:10px 12px"});
-    const chipRow = el("div",{style:"display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;scrollbar-width:none"});
-    WARMUP_CATEGORIES.forEach(cat=>{
-      const active = filter === cat.slug;
-      const chip = el("button",{
-        class:"tag"+(active?" gold":""),
-        style:"flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px",
-        onclick:()=>{
-          filter = cat.slug;
-          try { localStorage.setItem(K_WARMUP_FILTER, filter); } catch(e){}
-          drawAndShow();
+  if(isFlirt){
+    levelBar = el("div",{class:"card",style:"padding:10px 12px"});
+    levelBar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:6px"},"Flört seviyesi"));
+    const row = chipRow(FLIRT_LEVELS, (l)=>flirtLevel===l.slug, (l)=>{
+      const wasBold = flirtLevel==="bold";
+      const goingBold = l.slug==="bold";
+      const apply = ()=>{
+        flirtLevel = l.slug;
+        try{ localStorage.setItem(K_FLIRT_LEVEL, flirtLevel) }catch(e){}
+        drawAndShow();
+      };
+      if(goingBold && !wasBold){
+        const consent = storage.get(K.consent,{});
+        if(!consent.flirtBold){
+          openModal((box,close)=>{
+            box.append(el("h3",null,"Küçük hatırlatma"));
+            box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
+              "Flörtün güzel tarafı karşılıklı olmasıdır. Her görev değiştirilebilir, yumuşatılabilir veya pas geçilebilir."));
+            box.append(el("div",{style:"margin-top:16px"},btn("Tamam, başlayalım","primary",()=>{
+              consent.flirtBold=true;storage.set(K.consent,consent);close();apply();
+            })));
+          });
+          return;
         }
-      }, cat.label);
-      chipRow.append(chip);
+      }
+      apply();
     });
-    filterBar.append(chipRow);
+    levelBar.append(row);
+    app.append(levelBar);
+  }
+
+  if(CATS){
+    filterBar = el("div",{class:"card",style:"padding:10px 12px"});
+    const row = chipRow(CATS, (cat)=>filter===cat.slug, (cat)=>{
+      filter = cat.slug;
+      try{ localStorage.setItem(FILTER_KEY, filter) }catch(e){}
+      drawAndShow();
+    });
+    filterBar.append(row);
     countLine = el("div",{class:"muted",style:"margin-top:8px;font-size:12px"},"");
     filterBar.append(countLine);
     app.append(filterBar);
@@ -1661,32 +1915,47 @@ function renderLevel(app,mod){
 
   app.append(cardBox);
 
-  function refreshChips(){
-    if(!filterBar) return;
-    // Re-render chip active state
-    const chips = filterBar.querySelectorAll("button.tag");
-    chips.forEach((chip,i)=>{
-      const cat = WARMUP_CATEGORIES[i];
-      const active = filter === cat.slug;
-      chip.className = "tag"+(active?" gold":"");
-      chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
-    });
-  }
-  function refreshCount(){
-    if(!countLine) return;
-    const n = countUnseen(mod, filter?{category:filter}:undefined);
-    const label = filter ? (WARMUP_CATEGORIES.find(c=>c.slug===filter)?.label || "") : "Tümü";
-    countLine.textContent = `Görülmemiş ${n} kart kaldı · ${label}`;
+  function refreshBars(){
+    if(levelBar){
+      const chips = levelBar.querySelectorAll("button.tag");
+      chips.forEach((chip,i)=>{
+        const lvl = FLIRT_LEVELS[i];
+        const active = flirtLevel === lvl.slug;
+        chip.className = "tag"+(active?" gold":"");
+        chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
+      });
+    }
+    if(filterBar){
+      const chips = filterBar.querySelectorAll("button.tag");
+      chips.forEach((chip,i)=>{
+        const cat = CATS[i];
+        const active = filter === cat.slug;
+        chip.className = "tag"+(active?" gold":"");
+        chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
+      });
+    }
+    if(countLine){
+      const opts = {};
+      if(filter) opts.category = filter;
+      if(isFlirt) opts.maxHardness = effectiveMaxH();
+      const n = countUnseen(mod, opts);
+      const label = filter ? (CATS.find(c=>c.slug===filter)?.label || "") : "Tümü";
+      const suffix = isFlirt ? " · "+(FLIRT_LEVELS.find(l=>l.slug===flirtLevel)?.label||"") : "";
+      countLine.textContent = `Görülmemiş ${n} kart kaldı · ${label}${suffix}`;
+    }
   }
 
   function drawAndShow(){
-    refreshChips();
-    refreshCount();
+    refreshBars();
     cardBox.innerHTML="";
-    const c = drawCard(mod, filter?{category:filter}:undefined);
+    const opts = {};
+    if(filter) opts.category = filter;
+    if(isFlirt) opts.maxHardness = effectiveMaxH();
+    const c = drawCard(mod, opts);
     if(!c){cardBox.append(el("div",null,"Bu modülde henüz kart yok."));return}
     if(c.__exhausted){
-      cardBox.append(el("div",{class:"muted"},filter?"Bu kategorinin tüm kartlarını gördünüz.":"Bu modülün tüm kartlarını gördünüz."));
+      const msg = filter ? "Bu kategorinin uygun tüm kartlarını gördünüz." : "Bu modülün tüm kartlarını gördünüz.";
+      cardBox.append(el("div",{class:"muted"},msg));
       cardBox.append(el("div",{style:"height:12px"}));
       if(aiAvailable()){
         cardBox.append(btn("Yeni sorular üret (AI)","primary",()=>requestAi(mod,cardBox,drawAndShow)));
@@ -1698,25 +1967,45 @@ function renderLevel(app,mod){
       if(filter){
         cardBox.append(el("div",{style:"height:8px"}));
         cardBox.append(btn("Karışık moda dön","ghost",()=>{
-          filter="";try{localStorage.setItem(K_WARMUP_FILTER,"")}catch(e){}drawAndShow();
+          filter="";try{localStorage.setItem(FILTER_KEY,"")}catch(e){}drawAndShow();
         }));
       }
       return;
     }
     bumpSession(mod,"round");
     markSeen(mod,c.id);
-    renderCardUI(cardBox,mod,c,drawAndShow);
-    refreshCount();
+    renderCardUI(cardBox,mod,c,drawAndShow,{
+      filter, isFlirt, effectiveMaxH:isFlirt?effectiveMaxH():undefined,
+      onSoften:isFlirt ? (card)=>{
+        const soft = softenCard(mod, card, {category:filter||undefined, maxHardness:effectiveMaxH()});
+        if(!soft || soft.__exhausted){ toast("Daha yumuşak kart bulunamadı."); return; }
+        bumpSession(mod,"soften");
+        markSeen(mod,soft.id);
+        renderCardUI(cardBox,mod,soft,drawAndShow,{
+          filter, isFlirt, effectiveMaxH:effectiveMaxH(),
+          onSoften:(c2)=>{ toast("Zaten yumuşatıldı."); },
+          onDone:()=>{ bumpSession(mod,"done"); drawAndShow(); }
+        });
+        refreshBars();
+      } : undefined,
+      onDone:isFlirt ? ()=>{ bumpSession(mod,"done"); drawAndShow(); } : undefined,
+    });
+    refreshBars();
   }
   drawAndShow();
 }
 
-function renderCardUI(box,mod,c,onNext){
+function renderCardUI(box,mod,c,onNext,ext){
+  ext = ext||{};
+  const isTask = c && (c.type==="dare" || c.type==="moment");
   box.innerHTML="";
-  const head = el("div",{style:"display:flex;justify-content:space-between;align-items:center"},
+  const head = el("div",{style:"display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"},
     el("div",{class:"badge"},"#"+(c.category||"kart")),
-    el("div",{style:"display:flex;gap:6px"},
+    el("div",{style:"display:flex;gap:6px;flex-wrap:wrap"},
+      c.type ? el("span",{class:"tag"},c.type) : null,
       el("span",{class:"tag gold"},"seviye "+(c.hardness||"?")),
+      c.source==="ai" ? el("span",{class:"tag ai"},"AI") : null,
+      c.source==="custom" ? el("span",{class:"tag custom"},"özel") : null,
     )
   );
   box.append(head);
@@ -1724,11 +2013,21 @@ function renderCardUI(box,mod,c,onNext){
   box.append(el("div",{style:"margin-top:8px;font-size:16px"},c.prompt));
   box.append(tagList(c));
 
-  const row1 = el("div",{class:"row",style:"margin-top:16px"},
-    btn("Pas","ghost",()=>{bumpSession(mod,"pass");onNext()}),
-    btn("Sonraki kart","primary",onNext)
-  );
-  box.append(row1);
+  if(isTask && ext.isFlirt){
+    const rowDare = el("div",{class:"row",style:"margin-top:16px"},
+      btn("Yaptık","primary",()=>{ (ext.onDone||onNext)(c); }),
+      btn("Yumuşat","gold",()=>{ if(ext.onSoften) ext.onSoften(c); else onNext(); }),
+      btn("Pas","ghost",()=>{ bumpSession(mod,"pass"); onNext(); })
+    );
+    box.append(rowDare);
+  } else {
+    const row1 = el("div",{class:"row",style:"margin-top:16px"},
+      btn("Pas","ghost",()=>{bumpSession(mod,"pass");onNext()}),
+      btn("Sonraki kart","primary",onNext)
+    );
+    box.append(row1);
+  }
+
   const row2 = el("div",{class:"row",style:"margin-top:10px"},
     btn(isFav(mod,c.id)?"★ Favori":"☆ Favori","ghost",(e)=>{
       const on = toggleFav(mod,c.id);
