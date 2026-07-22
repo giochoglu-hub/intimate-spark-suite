@@ -1487,7 +1487,8 @@ function disableDie(pool,val){const d=getDiceDisabled();d[pool]=d[pool]||{};d[po
 function isDieDisabled(pool,val){const d=getDiceDisabled();return !!(d[pool]&&d[pool][val])}
 function poolValues(pool){
   const custom = getCustomDice()[pool]||[];
-  const base = (DICE[pool]||[]).concat(custom);
+  let base = (DICE[pool]||[]).concat(custom);
+  if(pool==="pozisyon"){ base = base.filter(v=>positionImage(v)); }
   return base.filter(v=>!isDieDisabled(pool,v));
 }
 function renderDice(app){
@@ -1495,7 +1496,7 @@ function renderDice(app){
   const state = { mode:"klasik", result:null, nightPools:new Set(["oyuncu","eylem","bolge","sure"]) };
   const card = el("div",{class:"card"});
   app.append(card);
-  card.append(el("div",{class:"muted"},"Bir mod seç. Her sonuçta ikiniz de onaylıyor musunuz sorusu çıkar."));
+  card.append(el("div",{class:"muted"},"Bir mod seç, zarı at. Çıkan zarı uygulayın; hazır olduğunuzda 'Yapıldı — Sonraki' deyip tekrar atın."));
   const modeRow = el("div",{class:"pill-row",style:"margin-top:12px"});
   const poolPicker = el("div",{style:"margin-top:12px",class:"hidden"});
   Object.keys(DICE_MODES).forEach(k=>{
@@ -1639,30 +1640,8 @@ function renderDice(app){
     bumpSession("sexDice","round");
     const actions = el("div",{style:"margin-top:12px"});
     rollArea.append(actions);
-    actions.append(el("div",{class:"consent-box"},"İkiniz de onaylıyor musunuz? İstediğinde her an durabilirsin."));
-    actions.append(el("div",{class:"row",style:"margin-top:10px"},
-      btn("Kabul et","primary",()=>afterAction("İyi eğlenceler. Hazır olduğunuzda yeniden atın.")),
-      btn("Yeniden at","ghost",roll)
-    ));
-    actions.append(el("div",{class:"row",style:"margin-top:8px"},
-      btn("Yumuşat","gold",()=>{
-        const soft = softenResult(dice);
-        rollArea.innerHTML="";
-        const g = el("div",{class:"dice-grid"});
-        Object.keys(soft).forEach(k=>{
-          g.append(makeDie(k, soft[k], false));
-        });
-        rollArea.append(g);
-        showResult(soft);
-      }),
-      btn("Pas","ghost",()=>{bumpSession("sexDice","pass");afterAction("Pas geçildi. Hazır olduğunuzda yeniden atın.")})
-    ));
-    actions.append(el("div",{class:"row",style:"margin-top:8px"},
-      btn("Bir daha gösterme","danger",()=>{
-        Object.keys(dice).forEach(k=>disableDie(k,dice[k]));
-        toast("Bu öğeler kalıcı olarak kaldırıldı. Ayarlardan geri açabilirsin.");
-        afterAction("Kaldırıldı. Yeniden atabilirsin.");
-      })
+    actions.append(el("div",{class:"row"},
+      btn("Yapıldı — Sonraki","primary",()=>{ rollArea.innerHTML=""; roll(); })
     ));
   }
 }
