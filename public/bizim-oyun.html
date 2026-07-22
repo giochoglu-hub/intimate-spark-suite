@@ -2291,13 +2291,28 @@ function renderLevel(app,mod){
   const isWarmup = mod === "warmup";
   const isFlirt = mod === "flirt";
   const isIntimacy = mod === "intimacy";
-  const hasLevels = isFlirt || isIntimacy;
-  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : isIntimacy ? INTIMACY_CATEGORIES : null;
-  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : isIntimacy ? K_INTIMACY_FILTER : null;
-  const LVL_SET = isFlirt ? FLIRT_LEVELS : isIntimacy ? INTIMACY_LEVELS : null;
-  const LVL_KEY = isFlirt ? K_FLIRT_LEVEL : isIntimacy ? K_INTIMACY_LEVEL : null;
-  const LVL_DEFAULT = isIntimacy ? "romantic" : "mixed";
-  const LVL_LABEL = isFlirt ? "Flört seviyesi" : "Yakınlaşma seviyesi";
+  const isMemories = mod === "memories";
+  const hasLevels = isFlirt || isIntimacy || isMemories;
+  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : isIntimacy ? INTIMACY_CATEGORIES : isMemories ? MEMORIES_CATEGORIES : null;
+  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : isIntimacy ? K_INTIMACY_FILTER : isMemories ? K_MEMORIES_FILTER : null;
+  const LVL_SET = isFlirt ? FLIRT_LEVELS : isIntimacy ? INTIMACY_LEVELS : isMemories ? MEMORIES_LEVELS : null;
+  const LVL_KEY = isFlirt ? K_FLIRT_LEVEL : isIntimacy ? K_INTIMACY_LEVEL : isMemories ? K_MEMORIES_LEVEL : null;
+  const LVL_DEFAULT = isIntimacy ? "romantic" : isMemories ? "light" : "mixed";
+  const LVL_LABEL = isFlirt ? "Flört seviyesi" : isIntimacy ? "Yakınlaşma seviyesi" : isMemories ? "Anı derinliği" : "";
+
+  // Memories: mini-game shortcuts row
+  if(isMemories){
+    const bar = el("div",{class:"card",style:"padding:12px"});
+    bar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:8px"},"Mini oyunlar"));
+    const row = el("div",{style:"display:flex;gap:8px;flex-wrap:wrap"});
+    row.append(btn("Zaman Çizgisi","ghost",()=>navigate("#/memories-timeline")));
+    row.append(btn("Kim Daha İyi Hatırlıyor","ghost",()=>navigate("#/memories-compare")));
+    row.append(btn("Anıyı Tamamla","ghost",()=>navigate("#/memories-story")));
+    row.append(btn("Kaydettiğimiz Anılar","gold",()=>navigate("#/saved-memories")));
+    bar.append(row);
+    app.append(bar);
+  }
+
 
   let filter = "";
   if(FILTER_KEY){ try { filter = localStorage.getItem(FILTER_KEY) || ""; } catch(e){ filter = ""; } }
