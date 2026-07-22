@@ -1559,10 +1559,7 @@ function renderDice(app){
     reconcileDice(diceKeys, dice);
     const grid = el("div",{class:"dice-grid"});
     Object.keys(dice).forEach(k=>{
-      grid.append(el("div",{class:"die rolling","data-k":k},
-        el("div",{class:"k"},k),
-        el("div",{class:"v"},dice[k])
-      ));
+      grid.append(makeDie(k, dice[k], true));
     });
     rollArea.append(grid);
     setTimeout(()=>{
