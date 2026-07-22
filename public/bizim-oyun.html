@@ -1596,7 +1596,23 @@ route("/summary",(app)=>{
     }),
     btn("Ana ekran","ghost",()=>navigate("#/home"))
   ));
+  // Past sessions
+  const past = (storage.get(K.sessions,[])||[]).slice(0,8);
+  if(past.length){
+    const pbox = el("div",{class:"card",style:"margin-top:14px"});
+    app.append(pbox);
+    pbox.append(el("h3",null,"Geçmiş Geceler"));
+    past.forEach(ps=>{
+      const d = ps.endedAt||ps.startedAt||ps.date||0;
+      const label = d? new Date(d).toLocaleDateString("tr-TR",{day:"2-digit",month:"short"}) : "—";
+      pbox.append(el("div",{class:"kv"},
+        el("div",null,label),
+        el("div",{class:"muted"},(ps.totalRounds||0)+" tur · "+(ps.totalPasses||0)+" pas")
+      ));
+    });
+  }
 });
+
 
 /* ============================================================
  * 19. Settings
