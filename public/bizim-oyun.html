@@ -1266,8 +1266,10 @@ function markSeen(mod,id){
 }
 function resetSeen(mod){storage.set(K.seen(mod),[])}
 
-function drawCard(mod){
+function drawCard(mod,opts){
+  const category = opts && opts.category;
   let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
+  if(category) pool = pool.filter(c=>c.category===category);
   if(!pool.length) return null;
   const s = getSettings();
   if(s.favoritesOnly){
@@ -1283,6 +1285,14 @@ function drawCard(mod){
   const unseenCore = pool.filter(c=>c.source==="core" && !seen.has(c.id));
   if(unseenCore.length) return pick(unseenCore);
   return {__exhausted:true};
+}
+
+function countUnseen(mod,opts){
+  const category = opts && opts.category;
+  let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
+  if(category) pool = pool.filter(c=>c.category===category);
+  const seen = new Set(getSeen(mod));
+  return pool.filter(c=>!seen.has(c.id)).length;
 }
 
 function addCards(mod,newCards){
