@@ -1481,24 +1481,53 @@ function renderDice(app){
     }
     return out;
   }
+  function reconcileDice(diceKeys, dice){
+    // Pozisyon + bölge birlikte olmasın (pozisyon zaten yönlendiriyor)
+    if(dice.pozisyon && dice.bolge && state.mode!=="kasa"){
+      delete dice.bolge;
+    }
+    // Eylem + bölge uyum kontrolü
+    if(dice.eylem && dice.bolge){
+      const allowed = ACTION_ZONES[dice.eylem];
+      if(allowed){
+        if(allowed[0]==="SELF"){
+          // Bu eylem bölgesizdir; bölgeyi düşür
+          delete dice.bolge;
+        } else if(!allowed.includes("*") && !allowed.includes(dice.bolge)){
+          const pool = poolValues("bolge").filter(v=>allowed.includes(v));
+          if(pool.length) dice.bolge = pick(pool);
+          else delete dice.bolge;
+        }
+      }
+    }
+    // Yer + pozisyon uyumu: duş pozisyonu geldiyse yer 'banyo/duş' olsun
+    if(dice.pozisyon && dice.yer){
+      const p = dice.pozisyon.toLowerCase();
+      if(p.startsWith("duş") || p.includes("küvet")) dice.yer = "banyoda / duşta";
+      if(p.startsWith("kanepe") && dice.yer==="banyoda / duşta") dice.yer = "kanepede";
+      if(p.startsWith("masa") && dice.yer==="banyoda / duşta") dice.yer = "mutfak tezgahında";
+    }
+  }
   function roll(){
     let diceKeys = pickDiceForMode(state.mode);
     if(state.mode==="kasa" && (!diceKeys || !diceKeys.length)){
       toast("Özel Kasa boş. Önce içerik ekle.");return;
     }
     rollArea.innerHTML="";
-    const grid = el("div",{class:"dice-grid"});
     const dice = {};
     diceKeys.forEach(k=>{
       const values = state.mode==="kasa"
         ? (getCustomDice()[k]||[]).filter(v=>!isDieDisabled(k,v))
         : poolValues(k);
       if(!values.length){return}
-      const val = pick(values);
-      dice[k]=val;
+      dice[k]=pick(values);
+    });
+    reconcileDice(diceKeys, dice);
+    const grid = el("div",{class:"dice-grid"});
+    Object.keys(dice).forEach(k=>{
       grid.append(el("div",{class:"die rolling","data-k":k},
         el("div",{class:"k"},k),
-        el("div",{class:"v"},val)
+        el("div",{class:"v"},dice[k])
       ));
     });
     rollArea.append(grid);
@@ -1507,6 +1536,7 @@ function renderDice(app){
       showResult(dice);
     },900);
   }
+
   function afterAction(msg){
     rollArea.innerHTML="";
     const done = el("div",{class:"card",style:"margin-top:4px;text-align:center"});
