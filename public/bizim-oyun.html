@@ -287,23 +287,143 @@ function mk(title,prompt,{tags=[],category="genel",hardness=2,source="core"}={})
 
 const CORE = {
   warmup: [
-    mk("İlk buluşma","Bizim ilk buluşmamızda seni en çok ne şaşırttı?",{tags:["ilk","anı"],category:"tanışma",hardness:1}),
-    mk("Küçük mucize","Bu haftanın en küçük ama en tatlı anı hangisiydi?",{tags:["haftalık"],hardness:1}),
-    mk("Sabah versiyonu","Sabahları ilk 10 dakikanda genelde neler geçiyor kafandan?",{tags:["rutin"],hardness:1}),
-    mk("Şarkı","Şu anda bize eşlik etsin istediğin bir şarkı seç ve neden onu seçtiğini anlat.",{tags:["müzik"],hardness:1}),
-    mk("Enerji seviyesi","1-10 arası bugünkü enerji seviyen kaç? Neden?",{tags:["haldenanla"],hardness:1}),
-    mk("Küçük şey","Bende hoşuna giden ama muhtemelen bana hiç söylemediğin küçük bir şey var mı?",{tags:["iltifat"],hardness:2}),
-    mk("Bugünün rengi","Bugünü tek bir renk olarak tarif etsen hangi renk olurdu?",{tags:["yaratıcı"],hardness:1}),
-    mk("Yeni bir şey","Bu ay öğrendiğin, denediğin ya da fark ettiğin yeni bir şey var mı?",{tags:["gelişim"],hardness:1}),
-    mk("Sessiz zaman","Yalnız kaldığında kendine en çok ne yapıyorsun?",{tags:["içsel"],hardness:2}),
-    mk("Küçük gurur","Son zamanlarda kendinle ilgili gurur duyduğun küçük bir şey söyle.",{tags:["kendine"],hardness:1}),
-    mk("Beni gülümseten","Bugün beni düşünüp gülümsediğin bir an oldu mu?",{tags:["romantik"],hardness:1}),
-    mk("Kaçış planı","Şu an bir düğmeye bassak nereye kaçardık, sadece ikimiz?",{tags:["hayal"],hardness:1}),
-    mk("Yorgun günün ilacı","Çok yorgun bir günde en çok ne ister canın: sessizlik mi, sohbet mi, sarılmak mı, uyumak mı?",{tags:["ihtiyaç"],hardness:2}),
-    mk("Kahve mi çay mı","Şu anki ruh halin kahve mi çay mı? Neden?",{tags:["hafif"],hardness:1}),
-    mk("Küçük iltifat","Bana bugün için bir iltifat uydur, sadece bugüne özel olsun.",{tags:["iltifat","romantik"],hardness:1}),
-    mk("Bugünün kahramanı","Bugünü kurtaran bir an ya da kişi var mıydı?",{tags:["haftalık"],hardness:1}),
-    mk("Duş sohbeti","Duştayken en çok kafanda hangi konu dönüyor bu aralar?",{tags:["içsel"],hardness:2}),
+    // ——— Günlük Hayat (daily-life) · 15
+    mk("Sabah ilk on dakika","Sabah uyandığında ilk on dakikayı istediğin gibi tasarlayabilsen ne yapardın?",{tags:["ısınma","sabah","rutin"],category:"daily-life",hardness:1}),
+    mk("Küçük gizli an","Günün en sevdiğin ama genelde kimseye anlatmadığın küçük anı hangisi?",{tags:["ısınma","gündelik"],category:"daily-life",hardness:1}),
+    mk("Yalnızken garip","Evde kimse seni görmüyorken yaptığın en garip şey ne?",{tags:["ısınma","komik"],category:"daily-life",hardness:1}),
+    mk("İlk uygulama","Sabah telefonunu açtığında refleksle girdiğin ilk uygulama hangisi ve seni ne çekiyor?",{tags:["ısınma","telefon"],category:"daily-life",hardness:1}),
+    mk("Buzdolabı klasiği","Aç olmasan bile buzdolabını açınca aradığın şey ne oluyor?",{tags:["ısınma","yemek"],category:"daily-life",hardness:1}),
+    mk("Uyku ritüeli","Uyumadan önce vazgeçemediğin küçük bir alışkanlığın var mı?",{tags:["ısınma","uyku"],category:"daily-life",hardness:1}),
+    mk("Enerji artıran","Gün ortasında seni birden ayağa kaldıran, küçük ama işe yarayan bir şey ne?",{tags:["ısınma","enerji"],category:"daily-life",hardness:1}),
+    mk("Ev sesi","Evde en çok özlediğin ses hangisi: mutfaktan gelen, dışarıdan gelen, yoksa sessizlik mi?",{tags:["ısınma","ev"],category:"daily-life",hardness:1}),
+    mk("Sepete atmak","Markette hep sepete atıp sonra 'bunu neden aldım' dediğin bir şey var mı?",{tags:["ısınma","alışveriş"],category:"daily-life",hardness:1}),
+    mk("Yeni haftalık","Yeni bir hafta başlarken en çok neyi iple çekiyorsun?",{tags:["ısınma","haftalık"],category:"daily-life",hardness:1}),
+    mk("Yağmurlu ev","Dışarıda yağmur varken evdeki en sevdiğin köşen neresi olur?",{tags:["ısınma","ev"],category:"daily-life",hardness:1}),
+    mk("Küçük lüks","Kendine sıkça izin verdiğin küçük bir lüks var mı?",{tags:["ısınma","zevk"],category:"daily-life",hardness:1}),
+    mk("Yalnız hafta sonu","Bir hafta sonu tamamen evde tek başına kalsan sıkılmadan neler yapardın?",{tags:["ısınma","hafta sonu"],category:"daily-life",hardness:1}),
+    mk("Yemek modu","Aç değilken bile 'canım şunu ister' dediğin bir yemek ne?",{tags:["ısınma","yemek"],category:"daily-life",hardness:1}),
+    mk("Gece atıştırma","Gece geç saatte mutfağa girsen büyük ihtimalle önüne ne koyarsın?",{tags:["ısınma","gece"],category:"daily-life",hardness:1}),
+
+    // ——— Hızlı Tercihler (quick-choice) · 15
+    mk("Plansız mı planlı mı","Plansız bir gece gezmesi mi, haftalar öncesinden hazırlanmış mükemmel bir plan mı? Neden?",{tags:["ısınma","tercih"],category:"quick-choice",hardness:1}),
+    mk("Deniz mi dağ mı","Bir hafta tatilde: deniz kenarı mı, dağ evi mi? Kısaca gerekçe.",{tags:["ısınma","tatil"],category:"quick-choice",hardness:1}),
+    mk("Yazmak mı aramak mı","Uzun bir konuyu anlatırken yazmayı mı, aramayı mı seçersin? Neden?",{tags:["ısınma","iletişim"],category:"quick-choice",hardness:1}),
+    mk("Sabahçı mı akşamcı mı","Kendini gerçekten hangi saatlerde daha canlı hissediyorsun?",{tags:["ısınma","enerji"],category:"quick-choice",hardness:1}),
+    mk("Ev mi dışarı mı","Cuma akşamı seçenek çıksa: ev-kanepe mi, sokak-kalabalık mı? Neden?",{tags:["ısınma","cuma"],category:"quick-choice",hardness:1}),
+    mk("Tatlı mı tuzlu mu","Yemek sonrası tatlı zorunlu mu, yoksa tuzlu bir şey mi iyi kapatır?",{tags:["ısınma","damak"],category:"quick-choice",hardness:1}),
+    mk("Sürpriz mi bilgi mi","Hediye önceden söylenip beklenmesi mi, tamamen sürpriz olması mı? Neden?",{tags:["ısınma","hediye"],category:"quick-choice",hardness:1}),
+    mk("Şehir mi doğa mı","Bir yıl yaşama şansın olsa yoğun bir şehir mi, sakin bir doğa mı?",{tags:["ısınma","yaşam"],category:"quick-choice",hardness:1}),
+    mk("Fotoğraf mı an mı","Güzel bir sahneyi fotoğrafla ölümsüzleştirmek mi, sadece bakıp geçmek mi?",{tags:["ısınma","an"],category:"quick-choice",hardness:1}),
+    mk("Uzun tatil, sık kaçış","Yılda tek uzun tatil mi, sık sık kısa kaçamaklar mı? Neden?",{tags:["ısınma","tatil"],category:"quick-choice",hardness:1}),
+    mk("Yeni mi klasik mi","Restoranda yeni bir şey mi denersin, sevdiğin klasiği mi ısmarlarsın?",{tags:["ısınma","yemek"],category:"quick-choice",hardness:1}),
+    mk("Kitap mı dizi mi","Aynı hikâye kitap ve dizi olarak varsa hangisiyle başlarsın? Neden?",{tags:["ısınma","hikaye"],category:"quick-choice",hardness:1}),
+    mk("Kahvaltı mı brunch mı","Erken hafif kahvaltı mı, geç kalkıp uzun brunch mı?",{tags:["ısınma","sabah"],category:"quick-choice",hardness:1}),
+    mk("Ev partisi mi bar mı","Kalabalık akşam için evde küçük bir parti mi, dışarıda bar mı?",{tags:["ısınma","gece"],category:"quick-choice",hardness:1}),
+    mk("Duş mu küvet mi","Yorgun bir günün sonunda hızlı duş mu, uzun küvet mi?",{tags:["ısınma","dinlenme"],category:"quick-choice",hardness:1}),
+
+    // ——— Komik ve Absürt (funny-absurd) · 15
+    mk("Evcil hayvan ailesi","Bir hayvan seni evlat edinmek zorunda kalsaydı hangi hayvanın ailesine katılmak isterdin?",{tags:["ısınma","absürt"],category:"funny-absurd",hardness:1}),
+    mk("Şarkı sözleriyle","Bir hafta boyunca yalnızca şarkı sözleriyle konuşmak zorunda kalsan hangi sanatçıyı seçerdin?",{tags:["ısınma","müzik"],category:"funny-absurd",hardness:1}),
+    mk("Dedikoducu eşya","Evimizdeki bir eşya gece canlanıyor olsa hangisinin en fazla dedikodu bildiğini düşünürdün?",{tags:["ısınma","komik"],category:"funny-absurd",hardness:1}),
+    mk("Zombi yeteneği","Zombi kıyametinde gereksiz gibi görünen ama seni kurtaracak bir yeteneğin olsa ne olurdu?",{tags:["ısınma","hayal"],category:"funny-absurd",hardness:1}),
+    mk("Süpermarket kahramanı","Süpermarketten çıkan bir süper kahraman olsaydın gücün ne olurdu, adın ne?",{tags:["ısınma","komik"],category:"funny-absurd",hardness:1}),
+    mk("Uzaylıya ilk yemek","Dünyaya yeni gelen bir uzaylıya ilk hangi Türk yemeğini tattırırdın ve neden?",{tags:["ısınma","yemek","absürt"],category:"funny-absurd",hardness:1}),
+    mk("Yasak dans","Bir dans türü yasaklanacak olsa hangisini kurtarmak için yollara düşerdin?",{tags:["ısınma","komik"],category:"funny-absurd",hardness:1}),
+    mk("Ev robotu azarı","Ev işi yapan bir robotun olsa hangi işini yaparken sinirlenip azarlardın?",{tags:["ısınma","absürt"],category:"funny-absurd",hardness:1}),
+    mk("Tuhaf meslek","'Bulut isimlendirici' mi olurdun, 'balık mutluluğu değerlendirme uzmanı' mı? Neden?",{tags:["ısınma","meslek","komik"],category:"funny-absurd",hardness:1}),
+    mk("Otobiyografi başlığı","Otobiyografini üç kelimede yazsan başlığı ne olurdu?",{tags:["ısınma","yaratıcı"],category:"funny-absurd",hardness:2}),
+    mk("Pazartesiyi iptal","Pazartesileri iptal edecek küçük bir süper gücün olsa nasıl kullanırdın?",{tags:["ısınma","hayal"],category:"funny-absurd",hardness:1}),
+    mk("Yanlış zamanda şarkı","Yanlış anda çalınca insanları güldürecek en uygunsuz şarkı sence hangisi olurdu?",{tags:["ısınma","müzik","komik"],category:"funny-absurd",hardness:1}),
+    mk("Kediyle sohbet","Bir gün boyunca kedilerle konuşabilsen ilk hangi soruyu sorardın?",{tags:["ısınma","hayvan"],category:"funny-absurd",hardness:1}),
+    mk("On dakika donmuş","Zamanı 10 dakika durdurabilme gücün olsa en muhtemel ne yaparsın: dondurma, kestirmek, çıkıp bakmak, başka?",{tags:["ısınma","hayal"],category:"funny-absurd",hardness:1}),
+    mk("Absürt yarışma","Sadece senin kazanabileceğin, çok saçma bir yarışma kategorisi düşün. Adı ne olurdu?",{tags:["ısınma","komik"],category:"funny-absurd",hardness:2}),
+
+    // ——— Çocukluk (childhood) · 12
+    mk("Komik inanç","Çocukken gerçek olduğuna inandığın en komik şey neydi?",{tags:["ısınma","çocukluk"],category:"childhood",hardness:1}),
+    mk("Yeniden yaşamak","Çocukluğundaki bir günü yeniden yaşayabilsen hangi günü seçerdin?",{tags:["ısınma","nostalji"],category:"childhood",hardness:1}),
+    mk("Küçük halin","Küçük halin bugünkü seni görse en çok neye şaşırırdı?",{tags:["ısınma","kendine bak"],category:"childhood",hardness:2}),
+    mk("Okul kokusu","Okulla ilgili hâlâ burnunda kalan bir koku ya da tat var mı?",{tags:["ısınma","okul"],category:"childhood",hardness:1}),
+    mk("Vazgeçilmez eşya","Çocukken bir yere gittiğinde yanından ayırmadığın bir eşyan var mıydı?",{tags:["ısınma","anı"],category:"childhood",hardness:1}),
+    mk("Çizgi film hali","Kendini en çok bağdaştırdığın çizgi film karakteri kimdi ve neden?",{tags:["ısınma","çizgi film"],category:"childhood",hardness:1}),
+    mk("İlk kazanç","Çocukken bir şey karşılığında ilk kez para kazandığın anı hatırlıyor musun?",{tags:["ısınma","ilk"],category:"childhood",hardness:1}),
+    mk("Yaz tatili sabahı","Yaz tatili başlar başlamaz sabahları ilk ne yapardın?",{tags:["ısınma","yaz"],category:"childhood",hardness:1}),
+    mk("Aile geleneği","Ailende hâlâ hoşuna giden ya da kaçmaya çalıştığın küçük bir gelenek var mı?",{tags:["ısınma","aile"],category:"childhood",hardness:1}),
+    mk("Bayram sahnesi","Bir bayram günü aklında en çok kalan sahne hangisi?",{tags:["ısınma","bayram"],category:"childhood",hardness:1}),
+    mk("Model yetişkin","Küçükken 'ben büyüyünce böyle olacağım' dediğin bir yetişkin oldu mu hayatında?",{tags:["ısınma","model"],category:"childhood",hardness:2}),
+    mk("Gizli sığınak","Çocukken kendine ait, kimseye söylemediğin gizli bir köşen var mıydı?",{tags:["ısınma","hatıra"],category:"childhood",hardness:1}),
+
+    // ——— Karakter ve Alışkanlıklar (personality) · 15
+    mk("Kalp mi mantık mı","Bir karar verirken kalbini mi, mantığını mı daha çok dinlersin?",{tags:["ısınma","karar"],category:"personality",hardness:2}),
+    mk("Gizli alışkanlık","Sende başkalarının fark etmediği ama senin çok belirgin bulduğun bir alışkanlık ne?",{tags:["ısınma","alışkanlık"],category:"personality",hardness:2}),
+    mk("Yeni ortam","Yeni bir ortama girdiğinde önce gözlemleyenlerden misin, hemen karışanlardan mı?",{tags:["ısınma","sosyal"],category:"personality",hardness:1}),
+    mk("Sinir tetikleyici","Küçük bir şey ama seni orantısız sinirlendiren bir davranış nedir?",{tags:["ısınma","tetik"],category:"personality",hardness:2}),
+    mk("Dağınıklık sınırı","Evdeki dağınıklığa toleransın hangi noktada bitiyor?",{tags:["ısınma","ev"],category:"personality",hardness:1}),
+    mk("Sabır göstergen","Sabrının bittiğini nasıl anlarsın, ne yapmaya başlarsın?",{tags:["ısınma","sabır"],category:"personality",hardness:2}),
+    mk("Utangaç köşe","Hâlâ kolay utandığın küçük bir konu var mı?",{tags:["ısınma","utangaçlık"],category:"personality",hardness:2}),
+    mk("Yalnız enerji","Yalnız kaldıktan sonra mı, insanlarla vakit geçirdikten sonra mı kendini daha dolu hissedersin?",{tags:["ısınma","enerji"],category:"personality",hardness:1}),
+    mk("Karar hızı","Menüden yemek seçmek kaç dakikanı alır ve neye takılırsın?",{tags:["ısınma","karar"],category:"personality",hardness:1}),
+    mk("Küçük takıntı","Etrafındakilerin 'yine mi' dediği bir küçük takıntın var mı?",{tags:["ısınma","takıntı"],category:"personality",hardness:1}),
+    mk("Unutkan alan","En sık unuttuğun şey ne: isim, tarih, telefon, anahtar, başka bir şey?",{tags:["ısınma","unutkanlık"],category:"personality",hardness:1}),
+    mk("Sabah versiyonun","Sabahın ilk yarım saatinde nasıl bir insansın: sessiz mi, konuşkan mı, huysuz mu?",{tags:["ısınma","sabah"],category:"personality",hardness:1}),
+    mk("Stresli anda","Gerçekten stresli olduğunda dışarıdan anlaşılır mı, saklamaya mı çalışırsın?",{tags:["ısınma","stres"],category:"personality",hardness:2}),
+    mk("Övgüye tepki","Biri seni içtenlikle övdüğünde ilk refleksin ne olur?",{tags:["ısınma","iletişim"],category:"personality",hardness:2}),
+    mk("Elveda cümlen","Bir sohbeti bitirmek istediğinde en sık hangi cümleyi kullanırsın?",{tags:["ısınma","iletişim"],category:"personality",hardness:1}),
+
+    // ——— Hayaller ve Meraklar (dreams) · 12
+    mk("Kolay yetenek","Bir yeteneği hiç uğraşmadan mükemmel öğrenebilseydin hangisini seçerdin?",{tags:["ısınma","hayal"],category:"dreams",hardness:1}),
+    mk("Bir yıllık şehir","Bir yıl boyunca başka bir şehirde yaşaman gerekse nereyi seçerdin?",{tags:["ısınma","şehir"],category:"dreams",hardness:1}),
+    mk("Ertelenen istek","Aklına sık sık gelen ama henüz denemediğin bir şey ne?",{tags:["ısınma","istek"],category:"dreams",hardness:2}),
+    mk("Bir günlük meslek","Bir gün boyunca istediğin herhangi bir mesleği deneyebilseydin hangisini seçerdin?",{tags:["ısınma","meslek"],category:"dreams",hardness:1}),
+    mk("Küçük hayal projesi","Kimseye söylemediğin, aklının bir köşesinde duran küçük bir projen var mı?",{tags:["ısınma","proje"],category:"dreams",hardness:2}),
+    mk("Ünlüyle sohbet","Yaşayan ya da geçmişten biriyle bir saatlik sohbet hakkın olsa kimi seçerdin?",{tags:["ısınma","sohbet"],category:"dreams",hardness:1}),
+    mk("Zamanda bir gün","Tarihte bir güne konuk olabilsen hangi güne düşmek isterdin?",{tags:["ısınma","zaman"],category:"dreams",hardness:2}),
+    mk("Uzak yolculuk","Yol ve zaman sorun olmasa şu an nereye gitmek isterdin?",{tags:["ısınma","yolculuk"],category:"dreams",hardness:1}),
+    mk("Öğrenilecek dil","Sıfırdan bir dil öğrenecek olsan hangi dili seçerdin ve neden?",{tags:["ısınma","dil"],category:"dreams",hardness:1}),
+    mk("Küçük dükkân","Küçük bir dükkân açacak olsan ne satardın, adı ne olurdu?",{tags:["ısınma","hayal"],category:"dreams",hardness:1}),
+    mk("Fantastik hayvan","Evinde beslemek istediğin gerçek olmayan bir yaratık olsa hangisi olurdu?",{tags:["ısınma","absürt"],category:"dreams",hardness:1}),
+    mk("24 saatlik hayat","24 saatliğine tamamen başka biri olabilsen kimin hayatına konuk olurdun?",{tags:["ısınma","hayal"],category:"dreams",hardness:2}),
+
+    // ——— İlişkide Hafif Sorular (light-relationship) · 12
+    mk("Sıradan güzellik","Birlikte yaptığımız en sıradan ama sana en güzel gelen şey ne?",{tags:["ısınma","biz"],category:"light-relationship",hardness:1}),
+    mk("Küçük mesaj","Benden gelen hangi küçük mesaj gününü güzelleştirir?",{tags:["ısınma","mesaj"],category:"light-relationship",hardness:1}),
+    mk("Film sahnesi","Bizi bir film sahnesine koysan nasıl bir sahne olurdu?",{tags:["ısınma","hayal"],category:"light-relationship",hardness:1}),
+    mk("Sarılma modu","Nasıl bir sarılma ihtiyacın var şu aralar: sıkı ve uzun mu, kısa ve sık mı?",{tags:["ısınma","sarılma"],category:"light-relationship",hardness:1}),
+    mk("Ortak yemek","Birlikte yediğimiz, sana özel gelen bir yemek anımız var mı?",{tags:["ısınma","yemek"],category:"light-relationship",hardness:1}),
+    mk("Küçük jest","Yaptığım hangi küçük jest o günü sana özel yapıyor?",{tags:["ısınma","jest"],category:"light-relationship",hardness:2}),
+    mk("Ortak film","İkimize ait diyebileceğimiz bir film ya da dizi var mı?",{tags:["ısınma","film"],category:"light-relationship",hardness:1}),
+    mk("Beraber tatil","Bir sonraki kaçamağımızda en çok neyi istersin: uyumak, gezmek, tembellik, macera?",{tags:["ısınma","tatil"],category:"light-relationship",hardness:1}),
+    mk("Komik özellik","Benim hangi komik özelliğim seni en çok güldürüyor?",{tags:["ısınma","komik"],category:"light-relationship",hardness:1}),
+    mk("Öğrenilecek şey","Birlikte sıfırdan öğrenmek istediğin bir şey var mı?",{tags:["ısınma","biz"],category:"light-relationship",hardness:1}),
+    mk("Özleme şekli","Beni özlediğini nasıl fark edersin, o an ne yaparsın?",{tags:["ısınma","özlem"],category:"light-relationship",hardness:2}),
+    mk("İlk izlenim","Beni ilk gördüğünde bugünkü halime dair ne söylerdin şimdi bilseydin?",{tags:["ısınma","ilk"],category:"light-relationship",hardness:2}),
+
+    // ——— Birbiriniz Hakkında (about-partner) · 12
+    mk("Hızlı heyecan","Sence benim en çabuk heyecanlandığım konu ne?",{tags:["ısınma","tahmin"],category:"about-partner",hardness:1}),
+    mk("İlk fark","Bende ilk fark ettiğin ama bana hemen söylemediğin şey neydi?",{tags:["ısınma","ilk"],category:"about-partner",hardness:2}),
+    mk("Macera cesareti","Sence ikimizden hangisi plansız bir maceraya daha hızlı evet der? Neden?",{tags:["ısınma","biz"],category:"about-partner",hardness:1}),
+    mk("Güldüren huy","Benim hangi huyum bazen seni güldürüyor?",{tags:["ısınma","komik"],category:"about-partner",hardness:1}),
+    mk("Küçük sinirlenme","Bende gördüğün, ama bana pek çaktırmadığın küçük bir sinirlenme anım var mı?",{tags:["ısınma","gözlem"],category:"about-partner",hardness:2}),
+    mk("En sevdiğim köşe","Sence evimizin en sevdiğim köşesi neresi?",{tags:["ısınma","ev"],category:"about-partner",hardness:1}),
+    mk("Tek bakışta","Beni tek bakışta anlayabildiğin bir ruh halim var mı?",{tags:["ısınma","farkındalık"],category:"about-partner",hardness:2}),
+    mk("Kaçış planı","Bir gün kaçıp gitsek nereye gideceğimizi ilk kim söyler sence?",{tags:["ısınma","biz"],category:"about-partner",hardness:1}),
+    mk("Süper güç tahmini","Sence bana bir süper güç verilse hangisini seçerdim?",{tags:["ısınma","tahmin"],category:"about-partner",hardness:1}),
+    mk("Küçük korku","Benim küçük ama sürekli olan bir korkum sence ne?",{tags:["ısınma","içsel"],category:"about-partner",hardness:2}),
+    mk("Sevdiğim ses","Sence benim en sevdiğim gündelik ses hangisi?",{tags:["ısınma","tahmin"],category:"about-partner",hardness:1}),
+    mk("Gizli konfor","Beni gerçekten rahatlatan, dışarıdan görünmeyen küçük bir şey var mı sence?",{tags:["ısınma","konfor"],category:"about-partner",hardness:2}),
+
+    // ——— Senaryo Soruları (scenarios) · 12
+    mk("Kayıp telefon şehri","Hiç bilmediğimiz bir şehirde telefonlarımız kapansa yönü bulma işini hangimiz üstlenirdi?",{tags:["ısınma","senaryo"],category:"scenarios",hardness:1}),
+    mk("Küçük dükkânımız","Birlikte küçük bir dükkân açmak zorunda kalsaydık ne satardık?",{tags:["ısınma","biz"],category:"scenarios",hardness:1}),
+    mk("Çift yarışması","Bir yarışma programına çift olarak katılsak hangi yarışmada kazanma ihtimalimiz daha yüksek olurdu?",{tags:["ısınma","yarışma"],category:"scenarios",hardness:1}),
+    mk("Ada haftası","Bir hafta ıssız bir adada mahsur kalsak sen neyi, ben neyi üstlenirdik?",{tags:["ısınma","ada"],category:"scenarios",hardness:1}),
+    mk("Bir günlük ün","Bir günlüğüne ünlü olsak medyaya ne söylerdik, hangimiz mikrofonu kapardı?",{tags:["ısınma","komik"],category:"scenarios",hardness:1}),
+    mk("Uçuş iptali","Havaalanında uçuşumuz iptal olsa 24 saati birlikte en iyi nasıl geçirirdik?",{tags:["ısınma","yolculuk"],category:"scenarios",hardness:1}),
+    mk("Piyango planı","Küçük bir piyango tutsak, ilk gün ne yapardık?",{tags:["ısınma","hayal"],category:"scenarios",hardness:1}),
+    mk("Zaman makinesi","Bir kere kullanabileceğimiz bir zaman makinemiz olsa hangi ana giderdik ve neden?",{tags:["ısınma","zaman"],category:"scenarios",hardness:2}),
+    mk("Evcil hayvan seçimi","Bir evcil hayvan alacak olsak seçimi büyük ihtimalle hangimiz yapar, hangi hayvan olur?",{tags:["ısınma","hayvan"],category:"scenarios",hardness:1}),
+    mk("Bir aylık yolculuk","Bir aylık kesintisiz bir yolculuğa çıkacak olsak rotayı hangimiz çizerdi, tarzı nasıl olurdu?",{tags:["ısınma","yolculuk"],category:"scenarios",hardness:1}),
+    mk("Yeni ülke","Hiç bilmediğimiz bir ülkeye taşınsak ilk hafta hangi şeyleri özlerdik?",{tags:["ısınma","hayal"],category:"scenarios",hardness:2}),
+    mk("Film türümüz","İkimizi tanıyan bir yönetmen bize film çekse hangi tür yakışırdı?",{tags:["ısınma","film"],category:"scenarios",hardness:1}),
   ],
   flirt: [
     mk("Bakış","Sana ilk baktığımda ne düşünmüştün, dürüstçe?",{tags:["ilk","dürüstlük"],hardness:2}),
@@ -1098,8 +1218,17 @@ const DICE_MODES = {
  * ============================================================ */
 function loadPool(mod){
   const stored = storage.get(K.pool(mod),null);
-  if(stored && Array.isArray(stored) && stored.length) return stored;
   const core = (CORE[mod]||[]).slice();
+  if(stored && Array.isArray(stored) && stored.length){
+    // Merge new core cards without touching user's ai/custom/seen/favorites/disabled state.
+    const have = new Set(stored.map(c=>c && c.id).filter(Boolean));
+    let changed = false;
+    for(const c of core){
+      if(!have.has(c.id)){ stored.push(c); have.add(c.id); changed = true; }
+    }
+    if(changed) storage.set(K.pool(mod),stored);
+    return stored;
+  }
   storage.set(K.pool(mod),core);
   return core;
 }
@@ -1137,8 +1266,10 @@ function markSeen(mod,id){
 }
 function resetSeen(mod){storage.set(K.seen(mod),[])}
 
-function drawCard(mod){
+function drawCard(mod,opts){
+  const category = opts && opts.category;
   let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
+  if(category) pool = pool.filter(c=>c.category===category);
   if(!pool.length) return null;
   const s = getSettings();
   if(s.favoritesOnly){
@@ -1154,6 +1285,14 @@ function drawCard(mod){
   const unseenCore = pool.filter(c=>c.source==="core" && !seen.has(c.id));
   if(unseenCore.length) return pick(unseenCore);
   return {__exhausted:true};
+}
+
+function countUnseen(mod,opts){
+  const category = opts && opts.category;
+  let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
+  if(category) pool = pool.filter(c=>c.category===category);
+  const seen = new Set(getSeen(mod));
+  return pool.filter(c=>!seen.has(c.id)).length;
 }
 
 function addCards(mod,newCards){
@@ -1475,17 +1614,79 @@ route("/level/*",(app,path)=>{
   if(!LEVELS.includes(mod)) return navigate("#/home");
   maybeConsentReminder(mod,()=>renderLevel(app,mod));
 });
+const WARMUP_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"daily-life", label:"Günlük"},
+  {slug:"quick-choice", label:"Tercihler"},
+  {slug:"funny-absurd", label:"Komik"},
+  {slug:"childhood", label:"Çocukluk"},
+  {slug:"personality", label:"Karakter"},
+  {slug:"dreams", label:"Hayaller"},
+  {slug:"light-relationship", label:"Biz"},
+  {slug:"about-partner", label:"Tahmin"},
+  {slug:"scenarios", label:"Senaryolar"},
+];
+const K_WARMUP_FILTER = "bo.warmupFilter.v1";
+
 function renderLevel(app,mod){
   app.append(topbar(MODULES[mod].name));
+
+  let filter = "";
+  let filterBar = null;
+  let countLine = null;
   const cardBox = el("div",{class:"card"});
+
+  if(mod === "warmup"){
+    try { filter = localStorage.getItem(K_WARMUP_FILTER) || ""; } catch(e){ filter = ""; }
+    filterBar = el("div",{class:"card",style:"padding:10px 12px"});
+    const chipRow = el("div",{style:"display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;scrollbar-width:none"});
+    WARMUP_CATEGORIES.forEach(cat=>{
+      const active = filter === cat.slug;
+      const chip = el("button",{
+        class:"tag"+(active?" gold":""),
+        style:"flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px",
+        onclick:()=>{
+          filter = cat.slug;
+          try { localStorage.setItem(K_WARMUP_FILTER, filter); } catch(e){}
+          drawAndShow();
+        }
+      }, cat.label);
+      chipRow.append(chip);
+    });
+    filterBar.append(chipRow);
+    countLine = el("div",{class:"muted",style:"margin-top:8px;font-size:12px"},"");
+    filterBar.append(countLine);
+    app.append(filterBar);
+  }
+
   app.append(cardBox);
 
+  function refreshChips(){
+    if(!filterBar) return;
+    // Re-render chip active state
+    const chips = filterBar.querySelectorAll("button.tag");
+    chips.forEach((chip,i)=>{
+      const cat = WARMUP_CATEGORIES[i];
+      const active = filter === cat.slug;
+      chip.className = "tag"+(active?" gold":"");
+      chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
+    });
+  }
+  function refreshCount(){
+    if(!countLine) return;
+    const n = countUnseen(mod, filter?{category:filter}:undefined);
+    const label = filter ? (WARMUP_CATEGORIES.find(c=>c.slug===filter)?.label || "") : "Tümü";
+    countLine.textContent = `Görülmemiş ${n} kart kaldı · ${label}`;
+  }
+
   function drawAndShow(){
+    refreshChips();
+    refreshCount();
     cardBox.innerHTML="";
-    const c = drawCard(mod);
+    const c = drawCard(mod, filter?{category:filter}:undefined);
     if(!c){cardBox.append(el("div",null,"Bu modülde henüz kart yok."));return}
     if(c.__exhausted){
-      cardBox.append(el("div",{class:"muted"},"Bu modülün tüm kartlarını gördünüz."));
+      cardBox.append(el("div",{class:"muted"},filter?"Bu kategorinin tüm kartlarını gördünüz.":"Bu modülün tüm kartlarını gördünüz."));
       cardBox.append(el("div",{style:"height:12px"}));
       if(aiAvailable()){
         cardBox.append(btn("Yeni sorular üret (AI)","primary",()=>requestAi(mod,cardBox,drawAndShow)));
@@ -1494,11 +1695,18 @@ function renderLevel(app,mod){
       cardBox.append(btn("Görülenleri sıfırla ve tekrar başla","ghost",()=>{
         resetSeen(mod);drawAndShow();
       }));
+      if(filter){
+        cardBox.append(el("div",{style:"height:8px"}));
+        cardBox.append(btn("Karışık moda dön","ghost",()=>{
+          filter="";try{localStorage.setItem(K_WARMUP_FILTER,"")}catch(e){}drawAndShow();
+        }));
+      }
       return;
     }
     bumpSession(mod,"round");
     markSeen(mod,c.id);
     renderCardUI(cardBox,mod,c,drawAndShow);
+    refreshCount();
   }
   drawAndShow();
 }
