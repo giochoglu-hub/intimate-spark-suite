@@ -1515,6 +1515,22 @@ function renderDice(app){
     }
     return out;
   }
+  function makeDie(k, v, rolling){
+    const cls = "die" + (rolling?" rolling":"");
+    const img = k==="pozisyon" ? positionImage(v) : null;
+    if(img){
+      return el("div",{class:cls+" pozisyon-with-image","data-k":k},
+        el("img",{class:"pos-img",src:img,alt:v,loading:"lazy"}),
+        el("div",{class:"pos-body"},
+          el("div",{class:"k"},k),
+          el("div",{class:"v"},v)
+        )
+      );
+    }
+    return el("div",{class:cls,"data-k":k},
+      el("div",{class:"k"},k),
+      el("div",{class:"v"},v)
+    );
   function reconcileDice(diceKeys, dice){
     // Pozisyon + bölge birlikte olmasın (pozisyon zaten yönlendiriyor)
     if(dice.pozisyon && dice.bolge && state.mode!=="kasa"){
