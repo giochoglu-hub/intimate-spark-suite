@@ -1487,7 +1487,8 @@ function disableDie(pool,val){const d=getDiceDisabled();d[pool]=d[pool]||{};d[po
 function isDieDisabled(pool,val){const d=getDiceDisabled();return !!(d[pool]&&d[pool][val])}
 function poolValues(pool){
   const custom = getCustomDice()[pool]||[];
-  const base = (DICE[pool]||[]).concat(custom);
+  let base = (DICE[pool]||[]).concat(custom);
+  if(pool==="pozisyon"){ base = base.filter(v=>positionImage(v)); }
   return base.filter(v=>!isDieDisabled(pool,v));
 }
 function renderDice(app){
