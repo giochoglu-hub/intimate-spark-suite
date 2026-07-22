@@ -2524,6 +2524,11 @@ function renderCardUI(box,mod,c,onNext,ext){
     })
   );
   box.append(row2);
+  if(mod === "memories"){
+    box.append(el("div",{style:"margin-top:10px"},
+      btn("💾 Bu anıyı kaydet","gold",()=>openSaveMemoryModal(c))
+    ));
+  }
   if(aiAvailable()){
     box.append(el("div",{style:"margin-top:10px"},
       btn("Yeni sorular üret (AI)","gold",()=>requestAi(mod,box,onNext))
