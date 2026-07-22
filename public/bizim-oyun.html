@@ -597,10 +597,20 @@ function getSettings(){
   return storage.get(K.settings,{
     player1:"Ozzy",player2:"Su",hardness:3,
     enabledModules:{},enabledCategories:{},
-    consentReminder:true,soundEnabled:false,reducedMotion:false
+    consentReminder:true,soundEnabled:false,reducedMotion:false,
+    theme:"bordo",favoritesOnly:false
   });
 }
 function saveSettings(s){storage.set(K.settings,s)}
+function getFavorites(){return storage.get("bo:favorites",{})}
+function saveFavorites(f){storage.set("bo:favorites",f)}
+function toggleFavorite(mod,id){
+  const f = getFavorites(); f[mod]=f[mod]||{};
+  if(f[mod][id]) delete f[mod][id]; else f[mod][id]=true;
+  saveFavorites(f);
+  return !!f[mod][id];
+}
+function isFavorite(mod,id){const f=getFavorites();return !!(f[mod]&&f[mod][id])}
 
 function getDisabled(){return storage.get(K.disabled,{})}
 function setDisabled(d){storage.set(K.disabled,d)}
