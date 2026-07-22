@@ -1913,6 +1913,11 @@ function getDailyQuestion(){
         if((c.hardness||2) > 2) continue;
         if(c.consentRequired) continue;
       }
+      if(m==="memories"){
+        const t = c.type||"question";
+        if(t!=="question" && t!=="reflection" && t!=="memory") continue;
+        if((c.hardness||2) > 2) continue;
+      }
       all.push({card:c,mod:m});
     }
   }
