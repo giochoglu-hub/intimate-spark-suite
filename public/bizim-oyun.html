@@ -2245,6 +2245,7 @@ function renderCardUI(box,mod,c,onNext,ext){
     el("div",{style:"display:flex;gap:6px;flex-wrap:wrap"},
       c.type ? el("span",{class:"tag"},c.type) : null,
       el("span",{class:"tag gold"},"seviye "+(c.hardness||"?")),
+      c.consentRequired ? el("span",{class:"tag",style:"background:rgba(217,175,97,.14);color:var(--gold);border-color:rgba(217,175,97,.35)"},"rıza gerekli") : null,
       c.source==="ai" ? el("span",{class:"tag ai"},"AI") : null,
       c.source==="custom" ? el("span",{class:"tag custom"},"özel") : null,
     )
@@ -2254,10 +2255,12 @@ function renderCardUI(box,mod,c,onNext,ext){
   box.append(el("div",{style:"margin-top:8px;font-size:16px"},c.prompt));
   box.append(tagList(c));
 
-  if(isTask && ext.isFlirt){
+  const canDareUi = isTask && (ext.isFlirt || ext.isIntimacy || ext.hasSoften);
+  if(canDareUi){
     const rowDare = el("div",{class:"row",style:"margin-top:16px"},
-      btn("Yaptık","primary",()=>{ (ext.onDone||onNext)(c); }),
+      btn("Yap","primary",()=>{ (ext.onDone||onNext)(c); }),
       btn("Yumuşat","gold",()=>{ if(ext.onSoften) ext.onSoften(c); else onNext(); }),
+      btn("Değiştir","ghost",()=>{ if(ext.onReplace) ext.onReplace(c); else onNext(); }),
       btn("Pas","ghost",()=>{ bumpSession(mod,"pass"); onNext(); })
     );
     box.append(rowDare);
