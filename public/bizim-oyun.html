@@ -1592,7 +1592,7 @@ function renderDice(app){
         rollArea.innerHTML="";
         const g = el("div",{class:"dice-grid"});
         Object.keys(soft).forEach(k=>{
-          g.append(el("div",{class:"die"},el("div",{class:"k"},k),el("div",{class:"v"},soft[k])));
+          g.append(makeDie(k, soft[k], false));
         });
         rollArea.append(g);
         showResult(soft);
