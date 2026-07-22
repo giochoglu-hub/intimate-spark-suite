@@ -619,6 +619,27 @@ const ACTION_ZONES = {
   "tırnaklarınla çok hafif iz bırak":["omurga boyunca","bel çukuru","kalça yanı","iç uyluk","göğüs uçları çevresi","karnın altı"],
 };
 
+// Position illustration thumbnails (matched by position name prefix, case-insensitive).
+const POSITION_IMAGES = {
+  "pretzel dip":"/__l5e/assets-v1/eb4137c7-bfbc-4f3a-bd08-d571ba17d1c8/pretzel-dip.jpg",
+  "flatiron":"/__l5e/assets-v1/9c27f4e7-856e-4380-aa1d-750ba826f193/flatiron.jpg",
+  "g-whiz":"/__l5e/assets-v1/606cfee8-ad7a-407f-be8b-f1d95149f5db/g-whiz.jpg",
+  "face-off":"/__l5e/assets-v1/063521c2-e358-4999-992d-2f4c372ee8da/face-off.jpg",
+  "cowgirl's helper":"/__l5e/assets-v1/86e7f0ac-f093-4ab4-ab9d-743935a4fb0d/cowgirls-helper.jpg",
+  "leap frog":"/__l5e/assets-v1/0ca6b28d-9ec0-486b-97e8-cec215be9320/leap-frog.jpg",
+  "ballet dance":"/__l5e/assets-v1/b54af6f5-afd2-409c-839c-4aea77e54172/ballet-dance.jpg",
+  "cowgirl klasik":"/__l5e/assets-v1/e75776a4-3a2b-4163-b83e-93be27fc7a96/cowgirl.jpg",
+  "corkscrew":"/__l5e/assets-v1/36c82daf-fff8-44c5-a3ee-4f1642f569db/corkscrew.jpg",
+  "wheelbarrow":"/__l5e/assets-v1/8c10a792-892e-4f4d-bb10-1ffeaaaf621b/wheelbarrow.jpg"
+};
+function positionImage(text){
+  if(!text) return null;
+  const low = text.toLowerCase();
+  for(const key in POSITION_IMAGES){ if(low.startsWith(key)) return POSITION_IMAGES[key]; }
+  return null;
+}
+
+
 
 const DICE_MODES = {
   klasik:{name:"Klasik",dice:["oyuncu","eylem","bolge","sure"]},
