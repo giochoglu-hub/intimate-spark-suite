@@ -2221,6 +2221,57 @@ const INTIMACY_LEVELS = [
 const K_INTIMACY_FILTER = "bo.intimacyFilter.v1";
 const K_INTIMACY_LEVEL = "bo.intimacyLevel.v1";
 
+const MEMORIES_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"our-firsts", label:"İlkler"},
+  {slug:"first-impressions", label:"İlk İzlenimler"},
+  {slug:"unforgettable-moments", label:"Unutulmayanlar"},
+  {slug:"small-details", label:"Detaylar"},
+  {slug:"funny-memories", label:"Komik"},
+  {slug:"messages-voices", label:"Mesajlar"},
+  {slug:"photos-places", label:"Fotoğraflar"},
+  {slug:"turning-points", label:"Dönüm Noktaları"},
+  {slug:"how-we-changed", label:"Değişim"},
+  {slug:"future-memories", label:"Gelecek"},
+];
+const MEMORIES_LEVELS = [
+  {slug:"light", label:"Hafif", minH:1, maxH:1},
+  {slug:"emotional", label:"Duygusal", minH:1, maxH:2},
+  {slug:"deep", label:"Derin", minH:2, maxH:3},
+  {slug:"mixed", label:"Karışık", minH:1, maxH:3},
+];
+const K_MEMORIES_FILTER = "bo.memoriesFilter.v1";
+const K_MEMORIES_LEVEL = "bo.memoriesLevel.v1";
+
+/* Saved memories helpers */
+function getSavedMemories(){ return storage.get(K.savedMemories, []) || []; }
+function addSavedMemory(cardId,title,note){
+  const list = getSavedMemories();
+  const s = getSettings();
+  const entry = {
+    id: uid(), cardId, title: String(title||"").slice(0,120),
+    note: String(note||"").slice(0,500),
+    createdAt: nowIso(),
+    players: [s.player1||"Ozzy", s.player2||"Su"]
+  };
+  list.unshift(entry);
+  storage.set(K.savedMemories, list.slice(0, 500));
+  return entry;
+}
+function updateSavedMemory(id,patch){
+  const list = getSavedMemories();
+  const i = list.findIndex(x=>x.id===id);
+  if(i<0) return false;
+  if(patch.note!=null) list[i].note = String(patch.note).slice(0,500);
+  if(patch.title!=null) list[i].title = String(patch.title).slice(0,120);
+  storage.set(K.savedMemories, list); return true;
+}
+function deleteSavedMemory(id){
+  const list = getSavedMemories().filter(x=>x.id!==id);
+  storage.set(K.savedMemories, list);
+}
+
+
 function chipButton(label,active,onClick){
   return el("button",{
     class:"tag"+(active?" gold":""),
