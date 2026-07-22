@@ -1537,11 +1537,17 @@ function getDailyQuestion(){
       if(found) return {card:found,mod:m};
     }
   }
-  // pick a fresh one from any level
+  // pick a fresh one from any level, guarding flirt to only question-type & hardness<=2
   const all=[];
   for(const m of LEVELS){
     for(const c of loadPool(m)){
-      if(!isDisabled(m,c.id))all.push({card:c,mod:m});
+      if(isDisabled(m,c.id)) continue;
+      if(m==="flirt"){
+        const t = c.type||"question";
+        if(t!=="question" && t!=="choice" && t!=="guess") continue;
+        if((c.hardness||2) > 2) continue;
+      }
+      all.push({card:c,mod:m});
     }
   }
   if(!all.length) return null;
