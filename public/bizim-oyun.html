@@ -1973,13 +1973,17 @@ function maybeConsentReminder(kind,onDone){
   if(!s.consentReminder || consent[kind]) return onDone();
   openModal((box,close)=>{
     box.append(el("h3",null,"Küçük hatırlatma"));
-    box.append(el("div",{class:"consent-box",style:"margin-top:12px"},
-      "Bu oyunda her şey karşılıklı istekle güzel. Her kartta pas diyebilir, görevi değiştirebilir veya oyunu durdurabilirsiniz."));
-    box.append(el("div",{style:"margin-top:16px"},btn("Anladık, başlayalım","primary",()=>{
+    const msg = kind==="intimacy"
+      ? "Bu bölümde duygusal ve fiziksel yakınlık içeren kartlar bulunur. Her kart değiştirilebilir, yumuşatılabilir veya pas geçilebilir. Daha önce onay vermiş olmak, her yeni kartı kabul etmek zorunda olduğunuz anlamına gelmez."
+      : "Bu oyunda her şey karşılıklı istekle güzel. Her kartta pas diyebilir, görevi değiştirebilir veya oyunu durdurabilirsiniz.";
+    box.append(el("div",{class:"consent-box",style:"margin-top:12px"}, msg));
+    const btnLabel = kind==="intimacy" ? "Anladık, birlikte seçeriz" : "Anladık, başlayalım";
+    box.append(el("div",{style:"margin-top:16px"},btn(btnLabel,"primary",()=>{
       consent[kind]=true;storage.set(K.consent,consent);close();onDone();
     })));
   });
 }
+
 
 route("/level/*",(app,path)=>{
   const mod = path.split("/")[2];
