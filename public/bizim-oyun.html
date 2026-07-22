@@ -1889,158 +1889,36 @@ function poolValues(pool){
 }
 function renderDice(app){
   app.append(topbar("Sex Zarı"));
-  const state = { mode:"klasik", result:null, nightPools:new Set(["oyuncu","eylem","bolge","sure"]) };
   const card = el("div",{class:"card"});
   app.append(card);
-  card.append(el("div",{class:"muted"},"Bir mod seç, zarı at. Çıkan zarı uygulayın; hazır olduğunuzda 'Yapıldı — Sonraki' deyip tekrar atın."));
-  const modeRow = el("div",{class:"pill-row",style:"margin-top:12px"});
-  const poolPicker = el("div",{style:"margin-top:12px",class:"hidden"});
-  Object.keys(DICE_MODES).forEach(k=>{
-    const b = el("button",{class:"pill"+(k===state.mode?" active":""),onclick:()=>{
-      state.mode=k;
-      modeRow.querySelectorAll(".pill").forEach(p=>p.classList.remove("active"));
-      b.classList.add("active");
-      poolPicker.classList.toggle("hidden", k!=="buGece");
-    }},DICE_MODES[k].name);
-    modeRow.append(b);
-  });
-  card.append(modeRow);
-  // Pool picker for "Sadece Bu Gece"
-  poolPicker.append(el("div",{class:"muted",style:"margin-bottom:8px"},"Bu geceye özel: hangi havuzlardan zar atılsın?"));
-  const poolPickRow = el("div",{class:"pill-row"});
-  Object.keys(DICE).forEach(pk=>{
-    const active = state.nightPools.has(pk);
-    const pb = el("button",{class:"pill"+(active?" active":""),onclick:()=>{
-      if(state.nightPools.has(pk)) state.nightPools.delete(pk);
-      else state.nightPools.add(pk);
-      pb.classList.toggle("active");
-    }},pk);
-    poolPickRow.append(pb);
-  });
-  poolPicker.append(poolPickRow);
-  card.append(poolPicker);
+  card.append(el("div",{class:"muted"},"Zarı at, çıkan pozisyonu uygula. Bitince tekrar at."));
   const rollArea = el("div",{style:"margin-top:14px"});
   card.append(rollArea);
   card.append(btn("Zar At","primary",()=>roll()));
-  const kasaBtn = btn("Özel Kasa yönetimi","ghost",()=>navigate("#/dice-custom"));
-  card.append(el("div",{style:"margin-top:8px"},kasaBtn));
 
-  function pickDiceForMode(mode){
-    if(mode==="rulet"){
-      const keys = Object.keys(DICE);
-      const shuffled = shuffle(keys);
-      const n = 4+Math.floor(Math.random()*3);
-      return shuffled.slice(0,n);
-    }
-    if(mode==="buGece"){
-      const picked = Array.from(state.nightPools);
-      return picked.length ? picked : ["oyuncu","eylem","sure"];
-    }
-    if(mode==="kasa"){
-      const custom = getCustomDice();
-      return Object.keys(custom).filter(k=>custom[k] && custom[k].length);
-    }
-    return DICE_MODES[mode].dice;
-  }
-  function softenResult(res){
-    const soften = { tempo:["çok yavaş","yavaş"], sure:["30 sn","1 dk"], eylem:["fısılda","göz göze bak","dinle, dokunma","sadece nefes al"] };
-    const out = {...res};
-    for(const k in soften){
-      if(k in out){
-        const opts = soften[k].filter(v=>!isDieDisabled(k,v));
-        if(opts.length) out[k] = pick(opts);
-      }
-    }
-    return out;
-  }
-  function makeDie(k, v, rolling){
-    const cls = "die" + (rolling?" rolling":"");
-    const img = k==="pozisyon" ? positionImage(v) : null;
-    if(img){
-      return el("div",{class:cls+" pozisyon-with-image","data-k":k},
-        el("img",{class:"pos-img",src:img,alt:v,loading:"lazy"}),
-        el("div",{class:"pos-body"},
-          el("div",{class:"k"},k),
-          el("div",{class:"v"},v)
-        )
-      );
-    }
-    return el("div",{class:cls,"data-k":k},
-      el("div",{class:"k"},k),
-      el("div",{class:"v"},v)
-    );
-  }
-  function reconcileDice(diceKeys, dice){
-    // Pozisyon + bölge birlikte olmasın (pozisyon zaten yönlendiriyor)
-    if(dice.pozisyon && dice.bolge && state.mode!=="kasa"){
-      delete dice.bolge;
-    }
-    // Eylem + bölge uyum kontrolü
-    if(dice.eylem && dice.bolge){
-      const allowed = ACTION_ZONES[dice.eylem];
-      if(allowed){
-        if(allowed[0]==="SELF"){
-          // Bu eylem bölgesizdir; bölgeyi düşür
-          delete dice.bolge;
-        } else if(!allowed.includes("*") && !allowed.includes(dice.bolge)){
-          const pool = poolValues("bolge").filter(v=>allowed.includes(v));
-          if(pool.length) dice.bolge = pick(pool);
-          else delete dice.bolge;
-        }
-      }
-    }
-    // Yer + pozisyon uyumu: duş pozisyonu geldiyse yer 'banyo/duş' olsun
-    if(dice.pozisyon && dice.yer){
-      const p = dice.pozisyon.toLowerCase();
-      if(p.startsWith("duş") || p.includes("küvet")) dice.yer = "banyoda / duşta";
-      if(p.startsWith("kanepe") && dice.yer==="banyoda / duşta") dice.yer = "kanepede";
-      if(p.startsWith("masa") && dice.yer==="banyoda / duşta") dice.yer = "mutfak tezgahında";
-    }
-  }
   function roll(){
-    let diceKeys = pickDiceForMode(state.mode);
-    if(state.mode==="kasa" && (!diceKeys || !diceKeys.length)){
-      toast("Özel Kasa boş. Önce içerik ekle.");return;
+    const values = poolValues("pozisyon");
+    if(!values.length){ toast("Pozisyon havuzu boş."); return; }
+    const v = pick(values);
+    rollArea.innerHTML="";
+    const name = v.split(" — ")[0];
+    const desc = v.includes(" — ") ? v.slice(v.indexOf(" — ")+3) : "";
+    const img = positionImage(v);
+    const box = el("div",{class:"card",style:"text-align:center;padding:16px"});
+    if(img){
+      const im = document.createElement("img");
+      im.src = img; im.alt = name;
+      im.style.cssText = "max-width:100%;max-height:340px;border-radius:12px;margin:0 auto 12px;display:block";
+      box.append(im);
     }
-    rollArea.innerHTML="";
-    const dice = {};
-    diceKeys.forEach(k=>{
-      const values = state.mode==="kasa"
-        ? (getCustomDice()[k]||[]).filter(v=>!isDieDisabled(k,v))
-        : poolValues(k);
-      if(!values.length){return}
-      dice[k]=pick(values);
-    });
-    reconcileDice(diceKeys, dice);
-    const grid = el("div",{class:"dice-grid"});
-    Object.keys(dice).forEach(k=>{
-      grid.append(makeDie(k, dice[k], true));
-    });
-    rollArea.append(grid);
-    setTimeout(()=>{
-      grid.querySelectorAll(".die").forEach(d=>d.classList.remove("rolling"));
-      showResult(dice);
-    },900);
-  }
-
-  function afterAction(msg){
-    rollArea.innerHTML="";
-    const done = el("div",{class:"card",style:"margin-top:4px;text-align:center"});
-    done.append(el("div",{class:"muted",style:"margin-bottom:10px"},msg));
-    done.append(btn("Yeniden Zar At","primary",()=>{rollArea.innerHTML="";roll()}));
-    done.append(el("div",{style:"height:8px"}));
-    done.append(btn("Bitir","ghost",()=>{rollArea.innerHTML=""}));
-    rollArea.append(done);
-  }
-  function showResult(dice){
+    box.append(el("div",{style:"font-size:22px;font-weight:700;color:var(--gold);margin-bottom:8px"},name));
+    if(desc) box.append(el("div",{class:"muted",style:"line-height:1.5"},desc));
+    rollArea.append(box);
     bumpSession("sexDice","round");
-    const actions = el("div",{style:"margin-top:12px"});
-    rollArea.append(actions);
-    actions.append(el("div",{class:"row"},
-      btn("Yapıldı — Sonraki","primary",()=>{ rollArea.innerHTML=""; roll(); })
-    ));
   }
+  roll();
 }
+
 
 route("/dice-custom",(app)=>{
   app.append(topbar("Özel Kasa"));
