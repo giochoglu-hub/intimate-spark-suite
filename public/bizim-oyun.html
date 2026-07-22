@@ -1893,15 +1893,37 @@ function renderDice(app){
   app.append(topbar("Sex Zarı"));
   const card = el("div",{class:"card"});
   app.append(card);
-  card.append(el("div",{class:"muted"},"Zarı at, çıkan pozisyonu uygula. Bitince tekrar at."));
+  const info = el("div",{class:"muted"},"Zarı at, çıkan pozisyonu uygula. Aynı pozisyon 'Yeni Oyun' diyene kadar tekrar gelmez.");
+  card.append(info);
   const rollArea = el("div",{style:"margin-top:14px"});
   card.append(rollArea);
-  card.append(btn("Zar At","primary",()=>roll()));
+  const counter = el("div",{class:"muted",style:"margin-top:10px;text-align:center;font-size:13px"});
+  card.append(counter);
+  const rollBtn = btn("Zar At","primary",()=>roll());
+  card.append(rollBtn);
+  card.append(el("div",{style:"height:8px"}));
+  card.append(btn("Yeni Oyun","ghost",()=>{ seen.clear(); rollArea.innerHTML=""; updateCounter(); toast("Yeni oyun başladı."); }));
 
+  const seen = new Set();
+  function allValues(){ return poolValues("pozisyon").filter(v=>!!positionImage(v)); }
+  function updateCounter(){
+    const total = allValues().length;
+    counter.textContent = total ? `Bu oyunda: ${seen.size} / ${total}` : "";
+  }
   function roll(){
-    const values = poolValues("pozisyon").filter(v=>!!positionImage(v));
+    const values = allValues();
     if(!values.length){ toast("Görselli pozisyon yok. Ayarlar → Pozisyon Görselleri'nden ekleyebilirsin."); return; }
-    const v = pick(values);
+    const remaining = values.filter(v=>!seen.has(v));
+    if(!remaining.length){
+      rollArea.innerHTML="";
+      const done = el("div",{class:"card",style:"text-align:center;padding:16px"});
+      done.append(el("div",{style:"font-size:20px;font-weight:700;color:var(--gold);margin-bottom:8px"},"Tüm pozisyonlar bitti"));
+      done.append(el("div",{class:"muted"},"'Yeni Oyun' de, havuz sıfırdan başlasın."));
+      rollArea.append(done);
+      return;
+    }
+    const v = pick(remaining);
+    seen.add(v);
     rollArea.innerHTML="";
     const name = v.split(" — ")[0];
     const desc = v.includes(" — ") ? v.slice(v.indexOf(" — ")+3) : "";
@@ -1917,9 +1939,12 @@ function renderDice(app){
     if(desc) box.append(el("div",{class:"muted",style:"line-height:1.5"},desc));
     rollArea.append(box);
     bumpSession("sexDice","round");
+    updateCounter();
   }
+  updateCounter();
   roll();
 }
+
 
 
 route("/dice-custom",(app)=>{
