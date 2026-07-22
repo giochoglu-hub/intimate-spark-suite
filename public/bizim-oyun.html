@@ -2544,7 +2544,248 @@ function renderCardUI(box,mod,c,onNext,ext){
   }
 }
 
-async function requestAi(mod,box,onNext){
+/* ============================================================
+ * Memories: save modal + mini-games
+ * ============================================================ */
+function openSaveMemoryModal(card){
+  openModal((box,close)=>{
+    box.append(el("h3",null,"Bu anıyı kaydet"));
+    box.append(el("div",{class:"muted",style:"margin-top:6px;font-size:13px"}, card.title));
+    const ta = el("textarea",{
+      placeholder:"Kısa bir not ekleyin (isteğe bağlı, en fazla 500 karakter)",
+      maxlength:"500",
+      style:"width:100%;margin-top:12px;min-height:120px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:var(--surface-2);color:inherit;font:inherit;resize:vertical"
+    });
+    box.append(ta);
+    const row = el("div",{class:"row",style:"margin-top:12px"},
+      btn("Kaydet","primary",()=>{
+        const entry = addSavedMemory(card.id, card.title, ta.value);
+        sessionSet("memories",{savedMemories:(getSession().modules.memories?.savedMemories||0)+1});
+        toast("Anı kaydedildi.");
+        close();
+      }),
+      btn("Vazgeç","ghost",close)
+    );
+    box.append(row);
+  });
+}
+
+route("/saved-memories",(app)=>{
+  app.append(topbar("Kaydettiğimiz Anılar"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  function refresh(){
+    box.innerHTML="";
+    const list = getSavedMemories();
+    if(!list.length){
+      box.append(el("div",{class:"muted"},"Henüz kaydedilmiş anı yok. Anılarımız modülünde bir kart açıp 💾 ile kaydedebilirsiniz."));
+      box.append(el("div",{style:"height:10px"}));
+      box.append(btn("Anılarımız modülüne git","primary",()=>navigate("#/level/memories")));
+      return;
+    }
+    list.forEach(item=>{
+      const row = el("div",{class:"card",style:"margin-top:10px"});
+      row.append(el("div",{class:"badge"}, new Date(item.createdAt).toLocaleDateString("tr-TR")));
+      row.append(el("h3",{style:"margin-top:8px"}, item.title));
+      const noteBox = el("div",{class:"muted",style:"margin-top:6px;white-space:pre-wrap"});
+      noteBox.textContent = item.note || "(not yok)";
+      row.append(noteBox);
+      const actions = el("div",{class:"row",style:"margin-top:10px"},
+        btn("Notu düzenle","ghost",()=>{
+          openModal((mb,close)=>{
+            mb.append(el("h3",null,"Notu düzenle"));
+            const ta = el("textarea",{
+              maxlength:"500",
+              style:"width:100%;margin-top:10px;min-height:120px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:var(--surface-2);color:inherit;font:inherit;resize:vertical"
+            });
+            ta.value = item.note || "";
+            mb.append(ta);
+            mb.append(el("div",{class:"row",style:"margin-top:12px"},
+              btn("Kaydet","primary",()=>{
+                updateSavedMemory(item.id,{note:ta.value});
+                toast("Not güncellendi."); close(); refresh();
+              }),
+              btn("Vazgeç","ghost",close)
+            ));
+          });
+        }),
+        btn("Sil","danger",()=>{
+          deleteSavedMemory(item.id); toast("Anı silindi."); refresh();
+        })
+      );
+      row.append(actions);
+      box.append(row);
+    });
+  }
+  refresh();
+});
+
+/* Timeline mini-game */
+const TIMELINE_EVENTS_DEFAULT = [
+  "İlk mesajlaşma",
+  "İlk telefon konuşması",
+  "İlk buluşma",
+  "İlk sarılış",
+  "İlk yolculuk",
+  "İlk ortak fotoğraf",
+  "İlk 'seni seviyorum'",
+  "İlk ciddi konuşma",
+];
+route("/memories-timeline",(app)=>{
+  app.append(topbar("Zaman Çizgisi"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  let events = TIMELINE_EVENTS_DEFAULT.slice();
+  let order = shuffle(events).slice(0,5);
+  let userOrder = order.slice();
+
+  function render(){
+    box.innerHTML="";
+    box.append(el("div",{class:"muted"},"Aşağıdaki olayları birlikte kronolojik sıraya koyun. ▲▼ ile hareket ettirin, hazır olduğunuzda 'Doğru sırayı birlikte belirle' deyin."));
+    userOrder.forEach((ev,i)=>{
+      const row = el("div",{class:"card",style:"margin-top:8px;display:flex;align-items:center;gap:8px;padding:10px 12px"});
+      row.append(el("div",{class:"badge"}, String(i+1)));
+      row.append(el("div",{style:"flex:1"}, ev));
+      row.append(btn("▲","ghost",()=>{ if(i>0){ [userOrder[i-1],userOrder[i]]=[userOrder[i],userOrder[i-1]]; render(); } }));
+      row.append(btn("▼","ghost",()=>{ if(i<userOrder.length-1){ [userOrder[i+1],userOrder[i]]=[userOrder[i],userOrder[i+1]]; render(); } }));
+      box.append(row);
+    });
+    box.append(el("div",{class:"row",style:"margin-top:14px"},
+      btn("Doğru sırayı birlikte belirle","primary",()=>{
+        bumpSession("memories","round");
+        sessionSet("memories",{timelineRounds:(getSession().modules.memories?.timelineRounds||0)+1});
+        toast("Konuştuğunuz sırayı birlikte netleştirin.");
+      }),
+      btn("Yeni tur","ghost",()=>{ userOrder = shuffle(events).slice(0,5); render(); })
+    ));
+    box.append(el("div",{class:"muted",style:"margin-top:12px;font-size:12px"},"Tarihleri bilmiyorsanız hislerinizle sıralayın. Aynı anıyı farklı hatırlamak doğaldır."));
+  }
+  render();
+});
+
+/* Compare mini-game — hidden answers */
+route("/memories-compare",(app)=>{
+  app.append(topbar("Kim Daha İyi Hatırlıyor?"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const s = getSettings();
+  let phase = "draw";
+  let card = null;
+  let a1 = "", a2 = "";
+  function render(){
+    box.innerHTML="";
+    if(phase === "draw"){
+      card = drawCard("memories",{maxHardness:2});
+      if(!card || card.__exhausted){
+        box.append(el("div",null,"Uygun kart kalmadı."));
+        box.append(el("div",{style:"height:8px"}));
+        box.append(btn("Sıfırla","ghost",()=>{resetSeen("memories");render();}));
+        return;
+      }
+      markSeen("memories",card.id);
+      phase = "p1";
+      render();
+      return;
+    }
+    if(phase === "p1" || phase === "p2"){
+      const who = phase === "p1" ? (s.player1||"Ozzy") : (s.player2||"Su");
+      box.append(el("div",{class:"badge"}, who+"'nin sırası"));
+      box.append(el("h3",{style:"margin-top:8px"}, card.title));
+      box.append(el("div",{style:"margin-top:6px"}, card.prompt));
+      const ta = el("textarea",{
+        placeholder:"Cevabını yaz — diğeri görmeyecek",
+        style:"width:100%;margin-top:12px;min-height:100px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:var(--surface-2);color:inherit;font:inherit"
+      });
+      box.append(ta);
+      box.append(el("div",{class:"row",style:"margin-top:12px"},
+        btn("Cevabı gizle ve devam","primary",()=>{
+          if(phase==="p1"){ a1 = ta.value; phase = "handoff"; }
+          else { a2 = ta.value; phase = "reveal"; }
+          render();
+        })
+      ));
+      return;
+    }
+    if(phase === "handoff"){
+      box.append(el("h3",null,"Telefonu partnerine ver"));
+      box.append(el("div",{class:"muted",style:"margin-top:6px"},"Hazır olduğunda devam et."));
+      box.append(el("div",{style:"height:12px"}));
+      box.append(btn("Ben "+(s.player2||"Su")+", devam","primary",()=>{ phase = "p2"; render(); }));
+      return;
+    }
+    if(phase === "reveal"){
+      box.append(el("h3",null, card.title));
+      box.append(el("div",{class:"muted",style:"margin-top:6px"}, card.prompt));
+      const a1Box = el("div",{class:"card",style:"margin-top:10px"});
+      a1Box.append(el("div",{class:"badge"}, (s.player1||"Ozzy")));
+      const a1t = el("div",{style:"margin-top:6px;white-space:pre-wrap"}); a1t.textContent = a1 || "(boş)"; a1Box.append(a1t);
+      box.append(a1Box);
+      const a2Box = el("div",{class:"card",style:"margin-top:8px"});
+      a2Box.append(el("div",{class:"badge"}, (s.player2||"Su")));
+      const a2t = el("div",{style:"margin-top:6px;white-space:pre-wrap"}); a2t.textContent = a2 || "(boş)"; a2Box.append(a2t);
+      box.append(a2Box);
+      box.append(el("div",{class:"muted",style:"margin-top:10px;font-size:12px"},"Aynı anıyı farklı hatırlayabilirsiniz — bu doğaldır."));
+      box.append(el("div",{class:"row",style:"margin-top:12px"},
+        btn("Aynı hatırladık","ghost",()=>next()),
+        btn("Yakın","ghost",()=>next()),
+        btn("Farklı","ghost",()=>next()),
+      ));
+      box.append(el("div",{class:"row",style:"margin-top:8px"},
+        btn("Bu anıyı kaydet","gold",()=>openSaveMemoryModal(card)),
+        btn("Yeni kart","primary",()=>next())
+      ));
+      function next(){
+        bumpSession("memories","round");
+        sessionSet("memories",{memoryCompareRounds:(getSession().modules.memories?.memoryCompareRounds||0)+1});
+        a1=""; a2=""; phase = "draw"; render();
+      }
+    }
+  }
+  render();
+});
+
+/* Story completion mini-game */
+const STORY_STARTERS = [
+  "O gün kapıdan çıktığımızda…",
+  "İlk kez gerçekten rahat hissettiğim an…",
+  "O fotoğraf çekilmeden hemen önce…",
+  "Sen o cümleyi söylediğinde…",
+  "Telefonun ekranı yandığında…",
+  "Kafeye girdiğimizde ilk fark ettiğim…",
+  "O gece uyumadan önce…",
+  "Yola çıkarken radyoda…",
+];
+route("/memories-story",(app)=>{
+  app.append(topbar("Anıyı Tamamla"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const s = getSettings();
+  let starter = pick(STORY_STARTERS);
+  let turn = 0;
+  function render(){
+    box.innerHTML="";
+    box.append(el("div",{class:"badge"},"Başlangıç"));
+    box.append(el("h3",{style:"margin-top:8px"}, starter));
+    box.append(el("div",{class:"muted",style:"margin-top:8px"}, "Sıradaki: "+((turn%2===0)?(s.player1||"Ozzy"):(s.player2||"Su"))+" — bir cümle ekle, sonra sırayı diğerine ver."));
+    box.append(el("div",{class:"row",style:"margin-top:14px"},
+      btn("Sıra bende, devam ettim","primary",()=>{ turn++; render(); }),
+      btn("Yeni başlangıç","ghost",()=>{ starter = pick(STORY_STARTERS); turn = 0; render(); }),
+    ));
+    box.append(el("div",{class:"row",style:"margin-top:8px"},
+      btn("Hikâyeyi bitirdik","gold",()=>{
+        bumpSession("memories","round");
+        sessionSet("memories",{storiesCompleted:(getSession().modules.memories?.storiesCompleted||0)+1});
+        toast("Hikâyeniz kaydedilmedi ama sayaca yazıldı."); starter = pick(STORY_STARTERS); turn = 0; render();
+      }),
+      btn("Bu anıyı kaydet","ghost",()=>{
+        openSaveMemoryModal({id:"story-"+Date.now(), title:starter});
+      })
+    ));
+  }
+  render();
+});
+
+
   const settings = getSettings();
   const pool = loadPool(mod);
   const avoidTitles = pool.slice(-50).map(c=>c.title);
