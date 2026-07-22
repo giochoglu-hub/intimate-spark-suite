@@ -1875,6 +1875,10 @@ if(!runMigrations()){
     el("div",{style:"margin-top:12px"},btn("Yedek al","primary",exportData))
   ));
 } else {
+  // Apply saved theme + reduced motion
+  const _s = getSettings();
+  if(_s.theme && _s.theme!=="bordo") document.documentElement.setAttribute("data-theme", _s.theme);
+  document.documentElement.style.setProperty("--rm", _s.reducedMotion?"1":"0");
   // Init all pools with core
   Object.keys(CORE).forEach(m=>loadPool(m));
   loadGuessMePool();
