@@ -1614,17 +1614,79 @@ route("/level/*",(app,path)=>{
   if(!LEVELS.includes(mod)) return navigate("#/home");
   maybeConsentReminder(mod,()=>renderLevel(app,mod));
 });
+const WARMUP_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"daily-life", label:"Günlük"},
+  {slug:"quick-choice", label:"Tercihler"},
+  {slug:"funny-absurd", label:"Komik"},
+  {slug:"childhood", label:"Çocukluk"},
+  {slug:"personality", label:"Karakter"},
+  {slug:"dreams", label:"Hayaller"},
+  {slug:"light-relationship", label:"Biz"},
+  {slug:"about-partner", label:"Tahmin"},
+  {slug:"scenarios", label:"Senaryolar"},
+];
+const K_WARMUP_FILTER = "bo.warmupFilter.v1";
+
 function renderLevel(app,mod){
   app.append(topbar(MODULES[mod].name));
+
+  let filter = "";
+  let filterBar = null;
+  let countLine = null;
   const cardBox = el("div",{class:"card"});
+
+  if(mod === "warmup"){
+    try { filter = localStorage.getItem(K_WARMUP_FILTER) || ""; } catch(e){ filter = ""; }
+    filterBar = el("div",{class:"card",style:"padding:10px 12px"});
+    const chipRow = el("div",{style:"display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 0;scrollbar-width:none"});
+    WARMUP_CATEGORIES.forEach(cat=>{
+      const active = filter === cat.slug;
+      const chip = el("button",{
+        class:"tag"+(active?" gold":""),
+        style:"flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px",
+        onclick:()=>{
+          filter = cat.slug;
+          try { localStorage.setItem(K_WARMUP_FILTER, filter); } catch(e){}
+          drawAndShow();
+        }
+      }, cat.label);
+      chipRow.append(chip);
+    });
+    filterBar.append(chipRow);
+    countLine = el("div",{class:"muted",style:"margin-top:8px;font-size:12px"},"");
+    filterBar.append(countLine);
+    app.append(filterBar);
+  }
+
   app.append(cardBox);
 
+  function refreshChips(){
+    if(!filterBar) return;
+    // Re-render chip active state
+    const chips = filterBar.querySelectorAll("button.tag");
+    chips.forEach((chip,i)=>{
+      const cat = WARMUP_CATEGORIES[i];
+      const active = filter === cat.slug;
+      chip.className = "tag"+(active?" gold":"");
+      chip.style.cssText = "flex:0 0 auto;cursor:pointer;border:1px solid "+(active?"rgba(217,175,97,.5)":"rgba(255,255,255,.12)")+";background:"+(active?"rgba(217,175,97,.18)":"var(--surface-2)")+";color:"+(active?"var(--gold)":"inherit")+";font-size:13px;padding:6px 12px";
+    });
+  }
+  function refreshCount(){
+    if(!countLine) return;
+    const n = countUnseen(mod, filter?{category:filter}:undefined);
+    const label = filter ? (WARMUP_CATEGORIES.find(c=>c.slug===filter)?.label || "") : "Tümü";
+    countLine.textContent = `Görülmemiş ${n} kart kaldı · ${label}`;
+  }
+
   function drawAndShow(){
+    refreshChips();
+    refreshCount();
     cardBox.innerHTML="";
-    const c = drawCard(mod);
+    const c = drawCard(mod, filter?{category:filter}:undefined);
     if(!c){cardBox.append(el("div",null,"Bu modülde henüz kart yok."));return}
     if(c.__exhausted){
-      cardBox.append(el("div",{class:"muted"},"Bu modülün tüm kartlarını gördünüz."));
+      cardBox.append(el("div",{class:"muted"},filter?"Bu kategorinin tüm kartlarını gördünüz.":"Bu modülün tüm kartlarını gördünüz."));
       cardBox.append(el("div",{style:"height:12px"}));
       if(aiAvailable()){
         cardBox.append(btn("Yeni sorular üret (AI)","primary",()=>requestAi(mod,cardBox,drawAndShow)));
@@ -1633,11 +1695,18 @@ function renderLevel(app,mod){
       cardBox.append(btn("Görülenleri sıfırla ve tekrar başla","ghost",()=>{
         resetSeen(mod);drawAndShow();
       }));
+      if(filter){
+        cardBox.append(el("div",{style:"height:8px"}));
+        cardBox.append(btn("Karışık moda dön","ghost",()=>{
+          filter="";try{localStorage.setItem(K_WARMUP_FILTER,"")}catch(e){}drawAndShow();
+        }));
+      }
       return;
     }
     bumpSession(mod,"round");
     markSeen(mod,c.id);
     renderCardUI(cardBox,mod,c,drawAndShow);
+    refreshCount();
   }
   drawAndShow();
 }
