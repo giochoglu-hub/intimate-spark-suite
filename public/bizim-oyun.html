@@ -2023,6 +2023,28 @@ const FLIRT_LEVELS = [
 const K_WARMUP_FILTER = "bo.warmupFilter.v1";
 const K_FLIRT_FILTER = "bo.flirtFilter.v1";
 const K_FLIRT_LEVEL = "bo.flirtLevel.v1";
+const INTIMACY_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"emotional-closeness", label:"Duygusal"},
+  {slug:"trust-openness", label:"Güven"},
+  {slug:"care-support", label:"Şefkat"},
+  {slug:"boundaries-consent", label:"Sınırlar"},
+  {slug:"romantic-intimacy", label:"Romantik"},
+  {slug:"touch-contact", label:"Dokunuş"},
+  {slug:"kissing-attraction", label:"Öpüşme"},
+  {slug:"intimacy-preferences", label:"Tercihler"},
+  {slug:"bold-questions", label:"Cesur"},
+  {slug:"intimacy-dares", label:"Görevler"},
+];
+const INTIMACY_LEVELS = [
+  {slug:"emotional", label:"Duygusal", minH:1, maxH:1},
+  {slug:"romantic", label:"Romantik", minH:1, maxH:2},
+  {slug:"sensual", label:"Tensel", minH:2, maxH:3},
+  {slug:"bold", label:"Cesur", minH:3, maxH:4},
+  {slug:"mixed", label:"Karışık", minH:1, maxH:4},
+];
+const K_INTIMACY_FILTER = "bo.intimacyFilter.v1";
+const K_INTIMACY_LEVEL = "bo.intimacyLevel.v1";
 
 function chipButton(label,active,onClick){
   return el("button",{
