@@ -2316,6 +2316,13 @@ route("/settings",(app)=>{
   }
   refreshDisabled();
 
+  // position images shortcut
+  const pibox = el("div",{class:"card"});
+  app.append(pibox);
+  pibox.append(el("h3",null,"Pozisyon Görselleri"));
+  pibox.append(el("div",{class:"muted",style:"margin-top:6px"},"Her pozisyon için kendi görselini yükle. Tarayıcında saklanır, kimseyle paylaşılmaz."));
+  pibox.append(el("div",{style:"margin-top:10px"},btn("Görselleri yönet","primary",()=>navigate("#/pos-images"))));
+
   // export / import
   const ebox = el("div",{class:"card"});
   app.append(ebox);
