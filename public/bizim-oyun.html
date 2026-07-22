@@ -154,7 +154,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
 /* ============================================================
  * 1. Constants & schemas
  * ============================================================ */
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 const K = {
   meta:"bizimOyun.meta",
   settings:"bizimOyun.settings",
@@ -167,6 +167,7 @@ const K = {
   activeSession:"bizimOyun.activeSession",
   daily:"bizimOyun.dailyQuestion",
   consent:"bizimOyun.consent",
+  savedMemories:"bizimOyun.savedMemories",
 };
 
 const MODULES = {
@@ -257,7 +258,15 @@ const storage = {
  * 4. Migrations
  * ============================================================ */
 const migrations = {
-  1(data){ return data; }
+  1(){ return; },
+  2(){
+    // v2: introduce savedMemories. Preserve every existing key; only add if missing.
+    try{
+      if(localStorage.getItem(K.savedMemories) == null){
+        localStorage.setItem(K.savedMemories, JSON.stringify([]));
+      }
+    }catch(e){}
+  }
 };
 function runMigrations(){
   const meta = storage.get(K.meta,null);
@@ -797,21 +806,187 @@ const CORE = {
     mk("Yönlendirme cümlesi","İkiniz de istiyorsanız birbirinize yakınlıkta duymak istediğiniz kısa bir cümle söyleyin.",{tags:["görev","söz","yönlendirme"],category:"intimacy-dares",hardness:4,type:"dare",consentRequired:true}),
   ],
   memories: [
-    mk("İlk kez","Bizimle ilgili yaşadığın 'bu adam/bu kadın benim' dediğin ilk an neydi?",{tags:["ilk"],hardness:2}),
-    mk("Küçük detay","İlk zamanlarımızdan hâlâ hatırladığın çok küçük ama gereksiz bir detay söyle.",{tags:["detay"],hardness:1}),
-    mk("Beraber ilk kavga","İlk büyük tartışmamızı hatırlıyor musun? Şimdiden bakınca ne diyorsun?",{tags:["tartışma"],hardness:3}),
-    mk("Kaçırdığımız an","Keşke daha uzun sürseydi dediğin ortak anımız hangisi?",{tags:["nostalji"],hardness:2}),
-    mk("En saçma","Birlikte yaşadığımız en saçma, en çocukça anımız hangisiydi?",{tags:["komik"],hardness:1}),
-    mk("Fotoğraf","Zihninde bize ait, hiç fotoğrafı çekilmemiş bir sahne var mı?",{tags:["görsel"],hardness:2}),
-    mk("Yemek","Birlikte yediğimiz, tadını hâlâ hatırladığın bir öğün var mı?",{tags:["yemek"],hardness:1}),
-    mk("Yol hikayesi","Bizimle ilgili en sevdiğin yol/araba anısı hangisi?",{tags:["seyahat"],hardness:1}),
-    mk("Küçük söz","Sana verdiğim ve tuttuğum küçük bir söz aklına geliyor mu?",{tags:["söz"],hardness:2}),
-    mk("Zor gün","Beni ayakta tuttuğun bir gün hatırlıyor musun? Nasıl yaptığını?",{tags:["destek"],hardness:2}),
-    mk("Sürpriz","Benim yaptığım, seni gerçekten şaşırtan bir sürprizi hatırlar mısın?",{tags:["sürpriz"],hardness:1}),
-    mk("Aile","Ailelerimizle ilgili birlikte yaşadığımız en tatlı an hangisiydi?",{tags:["aile"],hardness:2}),
-    mk("Ev","Yaşadığımız/ziyaret ettiğimiz evlerden hangisi sende iz bıraktı?",{tags:["mekan"],hardness:1}),
-    mk("Gece yarısı","Bir gece yarısı konuşmamız var mı, hâlâ zihnine takılan?",{tags:["gece"],hardness:2}),
-    mk("İlk kavuşma","Uzun bir ayrılıktan sonra ilk kavuşmamızı hatırla, ne hissetmiştin?",{tags:["kavuşma"],hardness:2}),
+    // ——— Anılarımız · 180 kart (10 alt kategori) ———
+    mk('İlk mesaj cümlesi','İlk mesajlaşmalarımızdan bugün hâlâ aklına gelen bir cümle var mı?',{tags:["ilk","mesaj"],category:"our-firsts",hardness:1}),
+    mk('Sesini ilk duyduğum',"Sesimi ilk duyduğunda zihnindeki 'ben' ile eşleşmiş miydi?",{tags:["ilk","ses"],category:"our-firsts",hardness:2}),
+    mk('İlk görüntülü','İlk görüntülü konuşmadan önce hangi ufak hazırlığı yaptığını hatırlıyor musun?',{tags:["ilk","görüntülü"],category:"our-firsts",hardness:1}),
+    mk('Buluşma öncesi tahmin','İlk buluşmamızdan önce beni kafanda nasıl canlandırmıştın?',{tags:["ilk","buluşma"],category:"our-firsts",hardness:1}),
+    mk('İlk sarılış','İlk sarıldığımız anı tek bir kelimeyle anlatsan hangi kelime olurdu?',{tags:["ilk","sarılma"],category:"our-firsts",hardness:2,type:"reflection"}),
+    mk('İlk öpücük anı','İlk öpücükten önceki iki saniyeyi hâlâ hatırlıyor musun?',{tags:["ilk","öpücük"],category:"our-firsts",hardness:2}),
+    mk('İlk ortak yemek','Birlikte yediğimiz ilk yemek neydi, tadı hâlâ hatırında mı?',{tags:["ilk","yemek"],category:"our-firsts",hardness:1}),
+    mk('Aramızın ilk şakası','İkimizin arasında oturan ilk iç şaka nasıl doğmuştu?',{tags:["ilk","şaka"],category:"our-firsts",hardness:1}),
+    mk('İlk kıskançlık kıvılcımı','İlk kez içinde küçük bir kıskançlık kıvılcımı hissettiğin an neydi?',{tags:["ilk","kıskançlık"],category:"our-firsts",hardness:3}),
+    mk('İlk özlem',"İlk kez ciddi ciddi 'onu özledim' dediğin gün nasıl geçmişti?",{tags:["ilk","özlem"],category:"our-firsts",hardness:2}),
+    mk("İlk 'seni seviyorum'","İlk kez 'seni seviyorum' derken içinden neler geçmişti?",{tags:["ilk","aşk"],category:"our-firsts",hardness:3,type:"reflection"}),
+    mk('İlk ciddi konuşma','Aramızdaki ilk gerçekten ciddi konuşma hangisiydi?',{tags:["ilk","konuşma"],category:"our-firsts",hardness:2}),
+    mk('İlk yolculuk','Birlikte çıktığımız ilk yolculuktan aklında kalan üç şey ne?',{tags:["ilk","yolculuk"],category:"our-firsts",hardness:1}),
+    mk('İlk hediye','Sana verdiğim ilk hediyeyi hâlâ hatırlıyor musun?',{tags:["ilk","hediye"],category:"our-firsts",hardness:1}),
+    mk('İlk ortak fotoğraf','İlk fotoğrafımızın nerede çekildiğini net hatırlıyor musun?',{tags:["ilk","fotoğraf"],category:"our-firsts",hardness:1}),
+    mk('İlk barışma','İlk küçük tartışmamızdan sonra ilk kim ilk hareketi yaptı?',{tags:["ilk","barışma"],category:"our-firsts",hardness:2}),
+    mk('İlk gece planı',"Birlikte gerçekleştirdiğimiz ilk 'bu gece bunu yapalım' anı hangisiydi?",{tags:["ilk","plan"],category:"our-firsts",hardness:1}),
+    mk('İlk küçük itiraf','Bana ilk kez utanmadan yaptığın küçük bir itiraf neydi?',{tags:["ilk","itiraf"],category:"our-firsts",hardness:2}),
+    mk("İlk 'biz' hissi","İlk kez 'biz' kelimesini içinden duyduğun an hangisiydi?",{tags:["ilk","biz"],category:"our-firsts",hardness:3,type:"reflection"}),
+    mk('İlk tam güven','İlk kez sana tamamen güvenli hissettiğim an sende iz bıraktı mı?',{tags:["ilk","güven"],category:"our-firsts",hardness:3,type:"reflection"}),
+    mk('İlk ses tonun','İlk konuşmamızda sesimin tonunda seni etkileyen bir şey olmuş muydu?',{tags:["ilk-izlenim","ses"],category:"first-impressions",hardness:1}),
+    mk('İlk gülüş','Beni ilk gülerken gördüğünde ne düşünmüştün?',{tags:["ilk-izlenim","gülüş"],category:"first-impressions",hardness:1}),
+    mk('Yanlış tahmin','Benimle ilgili ilk tahminlerinden hangisi tamamen yanlış çıktı?',{tags:["ilk-izlenim","tahmin"],category:"first-impressions",hardness:2}),
+    mk('İlk enerji','İlk gördüğünde bende sezdiğin enerjiyi nasıl tarif ederdin?',{tags:["ilk-izlenim","enerji"],category:"first-impressions",hardness:2}),
+    mk('Beklenti-farkı','Beni tanımadan önce hakkımda beklediğin şeyle bugünkü ben arasında en büyük fark ne?',{tags:["ilk-izlenim","fark"],category:"first-impressions",hardness:2,type:"reflection"}),
+    mk('İlk şaşırtan detay','İlk konuşmamızda seni en çok şaşırtan detay neydi?',{tags:["ilk-izlenim","şaşırma"],category:"first-impressions",hardness:1}),
+    mk('Dışarıdan biri','Beni ilk gördüğünde dışarıdan nasıl biri sanmıştın?',{tags:["ilk-izlenim","dış"],category:"first-impressions",hardness:1}),
+    mk('İlk merak kıvılcımı','İlk günlerde bende merakını en çok uyandıran şey neydi?',{tags:["ilk-izlenim","merak"],category:"first-impressions",hardness:2}),
+    mk('İlk rahatlık','İlk kez yanımda garip biçimde rahat hissettiğin an hangisiydi?',{tags:["ilk-izlenim","rahatlık"],category:"first-impressions",hardness:2}),
+    mk('İlk çekim','İlk zamanlar bende seni çeken şeyin ne olduğunu anlamış mıydın?',{tags:["ilk-izlenim","çekim"],category:"first-impressions",hardness:2}),
+    mk('İlk güven hissi','Bana ilk kez içgüdüsel güvendiğin an hangisiydi?',{tags:["ilk-izlenim","güven"],category:"first-impressions",hardness:2}),
+    mk('Yanılgı','Hakkımda başlangıçta hafiften yanıldığın küçük bir şey söyle.',{tags:["ilk-izlenim","yanılgı"],category:"first-impressions",hardness:2}),
+    mk('İlk konuşma tempo','İlk uzun konuşmamızın hızı sana nasıl gelmişti?',{tags:["ilk-izlenim","tempo"],category:"first-impressions",hardness:1}),
+    mk('İlk ortak dil','İlk zamanlar en kolay konuştuğumuz konu ne olmuştu?',{tags:["ilk-izlenim","dil"],category:"first-impressions",hardness:1}),
+    mk('İlk fark ettiğin özellik','Beni tanıdığında ilk fark ettiğin küçük özellik neydi?',{tags:["ilk-izlenim","gözlem"],category:"first-impressions",hardness:1}),
+    mk('Beklenmedik yön','Bende çok sonra keşfettiğin ama başlangıçta hiç tahmin etmediğin bir yön var mı?',{tags:["ilk-izlenim","keşif"],category:"first-impressions",hardness:2,type:"reflection"}),
+    mk('İlk gülüş anımı tahmin','Bence beni ilk kez seni içten güldürürken hangi konuydu?',{tags:["ilk-izlenim","tahmin"],category:"first-impressions",hardness:1,type:"guess"}),
+    mk('İlk gizli yorum','Beni ilk gördüğünde içinden söylediğin ama sesli söylemediğin bir cümle var mı?',{tags:["ilk-izlenim","itiraf"],category:"first-impressions",hardness:2}),
+    mk('Küçük ama büyük an','Birlikte yaşadığımız hangi kısa an, süresinden çok daha büyük hissettirdi?',{tags:["unutulmaz","an"],category:"unforgettable-moments",hardness:2}),
+    mk('Kendiliğinden sahne','Beni düşününce zihnine kendiliğinden gelen bir sahne hangisi?',{tags:["unutulmaz","zihin"],category:"unforgettable-moments",hardness:2,type:"reflection"}),
+    mk('Zamanın hızlandığı','Birlikteyken zamanın çok hızlı geçtiğini hissettiğin an hangisiydi?',{tags:["unutulmaz","zaman"],category:"unforgettable-moments",hardness:1}),
+    mk('Sinematik an','Sana göre bizim hikâyemizin en sinematik anı hangisi?',{tags:["unutulmaz","sinema"],category:"unforgettable-moments",hardness:1}),
+    mk('Sessiz güç','Aramızda hiçbir şey söylenmeden anlaşıldığımız bir an hatırlıyor musun?',{tags:["unutulmaz","sessizlik"],category:"unforgettable-moments",hardness:2}),
+    mk('Beklenmedik sürpriz','Beklemediğin bir anda seni en çok şaşırtan sürprizim hangisiydi?',{tags:["unutulmaz","sürpriz"],category:"unforgettable-moments",hardness:2}),
+    mk('Kısa buluşma','Kısa süreli ama çok yoğun geçen bir buluşmamız var mı?',{tags:["unutulmaz","buluşma"],category:"unforgettable-moments",hardness:2}),
+    mk('Gece konuşması','Uzun bir gece konuşmamızdan aklında ne kaldı?',{tags:["unutulmaz","gece"],category:"unforgettable-moments",hardness:2}),
+    mk('İyi bir vedalaşma','İyi hissettiren bir vedalaşmamızı hatırlıyor musun?',{tags:["unutulmaz","veda"],category:"unforgettable-moments",hardness:2}),
+    mk('Kavuşma','Uzun bir ayrılıktan sonra kavuştuğumuz o ilk saniyeyi anlatır mısın?',{tags:["unutulmaz","kavuşma"],category:"unforgettable-moments",hardness:2,type:"reflection"}),
+    mk('Birlikte çözdüğümüz','Birlikte çözdüğümüz küçük ama önemli bir problem hangisiydi?',{tags:["unutulmaz","çözüm"],category:"unforgettable-moments",hardness:2}),
+    mk('Zor anda yanımda','Zor bir günümde yanımda olduğun bir anı anlatır mısın?',{tags:["unutulmaz","destek"],category:"unforgettable-moments",hardness:3,type:"reflection"}),
+    mk('Rastgele iyi an','Planlanmadan yaşadığımız beklenmedik güzel bir gün hangisiydi?',{tags:["unutulmaz","tesadüf"],category:"unforgettable-moments",hardness:1}),
+    mk('Bir cümlelik özet','Bir cümleyle bize ait en unutulmaz anı özetlesen ne dersin?',{tags:["unutulmaz","özet"],category:"unforgettable-moments",hardness:2}),
+    mk('Yeniden yaşamak','Bir günü aynen tekrar yaşasak hangi günü seçerdin?',{tags:["unutulmaz","tercih"],category:"unforgettable-moments",hardness:2,type:"choice"}),
+    mk('Sadece bize ait','Sadece ikimizin bildiği, kimsenin anlamayacağı küçük bir an hangisi?',{tags:["unutulmaz","özel"],category:"unforgettable-moments",hardness:2}),
+    mk('Sessizlikte bağ','Konuşmadan yan yana oturduğumuz, buna rağmen yakın hissettiğin bir an var mı?',{tags:["unutulmaz","sessizlik"],category:"unforgettable-moments",hardness:2}),
+    mk('Aramızdaki mucize',"Aramızda küçük bir 'mucize' gibi hissettiğin bir olay var mı?",{tags:["unutulmaz","şans"],category:"unforgettable-moments",hardness:2}),
+    mk('En rahat an','Yıllar sonra bile içini rahatlatacak ortak bir anımız hangisi?',{tags:["unutulmaz","huzur"],category:"unforgettable-moments",hardness:1}),
+    mk('Bir mekân bir an','Sadece bir mekânı düşününce zihnine gelen ortak anımız hangisi?',{tags:["unutulmaz","mekan"],category:"unforgettable-moments",hardness:2}),
+    mk('Farkındaki alışkanlık','Bende yalnızca senin fark ettiğini düşündüğün küçük bir alışkanlığım ne?',{tags:["detay","alışkanlık"],category:"small-details",hardness:2}),
+    mk('Bizim cümle',"Sana söylediğim hangi sıradan cümle zamanla 'bizim cümlemiz' oldu?",{tags:["detay","cümle"],category:"small-details",hardness:1}),
+    mk('Küçük hareket','Benim hangi küçük hareketim seni istemsizce gülümsetiyor?',{tags:["detay","jest"],category:"small-details",hardness:1}),
+    mk('Gereksiz tatlı detay','Birlikte geçirdiğimiz bir günden aklında kalan en gereksiz ama tatlı detay ne?',{tags:["detay","gündelik"],category:"small-details",hardness:1}),
+    mk('Emoji seçimi','Bana en çok gönderdiğin emoji hangisi, seni ne düşündürüyor?',{tags:["detay","emoji"],category:"small-details",hardness:1}),
+    mk('Hitap değişimi','Zaman içinde bana hitap biçimin nasıl değişti?',{tags:["detay","hitap"],category:"small-details",hardness:1}),
+    mk('Vedalaşma stili','Vedalaşırken hep söylediğin bir kelime veya jest var mı?',{tags:["detay","veda"],category:"small-details",hardness:1}),
+    mk('Günaydın ritüeli','Sabah birbirimize verdiğimiz ilk selamda küçük bir ritüelimiz var mı?',{tags:["detay","sabah"],category:"small-details",hardness:1}),
+    mk('Kokular','Bende hatırladığın bir koku var mı, hangi anı çağrıştırıyor?',{tags:["detay","koku"],category:"small-details",hardness:2,type:"reflection"}),
+    mk('Gülüşteki fark','Kahkahamla gülümsememin arasındaki farkı senin gibi kim anlıyor?',{tags:["detay","gülüş"],category:"small-details",hardness:2}),
+    mk('Uyumadan önce','Uyumadan önce birbirimize yaptığımız küçük bir hareket var mı?',{tags:["detay","uyku"],category:"small-details",hardness:2}),
+    mk('Bakışlar dili','Belirli bir bakışım sana ne diyor?',{tags:["detay","bakış"],category:"small-details",hardness:2,type:"reflection"}),
+    mk('El detayı','Ellerimden hangi ayrıntıyı severek fark ediyorsun?',{tags:["detay","el"],category:"small-details",hardness:2}),
+    mk('Giyim işareti','Bende gördüğün belli bir kıyafet seni belli bir anıya götürüyor mu?',{tags:["detay","kıyafet"],category:"small-details",hardness:2}),
+    mk('Yemek tercihi','Sadece benim seçtiğim garip bir yemek eşleşmesi seni güldürüyor mu?',{tags:["detay","yemek"],category:"small-details",hardness:1}),
+    mk('Kısa jest','Yanına oturduğumda yaptığım tekrarlayan bir küçük hareket var mı?',{tags:["detay","jest"],category:"small-details",hardness:1}),
+    mk('Konuşurken eller','Konuşurken ellerimi nasıl kullandığımı fark ettin mi?',{tags:["detay","dil"],category:"small-details",hardness:1}),
+    mk('Küçük ses','Seninleyken çıkardığım küçük bir ses veya nefes var mı, biliyor musun?',{tags:["detay","ses"],category:"small-details",hardness:2}),
+    mk('Bizi güldüren','Başkasına anlatınca komik gelmeyen ama bizi hâlâ güldüren an hangisi?',{tags:["komik"],category:"funny-memories",hardness:1}),
+    mk('En komik yanlış','Benim yaptığım en komik yanlış anlama neydi?',{tags:["komik","yanlış"],category:"funny-memories",hardness:1}),
+    mk('Sinema sahnesi','Bizi bir komedi dizisinde oynatsalar hangi olayımız kesin bölüme girerdi?',{tags:["komik","dizi"],category:"funny-memories",hardness:1}),
+    mk('Saçma lakap','Birbirimize taktığımız en saçma ama en kalıcı lakap hangisi?',{tags:["komik","lakap"],category:"funny-memories",hardness:1}),
+    mk('Yanlış yer','Yanlış yere gittiğimiz komik bir gün var mı?',{tags:["komik","yer"],category:"funny-memories",hardness:1}),
+    mk('Yemek kazası','Birlikte yaşadığımız en komik yemek kazası neydi?',{tags:["komik","yemek"],category:"funny-memories",hardness:1}),
+    mk('Fotoğraf çekim','Fotoğraf çekerken yaşadığımız en absürt olay hangisiydi?',{tags:["komik","fotoğraf"],category:"funny-memories",hardness:1}),
+    mk('Uykulu konuşma','Uyku sersemi yaptığım en komik cümle hangisiydi?',{tags:["komik","uyku"],category:"funny-memories",hardness:1}),
+    mk('Şaşırma anı','Beklemediğim bir şeye verdiğim en komik tepki neydi?',{tags:["komik","tepki"],category:"funny-memories",hardness:1}),
+    mk('Taklit','Beni en iyi taklit ettiğin an hangisiydi?',{tags:["komik","taklit"],category:"funny-memories",hardness:1}),
+    mk('Utanıp gülme','Utandığımız ama şimdi gülünç gelen bir olay hangisi?',{tags:["komik","utanma"],category:"funny-memories",hardness:2}),
+    mk('Yanlış tahmin','Beni yanlış tahmin ettiğin ve sonra çok güldüğümüz bir an var mı?',{tags:["komik","tahmin"],category:"funny-memories",hardness:1}),
+    mk('Tatilde komik','Tatilde ya da dışarıda başımıza gelen en komik olay hangisiydi?',{tags:["komik","tatil"],category:"funny-memories",hardness:1}),
+    mk('Yanlış duyma','Benim ya da senin yanlış duyduğu için doğan komik bir diyalog hatırlıyor musun?',{tags:["komik","kulak"],category:"funny-memories",hardness:1}),
+    mk('Mesaj hatası','Yanlış giden ama iyi bittiği için güldüğümüz bir mesaj var mı?',{tags:["komik","mesaj"],category:"funny-memories",hardness:1}),
+    mk('Otomatik düzeltme','Otomatik düzeltmenin bize yaptığı en komik oyunu hatırlıyor musun?',{tags:["komik","telefon"],category:"funny-memories",hardness:1}),
+    mk('Yürüyen felaket','Birlikteyken üst üste küçük felaketler yaşadığımız bir gün oldu mu?',{tags:["komik","şanssız"],category:"funny-memories",hardness:1}),
+    mk('Ciddiyken güldük','Ciddi bir anda birden gülmemize sebep olan komik bir şey oldu mu?',{tags:["komik","ciddi"],category:"funny-memories",hardness:1}),
+    mk('Yerinde durmayan','Bir yerde bekleyemediğim/beklemediğin için doğan komik bir an var mı?',{tags:["komik","enerji"],category:"funny-memories",hardness:1}),
+    mk('Absürt konuşma','Yaptığımız en absürt gece yarısı konuşması hangisiydi?',{tags:["komik","gece"],category:"funny-memories",hardness:2}),
+    mk('Tekrar okunan','Benden gelen hangi mesajı tekrar okuyup gülümsediğin oldu?',{tags:["mesaj","tekrar"],category:"messages-voices",hardness:1}),
+    mk('Sesli not tonu','Bir sesli notumdan aklında kalan ton veya cümle ne?',{tags:["ses","not"],category:"messages-voices",hardness:1}),
+    mk('Tek emoji özet','Bizim mesajlaşmalarımızı tek bir emojiyle özetlesen hangisini seçerdin?',{tags:["mesaj","emoji"],category:"messages-voices",hardness:1,type:"choice"}),
+    mk('Gece konuşması izi','Bir gece konuşmamızın hâlâ zihninde iz bırakan bir bölümü var mı?',{tags:["ses","gece"],category:"messages-voices",hardness:2,type:"reflection"}),
+    mk('Uzun mesaj','Bana yazdığın uzun bir mesajı geriye dönüp okusan ne hissedersin?',{tags:["mesaj","uzun"],category:"messages-voices",hardness:2,type:"reflection"}),
+    mk('Kısa cümle etki','Attığım kısa bir cümlenin seni en çok etkilediği an hangisiydi?',{tags:["mesaj","kısa"],category:"messages-voices",hardness:2}),
+    mk('Özlem mesajı','Özlem içinde yazdığımız bir mesajı hatırlıyor musun?',{tags:["mesaj","özlem"],category:"messages-voices",hardness:2}),
+    mk('Komik yazım','Bana yaptığın en komik yazım hatasını hatırlıyor musun?',{tags:["mesaj","komik"],category:"messages-voices",hardness:1}),
+    mk('Ses tonu değişimi','Sesli notlarımda tonumun değiştiği bir konu fark ettin mi?',{tags:["ses","gözlem"],category:"messages-voices",hardness:2}),
+    mk('Telefon açış','Telefonu birbirimize hangi sözle açmayı seviyoruz?',{tags:["ses","selam"],category:"messages-voices",hardness:1}),
+    mk('Sessizlik anı',"Aramızdaki sessizliklerin nasıl bir 'sesi' olduğunu düşünüyorsun?",{tags:["ses","sessizlik"],category:"messages-voices",hardness:2,type:"reflection"}),
+    mk('Gece iyi geceler','İyi geceler mesajlarımızda seni en çok ne rahatlatıyor?',{tags:["mesaj","gece"],category:"messages-voices",hardness:1}),
+    mk('Ekran görüntüsü','Sakladığın bir mesaj ekran görüntüsü var mı, ne olduğunu söylemek ister misin?',{tags:["mesaj","sakla"],category:"messages-voices",hardness:2}),
+    mk('Ses hafızası','Bir sesli notumu ilk kez dinlediğin an hâlâ zihninde mi?',{tags:["ses","hafıza"],category:"messages-voices",hardness:2}),
+    mk("Kısa 'seni özledim'","Kısa bir 'seni özledim' mesajının en çok işe yaradığı an hangisiydi?",{tags:["mesaj","özlem"],category:"messages-voices",hardness:2}),
+    mk('Konuşma temposu','Uzun konuşmalarımızın hızını genelde kim belirliyor sence?',{tags:["ses","tempo"],category:"messages-voices",hardness:1}),
+    mk('Fotoğrafın hikâyesi','Birlikte çekildiğimiz hangi fotoğrafın arkasında fotoğraftan daha güzel bir hikâye var?',{tags:["fotoğraf","hikaye"],category:"photos-places",hardness:2}),
+    mk('Sıradan ama özel yer','Bizim için sıradan görünse de özel anlam taşıyan bir yer neresi?',{tags:["yer","özel"],category:"photos-places",hardness:2}),
+    mk('Yıllar sonra oraya','Birlikte bulunduğumuz hangi yere yıllar sonra tekrar gitmek isterdin?',{tags:["yer","gelecek"],category:"photos-places",hardness:1}),
+    mk('Tek bir fotoğraf','Telefonunda bizi anlatan tek bir fotoğraf bırakman gerekse hangisini seçerdin?',{tags:["fotoğraf","tercih"],category:"photos-places",hardness:2,type:"choice"}),
+    mk('İlk fotoğraf','İlk ortak fotoğrafımızın çekildiği anı bugünkü gözle nasıl görüyorsun?',{tags:["fotoğraf","ilk"],category:"photos-places",hardness:2}),
+    mk('Kafe anımız','Beraber gittiğimiz kafelerden hangisi zihnine sıkı yerleşti?',{tags:["yer","kafe"],category:"photos-places",hardness:1}),
+    mk('Sahil hatırası','Birlikte gördüğümüz bir sahille ilgili aklında kalan detay ne?',{tags:["yer","sahil"],category:"photos-places",hardness:1}),
+    mk('Ev köşesi','Birlikte olduğumuz bir evin en sevdiğin köşesi neresiydi?',{tags:["yer","ev"],category:"photos-places",hardness:1}),
+    mk('Yol fotoğrafı','Bir yolculukta çekildiğimiz bir fotoğraf var mı, seni geri götürüyor?',{tags:["yer","yolculuk"],category:"photos-places",hardness:1}),
+    mk('Gün batımı','Birlikte izlediğimiz bir gün batımını hatırlıyor musun?',{tags:["yer","günbatımı"],category:"photos-places",hardness:2}),
+    mk('Gece yürüyüşü','Gece bir yerde yürüdüğümüz anı düşününce ne hissediyorsun?',{tags:["yer","gece"],category:"photos-places",hardness:2}),
+    mk('Otel anısı','Birlikte kaldığımız bir otelin sana bıraktığı en tuhaf anı ne?',{tags:["yer","otel"],category:"photos-places",hardness:1}),
+    mk('Havaalanı','Havaalanında yaşadığımız bir sahne aklına takıldı mı?',{tags:["yer","havaalanı"],category:"photos-places",hardness:1}),
+    mk('Araba yolculuğu','Bir araba yolculuğunda konuştuğumuz bir konu neydi?',{tags:["yer","araba"],category:"photos-places",hardness:1}),
+    mk('Sokak anı','Bir sokakta yaşadığımız komik ya da güzel bir anı hangisi?',{tags:["yer","sokak"],category:"photos-places",hardness:1}),
+    mk('Yeniden çekmek','Aynı yerde aynı poza tekrar girmek istediğimiz bir fotoğraf var mı?',{tags:["fotoğraf","tekrar"],category:"photos-places",hardness:1}),
+    mk('Yön değişimi','Sence ilişkimizin yönünü değiştiren küçük ama önemli bir konuşma hangisiydi?',{tags:["dönüm","konuşma"],category:"turning-points",hardness:2,type:"reflection"}),
+    mk('İki kişi bir ekip','İlk kez bizi iki ayrı kişi değil de bir ekip gibi hissettiğin an neydi?',{tags:["dönüm","ekip"],category:"turning-points",hardness:3,type:"reflection"}),
+    mk('Güven artışı','Aramızdaki güvenin belirgin şekilde arttığını ne zaman hissettin?',{tags:["dönüm","güven"],category:"turning-points",hardness:2,type:"reflection"}),
+    mk('Anlaşmazlıktan öğrenmek','Bir anlaşmazlıktan sonra birbirimizi daha iyi tanıdığımız bir an oldu mu?',{tags:["dönüm","öğrenme"],category:"turning-points",hardness:3}),
+    mk('Ciddiyet momenti','İlişkimizin senin için ciddileştiği net an neydi?',{tags:["dönüm","ciddiyet"],category:"turning-points",hardness:3,type:"reflection"}),
+    mk('Ortak karar','Birlikte aldığımız hangi karar sonradan çok önemli oldu?',{tags:["dönüm","karar"],category:"turning-points",hardness:2}),
+    mk('Yanımda kalmak','Yanımda kalmanı gerçekten hissettiğim ilk zor an hangisiydi?',{tags:["dönüm","destek"],category:"turning-points",hardness:3,type:"reflection"}),
+    mk('Mesafeye rağmen','Mesafeye rağmen devam etme kararımızın ardında ne vardı sence?',{tags:["dönüm","mesafe"],category:"turning-points",hardness:3,type:"reflection"}),
+    mk('Plan yapma','Birlikte plan yapmanın rahat hale geldiği an nasıl geldi?',{tags:["dönüm","plan"],category:"turning-points",hardness:2}),
+    mk('Zor konuyu konuşmak','Zor bir konuyu ilk kez rahatça konuştuğumuz an hangisiydi?',{tags:["dönüm","dürüstlük"],category:"turning-points",hardness:3}),
+    mk('Açıklık','Birbirimize daha açık olmaya başladığımız net bir noktayı hatırlıyor musun?',{tags:["dönüm","açıklık"],category:"turning-points",hardness:2}),
+    mk('Destek gördüm','Seni destek olarak gördüğüm ilk somut an hangisiydi?',{tags:["dönüm","destek"],category:"turning-points",hardness:2,type:"reflection"}),
+    mk('Yanımda kalış','Yanımda kalmayı seçtiğin ve fark ettiğim bir an oldu mu?',{tags:["dönüm","kalış"],category:"turning-points",hardness:3,type:"reflection"}),
+    mk('Farklı konuşma',"Bizi 'artık farklıyız' hissi veren bir konuşma hangisiydi?",{tags:["dönüm","değişim"],category:"turning-points",hardness:3}),
+    mk('Küçük ama büyük söz','Sana söylediğim küçük bir söz sonradan büyük bir dönüm mü oldu?',{tags:["dönüm","söz"],category:"turning-points",hardness:2}),
+    mk('Kararlılık','İlişkimize kararlılıkla baktığını hissettiğim bir dönemi anlatır mısın?',{tags:["dönüm","kararlılık"],category:"turning-points",hardness:3,type:"reflection"}),
+    mk('Beraber çıkış','Bir stresli dönemden birlikte çıktığımız an hangisiydi?',{tags:["dönüm","çıkış"],category:"turning-points",hardness:3,type:"reflection"}),
+    mk('Sessiz onay','Konuşmadan verdiğin bir onay ilişkimizi ilerletmiş miydi?',{tags:["dönüm","sessiz"],category:"turning-points",hardness:2}),
+    mk('Küçük değişim','Benimle tanıştıktan sonra sende değiştiğini fark ettiğin küçük bir şey ne?',{tags:["değişim","kendi"],category:"how-we-changed",hardness:2,type:"reflection"}),
+    mk('Daha çok sevilen','Bende zamanla daha çok sevdiğin bir özellik hangisi?',{tags:["değişim","sevgi"],category:"how-we-changed",hardness:2}),
+    mk('Ortak alışkanlık','Birbirimizden fark etmeden aldığımız bir alışkanlık var mı?',{tags:["değişim","alışkanlık"],category:"how-we-changed",hardness:1}),
+    mk('Daha iyi olduğumuz','İlişki içinde birbirimizi hangi konuda daha iyi hale getirdik sence?',{tags:["değişim","gelişim"],category:"how-we-changed",hardness:2,type:"reflection"}),
+    mk('Yeni kelimeler','Konuşmama giren, seninle aldığım yeni bir kelime ya da ifade var mı?',{tags:["değişim","dil"],category:"how-we-changed",hardness:1}),
+    mk('Müzik zevki','Beraber olduktan sonra müzik zevkinde değişen bir şey oldu mu?',{tags:["değişim","müzik"],category:"how-we-changed",hardness:1}),
+    mk('Yemek keşfi','Birlikte keşfettiğimiz, artık severek yediğin bir yemek ne?',{tags:["değişim","yemek"],category:"how-we-changed",hardness:1}),
+    mk('Daha sabırlı','Daha sabırlı olduğunu hissettiğin bir alan var mı?',{tags:["değişim","sabır"],category:"how-we-changed",hardness:2,type:"reflection"}),
+    mk('İletişim biçimi','İletişim biçimimiz zaman içinde nasıl değişti?',{tags:["değişim","iletişim"],category:"how-we-changed",hardness:2}),
+    mk('Romantiklik','Romantiklik anlayışın seninle nasıl farklılaştı?',{tags:["değişim","romantik"],category:"how-we-changed",hardness:2,type:"reflection"}),
+    mk('Plan yapma stili','Plan yapma biçimimin nasıl değiştiğini fark ediyor musun?',{tags:["değişim","plan"],category:"how-we-changed",hardness:1}),
+    mk('Gelecek düşüncesi','Geleceğe bakışımın seninle nasıl değiştiğini düşünüyorsun?',{tags:["değişim","gelecek"],category:"how-we-changed",hardness:2,type:"reflection"}),
+    mk('Kendini ifade','Kendini daha rahat ifade ettiğin bir konu oluştu mu?',{tags:["değişim","ifade"],category:"how-we-changed",hardness:2}),
+    mk('Günlük ritm','Günlük ritmimizde birbirimizden geçen bir şey var mı?',{tags:["değişim","ritm"],category:"how-we-changed",hardness:1}),
+    mk('Yeni keşifler','Birlikte keşfettiğimiz ve tek başına asla bulmayacağın bir şey ne?',{tags:["değişim","keşif"],category:"how-we-changed",hardness:1}),
+    mk('Karşılıklı etki',"Aramızda birbirimizi 'aynı yöne' çektiğimiz bir alan söyle.",{tags:["değişim","etki"],category:"how-we-changed",hardness:2,type:"reflection"}),
+    mk('Güleceğimiz','Yıllar sonra bugünkü halimizi düşününce en çok neye güleceğimizi sanıyorsun?',{tags:["gelecek","gülüş"],category:"future-memories",hardness:1}),
+    mk('Zaman kapsülü','Birlikte bir zaman kapsülüne ne koyardın?',{tags:["gelecek","kapsül"],category:"future-memories",hardness:1}),
+    mk('İyi ki dediğimiz',"İleride 'iyi ki o gün bunu yapmışız' demek isteyeceğin bir plan ne?",{tags:["gelecek","plan"],category:"future-memories",hardness:1}),
+    mk('Ortak gelenek','Her yıl tekrar edebilecek küçük bir gelenek oluştursak ne olurdu?',{tags:["gelecek","gelenek"],category:"future-memories",hardness:1}),
+    mk('Fotoğraf albümü','İleride bakacağımız bir albüme mutlaka girmeli dediğin bir fotoğraf ne olurdu?',{tags:["gelecek","albüm"],category:"future-memories",hardness:1}),
+    mk('Kutlanacak gün','Her yıl özel olarak kutlamak isteyeceğin küçük bir günümüz olsun mu, hangisi?',{tags:["gelecek","kutlama"],category:"future-memories",hardness:1}),
+    mk('Bugünün espri malzemesi','Bugün yaptığımız hangi alışkanlık ileride bize komik gelecek?',{tags:["gelecek","komik"],category:"future-memories",hardness:1}),
+    mk('Yıllar sonra soru','5 yıl sonra bugünkü haline hangi soruyu sormak isterdin?',{tags:["gelecek","soru"],category:"future-memories",hardness:2}),
+    mk('Ortak liste',"Birlikte tutmak istediğin küçük bir 'yapılacaklar' listemiz olsa ilk üç madde ne olur?",{tags:["gelecek","liste"],category:"future-memories",hardness:1}),
+    mk('Hayali ev','İleride hayalindeki eve dair birlikte oluşturmak istediğin küçük bir detay ne?',{tags:["gelecek","ev"],category:"future-memories",hardness:2}),
+    mk('Bir seyahat','Beraber gitmeyi hâlâ ertelediğimiz bir yer var mı?',{tags:["gelecek","seyahat"],category:"future-memories",hardness:1}),
+    mk('İlk kez birlikte','Birlikte ilk kez denemek isteyeceğimiz bir şey ne olur?',{tags:["gelecek","deneyim"],category:"future-memories",hardness:1}),
+    mk('Yıllar sonrasına mektup','Yıllar sonra bugünkü bize mektup yazsak ilk cümlesi ne olurdu?',{tags:["gelecek","mektup"],category:"future-memories",hardness:2,type:"reflection"}),
+    mk('Küçük ritüel','Sadece ikimize ait yeni bir küçük ritüel önerir misin?',{tags:["gelecek","ritüel"],category:"future-memories",hardness:1}),
+    mk('Ortak öğrenme','Beraber öğrenmek istediğin bir şey söyle.',{tags:["gelecek","öğrenme"],category:"future-memories",hardness:1}),
+    mk('Uzun vadeli hayal','Uzun vadede birlikte hayal ettiğin şey nedir, ne kadar esnek olabilir?',{tags:["gelecek","hayal"],category:"future-memories",hardness:2,type:"reflection"}),
+    mk('Bugünü hatırlatmak','İleride bugünü sana hatırlatmasını isteyeceğin bir şey ne?',{tags:["gelecek","hatırla"],category:"future-memories",hardness:2,type:"reflection"}),
+    mk('Yeni bir başlık','Birlikte hayatımıza katmak istediğin yeni bir başlık ne olurdu?',{tags:["gelecek","başlık"],category:"future-memories",hardness:2}),
   ],
   truth: [
     mk("Küçük yalan","Bana söylediğin, aslında zararsız ama küçücük bir yalanı itiraf et.",{tags:["itiraf"],hardness:2}),
@@ -1738,6 +1913,11 @@ function getDailyQuestion(){
         if((c.hardness||2) > 2) continue;
         if(c.consentRequired) continue;
       }
+      if(m==="memories"){
+        const t = c.type||"question";
+        if(t!=="question" && t!=="reflection" && t!=="memory") continue;
+        if((c.hardness||2) > 2) continue;
+      }
       all.push({card:c,mod:m});
     }
   }
@@ -2046,6 +2226,57 @@ const INTIMACY_LEVELS = [
 const K_INTIMACY_FILTER = "bo.intimacyFilter.v1";
 const K_INTIMACY_LEVEL = "bo.intimacyLevel.v1";
 
+const MEMORIES_CATEGORIES = [
+  {slug:"", label:"Tümü"},
+  {slug:"our-firsts", label:"İlkler"},
+  {slug:"first-impressions", label:"İlk İzlenimler"},
+  {slug:"unforgettable-moments", label:"Unutulmayanlar"},
+  {slug:"small-details", label:"Detaylar"},
+  {slug:"funny-memories", label:"Komik"},
+  {slug:"messages-voices", label:"Mesajlar"},
+  {slug:"photos-places", label:"Fotoğraflar"},
+  {slug:"turning-points", label:"Dönüm Noktaları"},
+  {slug:"how-we-changed", label:"Değişim"},
+  {slug:"future-memories", label:"Gelecek"},
+];
+const MEMORIES_LEVELS = [
+  {slug:"light", label:"Hafif", minH:1, maxH:1},
+  {slug:"emotional", label:"Duygusal", minH:1, maxH:2},
+  {slug:"deep", label:"Derin", minH:2, maxH:3},
+  {slug:"mixed", label:"Karışık", minH:1, maxH:3},
+];
+const K_MEMORIES_FILTER = "bo.memoriesFilter.v1";
+const K_MEMORIES_LEVEL = "bo.memoriesLevel.v1";
+
+/* Saved memories helpers */
+function getSavedMemories(){ return storage.get(K.savedMemories, []) || []; }
+function addSavedMemory(cardId,title,note){
+  const list = getSavedMemories();
+  const s = getSettings();
+  const entry = {
+    id: uid(), cardId, title: String(title||"").slice(0,120),
+    note: String(note||"").slice(0,500),
+    createdAt: nowIso(),
+    players: [s.player1||"Ozzy", s.player2||"Su"]
+  };
+  list.unshift(entry);
+  storage.set(K.savedMemories, list.slice(0, 500));
+  return entry;
+}
+function updateSavedMemory(id,patch){
+  const list = getSavedMemories();
+  const i = list.findIndex(x=>x.id===id);
+  if(i<0) return false;
+  if(patch.note!=null) list[i].note = String(patch.note).slice(0,500);
+  if(patch.title!=null) list[i].title = String(patch.title).slice(0,120);
+  storage.set(K.savedMemories, list); return true;
+}
+function deleteSavedMemory(id){
+  const list = getSavedMemories().filter(x=>x.id!==id);
+  storage.set(K.savedMemories, list);
+}
+
+
 function chipButton(label,active,onClick){
   return el("button",{
     class:"tag"+(active?" gold":""),
@@ -2065,13 +2296,28 @@ function renderLevel(app,mod){
   const isWarmup = mod === "warmup";
   const isFlirt = mod === "flirt";
   const isIntimacy = mod === "intimacy";
-  const hasLevels = isFlirt || isIntimacy;
-  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : isIntimacy ? INTIMACY_CATEGORIES : null;
-  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : isIntimacy ? K_INTIMACY_FILTER : null;
-  const LVL_SET = isFlirt ? FLIRT_LEVELS : isIntimacy ? INTIMACY_LEVELS : null;
-  const LVL_KEY = isFlirt ? K_FLIRT_LEVEL : isIntimacy ? K_INTIMACY_LEVEL : null;
-  const LVL_DEFAULT = isIntimacy ? "romantic" : "mixed";
-  const LVL_LABEL = isFlirt ? "Flört seviyesi" : "Yakınlaşma seviyesi";
+  const isMemories = mod === "memories";
+  const hasLevels = isFlirt || isIntimacy || isMemories;
+  const CATS = isWarmup ? WARMUP_CATEGORIES : isFlirt ? FLIRT_CATEGORIES : isIntimacy ? INTIMACY_CATEGORIES : isMemories ? MEMORIES_CATEGORIES : null;
+  const FILTER_KEY = isWarmup ? K_WARMUP_FILTER : isFlirt ? K_FLIRT_FILTER : isIntimacy ? K_INTIMACY_FILTER : isMemories ? K_MEMORIES_FILTER : null;
+  const LVL_SET = isFlirt ? FLIRT_LEVELS : isIntimacy ? INTIMACY_LEVELS : isMemories ? MEMORIES_LEVELS : null;
+  const LVL_KEY = isFlirt ? K_FLIRT_LEVEL : isIntimacy ? K_INTIMACY_LEVEL : isMemories ? K_MEMORIES_LEVEL : null;
+  const LVL_DEFAULT = isIntimacy ? "romantic" : isMemories ? "light" : "mixed";
+  const LVL_LABEL = isFlirt ? "Flört seviyesi" : isIntimacy ? "Yakınlaşma seviyesi" : isMemories ? "Anı derinliği" : "";
+
+  // Memories: mini-game shortcuts row
+  if(isMemories){
+    const bar = el("div",{class:"card",style:"padding:12px"});
+    bar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:8px"},"Mini oyunlar"));
+    const row = el("div",{style:"display:flex;gap:8px;flex-wrap:wrap"});
+    row.append(btn("Zaman Çizgisi","ghost",()=>navigate("#/memories-timeline")));
+    row.append(btn("Kim Daha İyi Hatırlıyor","ghost",()=>navigate("#/memories-compare")));
+    row.append(btn("Anıyı Tamamla","ghost",()=>navigate("#/memories-story")));
+    row.append(btn("Kaydettiğimiz Anılar","gold",()=>navigate("#/saved-memories")));
+    bar.append(row);
+    app.append(bar);
+  }
+
 
   let filter = "";
   if(FILTER_KEY){ try { filter = localStorage.getItem(FILTER_KEY) || ""; } catch(e){ filter = ""; } }
@@ -2100,7 +2346,7 @@ function renderLevel(app,mod){
     levelBar = el("div",{class:"card",style:"padding:10px 12px"});
     levelBar.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:6px"},LVL_LABEL));
     const row = chipRow(LVL_SET, (l)=>curLevel===l.slug, (l)=>{
-      const boldSlugs = isFlirt ? ["bold"] : ["sensual","bold"];
+      const boldSlugs = isFlirt ? ["bold"] : isIntimacy ? ["sensual","bold"] : [];
       const consentKey = isFlirt ? "flirtBold" : "intimacyBold";
       const wasBold = boldSlugs.includes(curLevel);
       const goingBold = boldSlugs.includes(l.slug);
@@ -2283,6 +2529,11 @@ function renderCardUI(box,mod,c,onNext,ext){
     })
   );
   box.append(row2);
+  if(mod === "memories"){
+    box.append(el("div",{style:"margin-top:10px"},
+      btn("💾 Bu anıyı kaydet","gold",()=>openSaveMemoryModal(c))
+    ));
+  }
   if(aiAvailable()){
     box.append(el("div",{style:"margin-top:10px"},
       btn("Yeni sorular üret (AI)","gold",()=>requestAi(mod,box,onNext))
@@ -2292,6 +2543,247 @@ function renderCardUI(box,mod,c,onNext,ext){
       "AI ile yeni kart üretmek için oyunu çevrimiçi adresinden aç. Sabit ve özel kartlar çevrimdışı çalışır."));
   }
 }
+
+/* ============================================================
+ * Memories: save modal + mini-games
+ * ============================================================ */
+function openSaveMemoryModal(card){
+  openModal((box,close)=>{
+    box.append(el("h3",null,"Bu anıyı kaydet"));
+    box.append(el("div",{class:"muted",style:"margin-top:6px;font-size:13px"}, card.title));
+    const ta = el("textarea",{
+      placeholder:"Kısa bir not ekleyin (isteğe bağlı, en fazla 500 karakter)",
+      maxlength:"500",
+      style:"width:100%;margin-top:12px;min-height:120px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:var(--surface-2);color:inherit;font:inherit;resize:vertical"
+    });
+    box.append(ta);
+    const row = el("div",{class:"row",style:"margin-top:12px"},
+      btn("Kaydet","primary",()=>{
+        const entry = addSavedMemory(card.id, card.title, ta.value);
+        sessionSet("memories",{savedMemories:(getSession().modules.memories?.savedMemories||0)+1});
+        toast("Anı kaydedildi.");
+        close();
+      }),
+      btn("Vazgeç","ghost",close)
+    );
+    box.append(row);
+  });
+}
+
+route("/saved-memories",(app)=>{
+  app.append(topbar("Kaydettiğimiz Anılar"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  function refresh(){
+    box.innerHTML="";
+    const list = getSavedMemories();
+    if(!list.length){
+      box.append(el("div",{class:"muted"},"Henüz kaydedilmiş anı yok. Anılarımız modülünde bir kart açıp 💾 ile kaydedebilirsiniz."));
+      box.append(el("div",{style:"height:10px"}));
+      box.append(btn("Anılarımız modülüne git","primary",()=>navigate("#/level/memories")));
+      return;
+    }
+    list.forEach(item=>{
+      const row = el("div",{class:"card",style:"margin-top:10px"});
+      row.append(el("div",{class:"badge"}, new Date(item.createdAt).toLocaleDateString("tr-TR")));
+      row.append(el("h3",{style:"margin-top:8px"}, item.title));
+      const noteBox = el("div",{class:"muted",style:"margin-top:6px;white-space:pre-wrap"});
+      noteBox.textContent = item.note || "(not yok)";
+      row.append(noteBox);
+      const actions = el("div",{class:"row",style:"margin-top:10px"},
+        btn("Notu düzenle","ghost",()=>{
+          openModal((mb,close)=>{
+            mb.append(el("h3",null,"Notu düzenle"));
+            const ta = el("textarea",{
+              maxlength:"500",
+              style:"width:100%;margin-top:10px;min-height:120px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:var(--surface-2);color:inherit;font:inherit;resize:vertical"
+            });
+            ta.value = item.note || "";
+            mb.append(ta);
+            mb.append(el("div",{class:"row",style:"margin-top:12px"},
+              btn("Kaydet","primary",()=>{
+                updateSavedMemory(item.id,{note:ta.value});
+                toast("Not güncellendi."); close(); refresh();
+              }),
+              btn("Vazgeç","ghost",close)
+            ));
+          });
+        }),
+        btn("Sil","danger",()=>{
+          deleteSavedMemory(item.id); toast("Anı silindi."); refresh();
+        })
+      );
+      row.append(actions);
+      box.append(row);
+    });
+  }
+  refresh();
+});
+
+/* Timeline mini-game */
+const TIMELINE_EVENTS_DEFAULT = [
+  "İlk mesajlaşma",
+  "İlk telefon konuşması",
+  "İlk buluşma",
+  "İlk sarılış",
+  "İlk yolculuk",
+  "İlk ortak fotoğraf",
+  "İlk 'seni seviyorum'",
+  "İlk ciddi konuşma",
+];
+route("/memories-timeline",(app)=>{
+  app.append(topbar("Zaman Çizgisi"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  let events = TIMELINE_EVENTS_DEFAULT.slice();
+  let order = shuffle(events).slice(0,5);
+  let userOrder = order.slice();
+
+  function render(){
+    box.innerHTML="";
+    box.append(el("div",{class:"muted"},"Aşağıdaki olayları birlikte kronolojik sıraya koyun. ▲▼ ile hareket ettirin, hazır olduğunuzda 'Doğru sırayı birlikte belirle' deyin."));
+    userOrder.forEach((ev,i)=>{
+      const row = el("div",{class:"card",style:"margin-top:8px;display:flex;align-items:center;gap:8px;padding:10px 12px"});
+      row.append(el("div",{class:"badge"}, String(i+1)));
+      row.append(el("div",{style:"flex:1"}, ev));
+      row.append(btn("▲","ghost",()=>{ if(i>0){ [userOrder[i-1],userOrder[i]]=[userOrder[i],userOrder[i-1]]; render(); } }));
+      row.append(btn("▼","ghost",()=>{ if(i<userOrder.length-1){ [userOrder[i+1],userOrder[i]]=[userOrder[i],userOrder[i+1]]; render(); } }));
+      box.append(row);
+    });
+    box.append(el("div",{class:"row",style:"margin-top:14px"},
+      btn("Doğru sırayı birlikte belirle","primary",()=>{
+        bumpSession("memories","round");
+        sessionSet("memories",{timelineRounds:(getSession().modules.memories?.timelineRounds||0)+1});
+        toast("Konuştuğunuz sırayı birlikte netleştirin.");
+      }),
+      btn("Yeni tur","ghost",()=>{ userOrder = shuffle(events).slice(0,5); render(); })
+    ));
+    box.append(el("div",{class:"muted",style:"margin-top:12px;font-size:12px"},"Tarihleri bilmiyorsanız hislerinizle sıralayın. Aynı anıyı farklı hatırlamak doğaldır."));
+  }
+  render();
+});
+
+/* Compare mini-game — hidden answers */
+route("/memories-compare",(app)=>{
+  app.append(topbar("Kim Daha İyi Hatırlıyor?"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const s = getSettings();
+  let phase = "draw";
+  let card = null;
+  let a1 = "", a2 = "";
+  function render(){
+    box.innerHTML="";
+    if(phase === "draw"){
+      card = drawCard("memories",{maxHardness:2});
+      if(!card || card.__exhausted){
+        box.append(el("div",null,"Uygun kart kalmadı."));
+        box.append(el("div",{style:"height:8px"}));
+        box.append(btn("Sıfırla","ghost",()=>{resetSeen("memories");render();}));
+        return;
+      }
+      markSeen("memories",card.id);
+      phase = "p1";
+      render();
+      return;
+    }
+    if(phase === "p1" || phase === "p2"){
+      const who = phase === "p1" ? (s.player1||"Ozzy") : (s.player2||"Su");
+      box.append(el("div",{class:"badge"}, who+"'nin sırası"));
+      box.append(el("h3",{style:"margin-top:8px"}, card.title));
+      box.append(el("div",{style:"margin-top:6px"}, card.prompt));
+      const ta = el("textarea",{
+        placeholder:"Cevabını yaz — diğeri görmeyecek",
+        style:"width:100%;margin-top:12px;min-height:100px;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:var(--surface-2);color:inherit;font:inherit"
+      });
+      box.append(ta);
+      box.append(el("div",{class:"row",style:"margin-top:12px"},
+        btn("Cevabı gizle ve devam","primary",()=>{
+          if(phase==="p1"){ a1 = ta.value; phase = "handoff"; }
+          else { a2 = ta.value; phase = "reveal"; }
+          render();
+        })
+      ));
+      return;
+    }
+    if(phase === "handoff"){
+      box.append(el("h3",null,"Telefonu partnerine ver"));
+      box.append(el("div",{class:"muted",style:"margin-top:6px"},"Hazır olduğunda devam et."));
+      box.append(el("div",{style:"height:12px"}));
+      box.append(btn("Ben "+(s.player2||"Su")+", devam","primary",()=>{ phase = "p2"; render(); }));
+      return;
+    }
+    if(phase === "reveal"){
+      box.append(el("h3",null, card.title));
+      box.append(el("div",{class:"muted",style:"margin-top:6px"}, card.prompt));
+      const a1Box = el("div",{class:"card",style:"margin-top:10px"});
+      a1Box.append(el("div",{class:"badge"}, (s.player1||"Ozzy")));
+      const a1t = el("div",{style:"margin-top:6px;white-space:pre-wrap"}); a1t.textContent = a1 || "(boş)"; a1Box.append(a1t);
+      box.append(a1Box);
+      const a2Box = el("div",{class:"card",style:"margin-top:8px"});
+      a2Box.append(el("div",{class:"badge"}, (s.player2||"Su")));
+      const a2t = el("div",{style:"margin-top:6px;white-space:pre-wrap"}); a2t.textContent = a2 || "(boş)"; a2Box.append(a2t);
+      box.append(a2Box);
+      box.append(el("div",{class:"muted",style:"margin-top:10px;font-size:12px"},"Aynı anıyı farklı hatırlayabilirsiniz — bu doğaldır."));
+      box.append(el("div",{class:"row",style:"margin-top:12px"},
+        btn("Aynı hatırladık","ghost",()=>next()),
+        btn("Yakın","ghost",()=>next()),
+        btn("Farklı","ghost",()=>next()),
+      ));
+      box.append(el("div",{class:"row",style:"margin-top:8px"},
+        btn("Bu anıyı kaydet","gold",()=>openSaveMemoryModal(card)),
+        btn("Yeni kart","primary",()=>next())
+      ));
+      function next(){
+        bumpSession("memories","round");
+        sessionSet("memories",{memoryCompareRounds:(getSession().modules.memories?.memoryCompareRounds||0)+1});
+        a1=""; a2=""; phase = "draw"; render();
+      }
+    }
+  }
+  render();
+});
+
+/* Story completion mini-game */
+const STORY_STARTERS = [
+  "O gün kapıdan çıktığımızda…",
+  "İlk kez gerçekten rahat hissettiğim an…",
+  "O fotoğraf çekilmeden hemen önce…",
+  "Sen o cümleyi söylediğinde…",
+  "Telefonun ekranı yandığında…",
+  "Kafeye girdiğimizde ilk fark ettiğim…",
+  "O gece uyumadan önce…",
+  "Yola çıkarken radyoda…",
+];
+route("/memories-story",(app)=>{
+  app.append(topbar("Anıyı Tamamla"));
+  const box = el("div",{class:"card"});
+  app.append(box);
+  const s = getSettings();
+  let starter = pick(STORY_STARTERS);
+  let turn = 0;
+  function render(){
+    box.innerHTML="";
+    box.append(el("div",{class:"badge"},"Başlangıç"));
+    box.append(el("h3",{style:"margin-top:8px"}, starter));
+    box.append(el("div",{class:"muted",style:"margin-top:8px"}, "Sıradaki: "+((turn%2===0)?(s.player1||"Ozzy"):(s.player2||"Su"))+" — bir cümle ekle, sonra sırayı diğerine ver."));
+    box.append(el("div",{class:"row",style:"margin-top:14px"},
+      btn("Sıra bende, devam ettim","primary",()=>{ turn++; render(); }),
+      btn("Yeni başlangıç","ghost",()=>{ starter = pick(STORY_STARTERS); turn = 0; render(); }),
+    ));
+    box.append(el("div",{class:"row",style:"margin-top:8px"},
+      btn("Hikâyeyi bitirdik","gold",()=>{
+        bumpSession("memories","round");
+        sessionSet("memories",{storiesCompleted:(getSession().modules.memories?.storiesCompleted||0)+1});
+        toast("Hikâyeniz kaydedilmedi ama sayaca yazıldı."); starter = pick(STORY_STARTERS); turn = 0; render();
+      }),
+      btn("Bu anıyı kaydet","ghost",()=>{
+        openSaveMemoryModal({id:"story-"+Date.now(), title:starter});
+      })
+    ));
+  }
+  render();
+});
 
 async function requestAi(mod,box,onNext){
   const settings = getSettings();
@@ -2315,7 +2807,8 @@ async function requestAi(mod,box,onNext){
     });
     const normalized = cards.map(c=>({
       title:c.title,prompt:c.prompt,tags:c.tags||[],
-      category:c.category||"ai",hardness:c.hardness||3,source:"ai"
+      category:c.category||"ai",hardness:c.hardness||3,
+      type:c.type||"question",source:"ai"
     }));
     const added = addCards(mod,normalized);
     toast(`${added} yeni kart eklendi.`);
