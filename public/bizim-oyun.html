@@ -12,6 +12,22 @@
   --cream:#f5ead8; --muted:#bbaeb2; --danger:#c9505f; --success:#719b79;
   --radius:18px; --radius-lg:22px;
 }
+html[data-theme="gece"]{
+  --bg:#08070f; --surface:#141327; --surface-2:#1e1a3a;
+  --wine:#4b2a8a; --wine-light:#7a4dc7; --gold:#c3a6ff;
+  --cream:#efeaff; --muted:#a9a2c9;
+}
+html[data-theme="orman"]{
+  --bg:#0a0f0d; --surface:#12211a; --surface-2:#1a2f24;
+  --wine:#2f6b4a; --wine-light:#4d9770; --gold:#d9c56a;
+  --cream:#eef4e8; --muted:#a8b8ac;
+}
+.stop-fab{position:fixed;bottom:16px;right:16px;z-index:60;background:var(--danger);
+  color:#fff;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;
+  box-shadow:0 10px 30px -10px rgba(201,80,95,.8);border:1px solid rgba(255,255,255,.15)}
+.theme-chip{display:inline-block;width:22px;height:22px;border-radius:50%;
+  border:2px solid transparent;margin-right:8px;vertical-align:middle;cursor:pointer}
+.theme-chip.active{border-color:var(--gold)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--cream);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
