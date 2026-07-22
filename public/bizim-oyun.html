@@ -625,17 +625,21 @@ function markSeen(mod,id){
 function resetSeen(mod){storage.set(K.seen(mod),[])}
 
 function drawCard(mod){
-  const pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
+  let pool = loadPool(mod).filter(c=>c && !isDisabled(mod,c.id));
   if(!pool.length) return null;
+  const s = getSettings();
+  if(s.favoritesOnly){
+    const favs = getFavorites()[mod]||{};
+    const favPool = pool.filter(c=>favs[c.id]);
+    if(favPool.length) pool = favPool;
+  }
   const seen = new Set(getSeen(mod));
-  // priority: unseen ai > unseen custom > unseen core > any
   const unseenAi = pool.filter(c=>c.source==="ai" && !seen.has(c.id));
   if(unseenAi.length) return pick(unseenAi);
   const unseenCustom = pool.filter(c=>c.source==="custom" && !seen.has(c.id));
   if(unseenCustom.length) return pick(unseenCustom);
   const unseenCore = pool.filter(c=>c.source==="core" && !seen.has(c.id));
   if(unseenCore.length) return pick(unseenCore);
-  // exhausted
   return {__exhausted:true};
 }
 
