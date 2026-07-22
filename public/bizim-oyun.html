@@ -1041,11 +1041,43 @@ const POSITION_IMAGES = {
   "valedictorian":"/__l5e/assets-v1/7e236449-34a7-4721-a512-d4743ed43a34/valedictorian.jpg",
   "belly down":"/__l5e/assets-v1/f8926284-d9e9-4bb1-8476-e15dd98c9de9/belly-down.jpg"
 };
+const USER_IMG_KEY = "bo.userPositionImages.v1";
+function getUserImages(){ try{return JSON.parse(localStorage.getItem(USER_IMG_KEY)||"{}")}catch(e){return {}} }
+function setUserImages(o){ try{localStorage.setItem(USER_IMG_KEY,JSON.stringify(o));return true}catch(e){toast("Depolama dolu — daha küçük görsel dene.");return false} }
+function positionKey(text){
+  if(!text) return "";
+  const low = text.toLowerCase();
+  const idx = low.indexOf(" — ");
+  return (idx>0 ? low.slice(0,idx) : low).trim();
+}
 function positionImage(text){
   if(!text) return null;
   const low = text.toLowerCase();
+  const user = getUserImages();
+  const k = positionKey(text);
+  if(k && user[k]) return user[k];
   for(const key in POSITION_IMAGES){ if(low.startsWith(key)) return POSITION_IMAGES[key]; }
   return null;
+}
+function compressImageFile(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 800;
+        const scale = Math.min(1, maxW/img.width);
+        const w = Math.round(img.width*scale), h = Math.round(img.height*scale);
+        const cv = document.createElement("canvas"); cv.width=w; cv.height=h;
+        cv.getContext("2d").drawImage(img,0,0,w,h);
+        resolve(cv.toDataURL("image/jpeg",0.82));
+      };
+      img.onerror = reject;
+      img.src = reader.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 
