@@ -1496,7 +1496,7 @@ function renderDice(app){
   const state = { mode:"klasik", result:null, nightPools:new Set(["oyuncu","eylem","bolge","sure"]) };
   const card = el("div",{class:"card"});
   app.append(card);
-  card.append(el("div",{class:"muted"},"Bir mod seç. Her sonuçta ikiniz de onaylıyor musunuz sorusu çıkar."));
+  card.append(el("div",{class:"muted"},"Bir mod seç, zarı at. Çıkan zarı uygulayın; hazır olduğunuzda 'Yapıldı — Sonraki' deyip tekrar atın."));
   const modeRow = el("div",{class:"pill-row",style:"margin-top:12px"});
   const poolPicker = el("div",{style:"margin-top:12px",class:"hidden"});
   Object.keys(DICE_MODES).forEach(k=>{
