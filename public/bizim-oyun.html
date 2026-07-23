@@ -1319,26 +1319,207 @@ const CORE = {
     mk("Sınırı tekrar sormak","Sınır anlaşılmadığında tekrar sormak.",{category:"boundaries",hardness:1}),
   ],
   guessMe: [
-    {q:"En sevdiğim küçük jest hangisidir?",type:"choice",options:["Elimi tutmak","Alnımdan öpmek","Saçımı okşamak","Beni izlemek"],category:"jest"},
-    {q:"Tartıştığımızda önce neye ihtiyacım olur?",type:"choice",options:["Sarılmak","Yalnız kalmak","Konuşmak","Ortamdan uzaklaşmak"],category:"kavga"},
-    {q:"En ideal hafta sonu türüm?",type:"choice",options:["Ev, film, sarılma","Şehir dışı kaçamak","Arkadaşlarla buluşma","Uzun uyku"],category:"tatil"},
-    {q:"Gizli yeteneğim ne olabilir?",type:"text",category:"kişilik"},
-    {q:"En rahat hissettiğim an?",type:"choice",options:["Sabah kahvesi","Duş sonrası","Yürüyüş","Yataktan çıkmadan"],category:"gündelik"},
-    {q:"Bende en sevdiğin özelliğim?",type:"text",category:"iltifat"},
-    {q:"Sabah ilk aklıma gelen genelde nedir?",type:"choice",options:["Sen","İş","Kahve","Uyku"],category:"rutin"},
-    {q:"En büyük korkum?",type:"text",category:"korku"},
-    {q:"Hayalimdeki tatil?",type:"choice",options:["Deniz","Dağ","Şehir gezmek","Karavan yolculuğu"],category:"hayal"},
-    {q:"Romantik jest tercihim?",type:"choice",options:["Sözle","Dokunuşla","Hediyeyle","Zaman ayırarak"],category:"romantik"},
-    {q:"Komik bir alışkanlığım?",type:"text",category:"komik"},
-    {q:"Kendimi ne kadar romantik biri olarak görürüm? (1-5)",type:"scale",category:"romantik"},
-    {q:"Öfkeli olduğumda ne yapmayı severim?",type:"choice",options:["Yürüyüş","Yalnız kalma","Duş","Konuşmak"],category:"duygu"},
-    {q:"En sevdiğim yiyecek türü?",type:"choice",options:["Deniz mahsulleri","Et","Sebze","Tatlı"],category:"yemek"},
-    {q:"Beni en çok gülümseten kelime?",type:"text",category:"iltifat"},
-    {q:"İşteki en zor günümde en çok neye ihtiyacım olur?",type:"choice",options:["Sessizlik","Sarılma","Yemek","Şaka"],category:"iş"},
-    {q:"Uyumadan önce genelde ne düşünürüm?",type:"text",category:"gece"},
-    {q:"Sinirimi en çok bozan şey?",type:"choice",options:["Geç kalınması","Karar verilememesi","Bağırılması","Yalan söylenmesi"],category:"sınır"},
-    {q:"Kendime dair 1-5, ne kadar sabırlıyım?",type:"scale",category:"kişilik"},
-    {q:"Beni en iyi anlatan tek kelime?",type:"text",category:"kişilik"},
+    mk("Sabah uyandığında yaptığı ilk şey nedir?","Sabah uyandığında yaptığı ilk şey nedir?",{category:"daily-life",hardness:1}),
+    mk("Tamamen boş bir günü olsa ilk olarak ne yapmak ister?","Tamamen boş bir günü olsa ilk olarak ne yapmak ister?",{category:"daily-life",hardness:1}),
+    mk("Evde yalnız kaldığında yaptığı en garip şey ne olabilir?","Evde yalnız kaldığında yaptığı en garip şey ne olabilir?",{category:"daily-life",hardness:1}),
+    mk("Bir yere hazırlanırken en çok neye zaman harcar?","Bir yere hazırlanırken en çok neye zaman harcar?",{category:"daily-life",hardness:1}),
+    mk("Uyumadan önceki son rutini nedir?","Uyumadan önceki son rutini nedir?",{category:"daily-life",hardness:1}),
+    mk("Telefonunda en çok hangi uygulamada zaman geçirir?","Telefonunda en çok hangi uygulamada zaman geçirir?",{category:"daily-life",hardness:1}),
+    mk("Evde en dağınık bıraktığı köşe neresidir?","Evde en dağınık bıraktığı köşe neresidir?",{category:"daily-life",hardness:1}),
+    mk("Bir haftada kaç kez alışverişe çıkmayı sever?","Bir haftada kaç kez alışverişe çıkmayı sever?",{category:"daily-life",hardness:1}),
+    mk("Yemek yaparken en çok neye takılır?","Yemek yaparken en çok neye takılır?",{category:"daily-life",hardness:1}),
+    mk("Hafta sonu tamamen özgür olsa evde mi kalır dışarı mı çıkar?","Hafta sonu tamamen özgür olsa evde mi kalır dışarı mı çıkar?",{category:"daily-life",hardness:1}),
+    mk("İşten döndükten sonra ilk yaptığı şey nedir?","İşten döndükten sonra ilk yaptığı şey nedir?",{category:"daily-life",hardness:1}),
+    mk("Yalnızken en çok hangi tür müziği açar?","Yalnızken en çok hangi tür müziği açar?",{category:"daily-life",hardness:1}),
+    mk("Gün içinde en sevdiği zaman dilimi hangisidir?","Gün içinde en sevdiği zaman dilimi hangisidir?",{category:"daily-life",hardness:1}),
+    mk("Bir randevuya erken mi gelir son dakika mı yetişir?","Bir randevuya erken mi gelir son dakika mı yetişir?",{category:"daily-life",hardness:1}),
+    mk("Plan yapmayı mı sever spontane karar vermeyi mi?","Plan yapmayı mı sever spontane karar vermeyi mi?",{category:"daily-life",hardness:1}),
+    mk("Evde en sık kullandığı eşya nedir?","Evde en sık kullandığı eşya nedir?",{category:"daily-life",hardness:1}),
+    mk("Temizliğe genelde nereden başlar?","Temizliğe genelde nereden başlar?",{category:"daily-life",hardness:1}),
+    mk("Enerjisi düştüğünde onu ne toparlar?","Enerjisi düştüğünde onu ne toparlar?",{category:"daily-life",hardness:1}),
+    mk("Stresli bir gün geçirdiğinde eve gelince ne yapar?","Stresli bir gün geçirdiğinde eve gelince ne yapar?",{category:"daily-life",hardness:1}),
+    mk("Sabah alarmı kaç kez ertelenir?","Sabah alarmı kaç kez ertelenir?",{category:"daily-life",hardness:1}),
+    mk("Kahve mi çay mı, günü hangisi olmadan başlayamaz?","Kahve mi çay mı, günü hangisi olmadan başlayamaz?",{category:"daily-life",hardness:1}),
+    mk("Alışveriş listesi yapar mı yoksa aklına geleni mi alır?","Alışveriş listesi yapar mı yoksa aklına geleni mi alır?",{category:"daily-life",hardness:1}),
+    mk("Boş gününü nasıl geçirmeyi hayal eder?","Boş gününü nasıl geçirmeyi hayal eder?",{category:"daily-life",hardness:1}),
+    mk("Evde bir odayı yeniden düzenlese hangisiyle başlar?","Evde bir odayı yeniden düzenlese hangisiyle başlar?",{category:"daily-life",hardness:1}),
+    mk("Gecenin bir yarısı acıksa buzdolabından ilk neyi alır?","Gecenin bir yarısı acıksa buzdolabından ilk neyi alır?",{category:"daily-life",hardness:1}),
+    mk("Deniz mi dağ mı, hangisi ona daha çok hitap eder?","Deniz mi dağ mı, hangisi ona daha çok hitap eder?",{category:"preferences",hardness:1}),
+    mk("Yaz mı kış mı, hangi mevsim onun rahat ettiği?","Yaz mı kış mı, hangi mevsim onun rahat ettiği?",{category:"preferences",hardness:1}),
+    mk("Sabahçı mı gececi mi?","Sabahçı mı gececi mi?",{category:"preferences",hardness:1}),
+    mk("Mesajlaşmak mı sesli konuşmak mı?","Mesajlaşmak mı sesli konuşmak mı?",{category:"preferences",hardness:1}),
+    mk("Plan yapmak mı spontane olmak mı?","Plan yapmak mı spontane olmak mı?",{category:"preferences",hardness:1}),
+    mk("Evde vakit geçirmek mi dışarı çıkmak mı?","Evde vakit geçirmek mi dışarı çıkmak mı?",{category:"preferences",hardness:1}),
+    mk("Tatlı mı tuzlu mu, ilk hangisine uzanır?","Tatlı mı tuzlu mu, ilk hangisine uzanır?",{category:"preferences",hardness:1}),
+    mk("Film mi dizi mi, hangisini açar?","Film mi dizi mi, hangisini açar?",{category:"preferences",hardness:1}),
+    mk("Şehir hayatı mı doğa mı?","Şehir hayatı mı doğa mı?",{category:"preferences",hardness:1}),
+    mk("Uzun tatil mi kısa kaçamak mı?","Uzun tatil mi kısa kaçamak mı?",{category:"preferences",hardness:1}),
+    mk("Hediye mi deneyim mi, hangisi onu daha çok mutlu eder?","Hediye mi deneyim mi, hangisi onu daha çok mutlu eder?",{category:"preferences",hardness:1}),
+    mk("Sessizlik mi arka planda müzik mi?","Sessizlik mi arka planda müzik mi?",{category:"preferences",hardness:1}),
+    mk("Kalabalık ortam mı sakin ortam mı?","Kalabalık ortam mı sakin ortam mı?",{category:"preferences",hardness:1}),
+    mk("Otel mi kiralık ev mi?","Otel mi kiralık ev mi?",{category:"preferences",hardness:1}),
+    mk("Araba yolculuğu mu uçak mı?","Araba yolculuğu mu uçak mı?",{category:"preferences",hardness:1}),
+    mk("Fotoğraf çekmek mi anı olduğu gibi yaşamak mı?","Fotoğraf çekmek mi anı olduğu gibi yaşamak mı?",{category:"preferences",hardness:1}),
+    mk("Erken varmak mı son dakikaya bırakmak mı?","Erken varmak mı son dakikaya bırakmak mı?",{category:"preferences",hardness:1}),
+    mk("Kahvaltı mı akşam yemeği mi, hangisi daha keyifli?","Kahvaltı mı akşam yemeği mi, hangisi daha keyifli?",{category:"preferences",hardness:1}),
+    mk("Kitap mı film mi, hangisine daha çok zaman ayırır?","Kitap mı film mi, hangisine daha çok zaman ayırır?",{category:"preferences",hardness:1}),
+    mk("Sürpriz mi önceden bilmek mi?","Sürpriz mi önceden bilmek mi?",{category:"preferences",hardness:1}),
+    mk("Yazılı mesaj mı sesli not mu?","Yazılı mesaj mı sesli not mu?",{category:"preferences",hardness:1}),
+    mk("Planlı buluşma mı ansızın çıkan bir buluşma mı?","Planlı buluşma mı ansızın çıkan bir buluşma mı?",{category:"preferences",hardness:1}),
+    mk("Güneşin doğuşu mu batışı mı ona daha etkileyici gelir?","Güneşin doğuşu mu batışı mı ona daha etkileyici gelir?",{category:"preferences",hardness:1}),
+    mk("Lüks mü rahatlık mı, hangisi öncelikli?","Lüks mü rahatlık mı, hangisi öncelikli?",{category:"preferences",hardness:1}),
+    mk("Macera mı huzur mu, şu ara hangisine ihtiyacı var?","Macera mı huzur mu, şu ara hangisine ihtiyacı var?",{category:"preferences",hardness:1}),
+    mk("Ne kadar sabırlı biridir?","Ne kadar sabırlı biridir?",{category:"personality",hardness:1}),
+    mk("Bir konuda inatlaştığında vazgeçmesi kolay mı?","Bir konuda inatlaştığında vazgeçmesi kolay mı?",{category:"personality",hardness:1}),
+    mk("Yeni tanıştığı insanlarla çekingen mi rahat mı?","Yeni tanıştığı insanlarla çekingen mi rahat mı?",{category:"personality",hardness:1}),
+    mk("Kalabalıkta enerji mi kaybeder yoksa şarj mı olur?","Kalabalıkta enerji mi kaybeder yoksa şarj mı olur?",{category:"personality",hardness:1}),
+    mk("Plan yaparken en çok neye dikkat eder?","Plan yaparken en çok neye dikkat eder?",{category:"personality",hardness:1}),
+    mk("Karar verirken uzun uzun düşünür mü, çabuk mu karar verir?","Karar verirken uzun uzun düşünür mü, çabuk mu karar verir?",{category:"personality",hardness:1}),
+    mk("Stresli olduğunda önce ne yapar?","Stresli olduğunda önce ne yapar?",{category:"personality",hardness:1}),
+    mk("Yeni bir ortama girdiğinde önce izler mi hemen katılır mı?","Yeni bir ortama girdiğinde önce izler mi hemen katılır mı?",{category:"personality",hardness:1}),
+    mk("Özür dilemekte zorlanır mı?","Özür dilemekte zorlanır mı?",{category:"personality",hardness:1}),
+    mk("Ne kadar çabuk sinirlenir?","Ne kadar çabuk sinirlenir?",{category:"personality",hardness:1}),
+    mk("Ne sıklıkla küçük şeyleri unutur?","Ne sıklıkla küçük şeyleri unutur?",{category:"personality",hardness:1}),
+    mk("Sahip olduğu küçük takıntılardan biri nedir?","Sahip olduğu küçük takıntılardan biri nedir?",{category:"personality",hardness:1}),
+    mk("İnsanları gözlemlemeyi mi konuşmayı mı sever?","İnsanları gözlemlemeyi mi konuşmayı mı sever?",{category:"personality",hardness:1}),
+    mk("Karar verirken daha çok kalbini mi mantığını mı dinler?","Karar verirken daha çok kalbini mi mantığını mı dinler?",{category:"personality",hardness:1}),
+    mk("Risk almayı sever mi güvenli tarafı mı seçer?","Risk almayı sever mi güvenli tarafı mı seçer?",{category:"personality",hardness:1}),
+    mk("Rekabetçi biri midir?","Rekabetçi biri midir?",{category:"personality",hardness:1}),
+    mk("Kontrolü bırakmak ona zor gelir mi?","Kontrolü bırakmak ona zor gelir mi?",{category:"personality",hardness:1}),
+    mk("Yardım istemekte zorlanır mı?","Yardım istemekte zorlanır mı?",{category:"personality",hardness:1}),
+    mk("Bir sırrı ne kadar iyi saklar?","Bir sırrı ne kadar iyi saklar?",{category:"personality",hardness:1}),
+    mk("Şaka tarzı daha çok ince zeka mı absürt mü?","Şaka tarzı daha çok ince zeka mı absürt mü?",{category:"personality",hardness:1}),
+    mk("Eleştiriye ilk tepkisi nedir?","Eleştiriye ilk tepkisi nedir?",{category:"personality",hardness:1}),
+    mk("Başladığı işi bitirir mi yarım mı bırakır?","Başladığı işi bitirir mi yarım mı bırakır?",{category:"personality",hardness:1}),
+    mk("En sabırsız olduğu konu nedir?","En sabırsız olduğu konu nedir?",{category:"personality",hardness:1}),
+    mk("Kendinde değiştirmek isteyeceği bir huyu nedir?","Kendinde değiştirmek isteyeceği bir huyu nedir?",{category:"personality",hardness:1}),
+    mk("Yeni tanıştığı biri hakkında ilk fark ettiği şey nedir?","Yeni tanıştığı biri hakkında ilk fark ettiği şey nedir?",{category:"personality",hardness:1}),
+    mk("Kötü bir gün geçirdiğinde çözüm mü sarılma mı yalnızlık mı ister?","Kötü bir gün geçirdiğinde çözüm mü sarılma mı yalnızlık mı ister?",{category:"emotions",hardness:1}),
+    mk("Üzüldüğünde önce konuşmayı mı susmayı mı tercih eder?","Üzüldüğünde önce konuşmayı mı susmayı mı tercih eder?",{category:"emotions",hardness:1}),
+    mk("Stresliyken yalnız kalmak ona iyi gelir mi?","Stresliyken yalnız kalmak ona iyi gelir mi?",{category:"emotions",hardness:1}),
+    mk("Sarılma onu ne kadar yatıştırır?","Sarılma onu ne kadar yatıştırır?",{category:"emotions",hardness:1}),
+    mk("Yorgunken en çok neye ihtiyacı olur?","Yorgunken en çok neye ihtiyacı olur?",{category:"emotions",hardness:1}),
+    mk("Dinlenilmek onun için ne kadar önemli?","Dinlenilmek onun için ne kadar önemli?",{category:"emotions",hardness:1}),
+    mk("Sorununu anlattığında çözüm mü sadece anlaşılmak mı ister?","Sorununu anlattığında çözüm mü sadece anlaşılmak mı ister?",{category:"emotions",hardness:1}),
+    mk("Kime karşı en çok şefkatli davranır?","Kime karşı en çok şefkatli davranır?",{category:"emotions",hardness:1}),
+    mk("Kendini en çok ne zaman güvende hisseder?","Kendini en çok ne zaman güvende hisseder?",{category:"emotions",hardness:1}),
+    mk("Kendini anlaşılmış hissettiği bir an nasıl olur?","Kendini anlaşılmış hissettiği bir an nasıl olur?",{category:"emotions",hardness:1}),
+    mk("Özlem duygusunu nasıl yaşar?","Özlem duygusunu nasıl yaşar?",{category:"emotions",hardness:1}),
+    mk("Endişelendiğinde belli olur mu saklar mı?","Endişelendiğinde belli olur mu saklar mı?",{category:"emotions",hardness:1}),
+    mk("Kırıldığında hemen mi konuşur biraz zaman mı geçmesini bekler?","Kırıldığında hemen mi konuşur biraz zaman mı geçmesini bekler?",{category:"emotions",hardness:1}),
+    mk("Sakinleşmek için genelde ne yapar?","Sakinleşmek için genelde ne yapar?",{category:"emotions",hardness:1}),
+    mk("Sevildiğini en çok ne zaman hisseder?","Sevildiğini en çok ne zaman hisseder?",{category:"emotions",hardness:1}),
+    mk("İlgi görmek ona nasıl yansır?","İlgi görmek ona nasıl yansır?",{category:"emotions",hardness:1}),
+    mk("Fiziksel yorgunlukla duygusal yorgunluğu ayırt eder mi?","Fiziksel yorgunlukla duygusal yorgunluğu ayırt eder mi?",{category:"emotions",hardness:1}),
+    mk("Kendini kötü hissettiğinde en çok kimi arar?","Kendini kötü hissettiğinde en çok kimi arar?",{category:"emotions",hardness:1}),
+    mk("Bir başarısını en çok kiminle paylaşmak ister?","Bir başarısını en çok kiminle paylaşmak ister?",{category:"emotions",hardness:1}),
+    mk("Cesaretlendirilmeye ne zaman en çok ihtiyacı olur?","Cesaretlendirilmeye ne zaman en çok ihtiyacı olur?",{category:"emotions",hardness:1}),
+    mk("Sessizlik onu rahatlatır mı yoksa huzursuz eder mi?","Sessizlik onu rahatlatır mı yoksa huzursuz eder mi?",{category:"emotions",hardness:1}),
+    mk("Zor konularda açık konuşmayı mı üstünü örtmeyi mi seçer?","Zor konularda açık konuşmayı mı üstünü örtmeyi mi seçer?",{category:"emotions",hardness:1}),
+    mk("Bir konuda zaman istemek onun için ne kadar kolay?","Bir konuda zaman istemek onun için ne kadar kolay?",{category:"emotions",hardness:1}),
+    mk("Affetmek ona ne kadar zor gelir?","Affetmek ona ne kadar zor gelir?",{category:"emotions",hardness:1}),
+    mk("Mutlu olduğunda ilk aklına gelen kişi kim olur?","Mutlu olduğunda ilk aklına gelen kişi kim olur?",{category:"emotions",hardness:1}),
+    mk("Onu en çok mutlu eden küçük romantik jest nedir?","Onu en çok mutlu eden küçük romantik jest nedir?",{category:"relationship",hardness:2}),
+    mk("Sabah günaydın mesajı almak onun için ne ifade eder?","Sabah günaydın mesajı almak onun için ne ifade eder?",{category:"relationship",hardness:2}),
+    mk("İyi geceler mesajı olmadan rahat uyuyabilir mi?","İyi geceler mesajı olmadan rahat uyuyabilir mi?",{category:"relationship",hardness:2}),
+    mk("Bir buluşma planlarken en çok neye dikkat eder?","Bir buluşma planlarken en çok neye dikkat eder?",{category:"relationship",hardness:2}),
+    mk("Onun için en güzel sürpriz nasıl olur?","Onun için en güzel sürpriz nasıl olur?",{category:"relationship",hardness:2}),
+    mk("Çiçek ona anlamlı mı gelir?","Çiçek ona anlamlı mı gelir?",{category:"relationship",hardness:2}),
+    mk("Bir hediye seçerken en çok neye bakar?","Bir hediye seçerken en çok neye bakar?",{category:"relationship",hardness:2}),
+    mk("Birlikte kaliteli zaman nasıl geçmelidir ona göre?","Birlikte kaliteli zaman nasıl geçmelidir ona göre?",{category:"relationship",hardness:2}),
+    mk("Sarılmak mı el ele tutuşmak mı ona daha yakın hissettirir?","Sarılmak mı el ele tutuşmak mı ona daha yakın hissettirir?",{category:"relationship",hardness:2}),
+    mk("İltifat söylediğinde tepkisi nasıl olur?","İltifat söylediğinde tepkisi nasıl olur?",{category:"relationship",hardness:2}),
+    mk("Özlediğini söylemek ona kolay mı gelir?","Özlediğini söylemek ona kolay mı gelir?",{category:"relationship",hardness:2}),
+    mk("Hayalindeki romantik tatil nasıl bir yerdir?","Hayalindeki romantik tatil nasıl bir yerdir?",{category:"relationship",hardness:2}),
+    mk("Bir film gecesi için ne seçerdi?","Bir film gecesi için ne seçerdi?",{category:"relationship",hardness:2}),
+    mk("Evde birlikte yemek yapmak ona nasıl bir his verir?","Evde birlikte yemek yapmak ona nasıl bir his verir?",{category:"relationship",hardness:2}),
+    mk("Özel günlerde beklentisi ne kadar yüksektir?","Özel günlerde beklentisi ne kadar yüksektir?",{category:"relationship",hardness:2}),
+    mk("Fotoğraf çektirmek ona keyif mi verir sıkıntı mı?","Fotoğraf çektirmek ona keyif mi verir sıkıntı mı?",{category:"relationship",hardness:2}),
+    mk("Partnerinin hangi özelliği ona en cazip gelir?","Partnerinin hangi özelliği ona en cazip gelir?",{category:"relationship",hardness:2}),
+    mk("Partnerinin en sevdiği bir hali hangisidir?","Partnerinin en sevdiği bir hali hangisidir?",{category:"relationship",hardness:2}),
+    mk("Birlikte yapmaktan en çok keyif aldığı aktivite nedir?","Birlikte yapmaktan en çok keyif aldığı aktivite nedir?",{category:"relationship",hardness:2}),
+    mk("İlişkide güveni ona en çok ne hissettirir?","İlişkide güveni ona en çok ne hissettirir?",{category:"relationship",hardness:2}),
+    mk("Sevgi dili daha çok sözler mi dokunuş mu davranış mı?","Sevgi dili daha çok sözler mi dokunuş mu davranış mı?",{category:"relationship",hardness:2}),
+    mk("Bir tartışmadan sonra ilk hamleyi genelde kim yapar?","Bir tartışmadan sonra ilk hamleyi genelde kim yapar?",{category:"relationship",hardness:2}),
+    mk("Birlikte huzur bulduğu an genelde nerede olur?","Birlikte huzur bulduğu an genelde nerede olur?",{category:"relationship",hardness:2}),
+    mk("Onu gülümseten küçük bir alışkanlığın nedir?","Onu gülümseten küçük bir alışkanlığın nedir?",{category:"relationship",hardness:2}),
+    mk("İlişkide neyin asla eksik olmasını istemez?","İlişkide neyin asla eksik olmasını istemez?",{category:"relationship",hardness:2}),
+    mk("Bir zombi kıyametinde ilk yapacağı şey ne olur?","Bir zombi kıyametinde ilk yapacağı şey ne olur?",{category:"funny-absurd",hardness:1}),
+    mk("Bir hayvan olarak yaşamak zorunda kalsa hangisini seçer?","Bir hayvan olarak yaşamak zorunda kalsa hangisini seçer?",{category:"funny-absurd",hardness:1}),
+    mk("Bir eşya olsaydı hangi eşya olurdu?","Bir eşya olsaydı hangi eşya olurdu?",{category:"funny-absurd",hardness:1}),
+    mk("Bir gün boyunca yalnızca bir şarkıyla konuşsa hangi şarkıyı seçer?","Bir gün boyunca yalnızca bir şarkıyla konuşsa hangi şarkıyı seçer?",{category:"funny-absurd",hardness:1}),
+    mk("Bir yarışma programına katılsa hangisinden en hızlı elenir?","Bir yarışma programına katılsa hangisinden en hızlı elenir?",{category:"funny-absurd",hardness:1}),
+    mk("Bir süper gücü olsa bunu en gereksiz nerede kullanır?","Bir süper gücü olsa bunu en gereksiz nerede kullanır?",{category:"funny-absurd",hardness:1}),
+    mk("Evdeki hangi eşyanın gizlice onu yargıladığını düşünürdü?","Evdeki hangi eşyanın gizlice onu yargıladığını düşünürdü?",{category:"funny-absurd",hardness:1}),
+    mk("Uzaylılar onu kaçırsa ilk hangi soruyu sorar?","Uzaylılar onu kaçırsa ilk hangi soruyu sorar?",{category:"funny-absurd",hardness:1}),
+    mk("Bir tarihi karakter olsa kim olurdu?","Bir tarihi karakter olsa kim olurdu?",{category:"funny-absurd",hardness:1}),
+    mk("Çizgi filmden çıkıp yanına gelecek karakter kim olurdu?","Çizgi filmden çıkıp yanına gelecek karakter kim olurdu?",{category:"funny-absurd",hardness:1}),
+    mk("Bir hafta boyunca sadece tek bir yemek yiyecek olsa ne seçer?","Bir hafta boyunca sadece tek bir yemek yiyecek olsa ne seçer?",{category:"funny-absurd",hardness:1}),
+    mk("Sirkte hangi rolü üstlenirdi?","Sirkte hangi rolü üstlenirdi?",{category:"funny-absurd",hardness:1}),
+    mk("Bir kedinin bedenine sıkışsa ilk ne yapar?","Bir kedinin bedenine sıkışsa ilk ne yapar?",{category:"funny-absurd",hardness:1}),
+    mk("Aniden görünmez olsa ilk kimi takip eder?","Aniden görünmez olsa ilk kimi takip eder?",{category:"funny-absurd",hardness:1}),
+    mk("Kendi ismini değiştirebilse ne koyardı?","Kendi ismini değiştirebilse ne koyardı?",{category:"funny-absurd",hardness:1}),
+    mk("Bir günlüğüne bir hayvana dönüşecek olsa evde neyi devirirdi?","Bir günlüğüne bir hayvana dönüşecek olsa evde neyi devirirdi?",{category:"funny-absurd",hardness:1}),
+    mk("Rüyasında sıkça gördüğü tuhaf bir şey olabilir mi?","Rüyasında sıkça gördüğü tuhaf bir şey olabilir mi?",{category:"funny-absurd",hardness:1}),
+    mk("Ünlü bir kötü karakter olsa hangi filmden olurdu?","Ünlü bir kötü karakter olsa hangi filmden olurdu?",{category:"funny-absurd",hardness:1}),
+    mk("En saçma korkularından biri nedir?","En saçma korkularından biri nedir?",{category:"funny-absurd",hardness:1}),
+    mk("Bir günlüğüne dünya lideri olsa ilk hangi kararı verir?","Bir günlüğüne dünya lideri olsa ilk hangi kararı verir?",{category:"funny-absurd",hardness:1}),
+    mk("Hiç uğraşmadan bir yeteneği öğrenebilse hangisini seçer?","Hiç uğraşmadan bir yeteneği öğrenebilse hangisini seçer?",{category:"dreams-future",hardness:1}),
+    mk("Bir yıl boyunca başka bir ülkede yaşayacak olsa nereyi seçer?","Bir yıl boyunca başka bir ülkede yaşayacak olsa nereyi seçer?",{category:"dreams-future",hardness:1}),
+    mk("Kendi işini kursa ne üzerine olurdu?","Kendi işini kursa ne üzerine olurdu?",{category:"dreams-future",hardness:1}),
+    mk("Yeni bir hobi seçse hangisiyle başlar?","Yeni bir hobi seçse hangisiyle başlar?",{category:"dreams-future",hardness:1}),
+    mk("Hayalindeki ev nasıl bir yerdir?","Hayalindeki ev nasıl bir yerdir?",{category:"dreams-future",hardness:1}),
+    mk("Uzun bir tatilde en çok neyi denemek ister?","Uzun bir tatilde en çok neyi denemek ister?",{category:"dreams-future",hardness:1}),
+    mk("Bir yıllık farklı bir hayatı olsaydı nasıl geçirmek isterdi?","Bir yıllık farklı bir hayatı olsaydı nasıl geçirmek isterdi?",{category:"dreams-future",hardness:1}),
+    mk("Emeklilik hayali daha çok sahilde mi köyde mi?","Emeklilik hayali daha çok sahilde mi köyde mi?",{category:"dreams-future",hardness:1}),
+    mk("Zaman yolculuğu yapabilse hangi döneme giderdi?","Zaman yolculuğu yapabilse hangi döneme giderdi?",{category:"dreams-future",hardness:1}),
+    mk("Hangi ünlüyle uzun bir sohbet etmek isterdi?","Hangi ünlüyle uzun bir sohbet etmek isterdi?",{category:"dreams-future",hardness:1}),
+    mk("Birlikte kurmayı hayal ettiği bir proje var mı?","Birlikte kurmayı hayal ettiği bir proje var mı?",{category:"dreams-future",hardness:1}),
+    mk("Yeni bir dil öğrenecek olsa hangisini seçer?","Yeni bir dil öğrenecek olsa hangisini seçer?",{category:"dreams-future",hardness:1}),
+    mk("Önümüzdeki bir yıl içinde yapmak istediği bir şey nedir?","Önümüzdeki bir yıl içinde yapmak istediği bir şey nedir?",{category:"dreams-future",hardness:1}),
+    mk("Gelecekteki rutini nasıl bir sabahla başlıyor olurdu?","Gelecekteki rutini nasıl bir sabahla başlıyor olurdu?",{category:"dreams-future",hardness:1}),
+    mk("Hayatta ulaşmak istediği büyük bir hedefi var mı?","Hayatta ulaşmak istediği büyük bir hedefi var mı?",{category:"dreams-future",hardness:1}),
+    mk("Kısa vadede kendine koyduğu küçük bir hedef nedir?","Kısa vadede kendine koyduğu küçük bir hedef nedir?",{category:"dreams-future",hardness:1}),
+    mk("Başka bir meslek yapacak olsa hangisini seçerdi?","Başka bir meslek yapacak olsa hangisini seçerdi?",{category:"dreams-future",hardness:1}),
+    mk("Uzmanlaşmak istediği bir konu var mı?","Uzmanlaşmak istediği bir konu var mı?",{category:"dreams-future",hardness:1}),
+    mk("Denemekten çekindiği ama içten içe merak ettiği şey nedir?","Denemekten çekindiği ama içten içe merak ettiği şey nedir?",{category:"dreams-future",hardness:1}),
+    mk("Beş yıl sonra kendini nerede görmek ister?","Beş yıl sonra kendini nerede görmek ister?",{category:"dreams-future",hardness:1}),
+    mk("Favori mutfağı hangisi?","Favori mutfağı hangisi?",{category:"food-travel-fun",hardness:1}),
+    mk("Tatlı krizinde ilk uzandığı şey ne olur?","Tatlı krizinde ilk uzandığı şey ne olur?",{category:"food-travel-fun",hardness:1}),
+    mk("Kahvaltıda vazgeçemediği bir şey var mı?","Kahvaltıda vazgeçemediği bir şey var mı?",{category:"food-travel-fun",hardness:1}),
+    mk("Gece geç saatte acıksa ne söyler?","Gece geç saatte acıksa ne söyler?",{category:"food-travel-fun",hardness:1}),
+    mk("Daha önce hiç denemediği bir yemeği denemeye açık mı?","Daha önce hiç denemediği bir yemeği denemeye açık mı?",{category:"food-travel-fun",hardness:1}),
+    mk("Restoran seçerken en çok neye bakar?","Restoran seçerken en çok neye bakar?",{category:"food-travel-fun",hardness:1}),
+    mk("Yemek siparişinde en çok tekrarlanan seçimi hangisi?","Yemek siparişinde en çok tekrarlanan seçimi hangisi?",{category:"food-travel-fun",hardness:1}),
+    mk("Tatil planlarken önce nereyi araştırır?","Tatil planlarken önce nereyi araştırır?",{category:"food-travel-fun",hardness:1}),
+    mk("Denize mi göle mi daha yakın hisseder?","Denize mi göle mi daha yakın hisseder?",{category:"food-travel-fun",hardness:1}),
+    mk("Bir şehir gezisinde en çok neyi görmek ister?","Bir şehir gezisinde en çok neyi görmek ister?",{category:"food-travel-fun",hardness:1}),
+    mk("Macera dolu bir aktivite teklifine ne der?","Macera dolu bir aktivite teklifine ne der?",{category:"food-travel-fun",hardness:1}),
+    mk("Uçakta koridor mu cam kenarı mı ister?","Uçakta koridor mu cam kenarı mı ister?",{category:"food-travel-fun",hardness:1}),
+    mk("Otel seçerken vazgeçilmezi nedir?","Otel seçerken vazgeçilmezi nedir?",{category:"food-travel-fun",hardness:1}),
+    mk("Yolculuğa çıkmadan önce en çok neyi kontrol eder?","Yolculuğa çıkmadan önce en çok neyi kontrol eder?",{category:"food-travel-fun",hardness:1}),
+    mk("Kötü bir filmi sonuna kadar izler mi yarıda bırakır mı?","Kötü bir filmi sonuna kadar izler mi yarıda bırakır mı?",{category:"food-travel-fun",hardness:1}),
+    mk("En son bittiğinde üzüldüğü dizi hangisiydi?","En son bittiğinde üzüldüğü dizi hangisiydi?",{category:"food-travel-fun",hardness:1}),
+    mk("Sık dinlediği bir şarkı türü var mı?","Sık dinlediği bir şarkı türü var mı?",{category:"food-travel-fun",hardness:1}),
+    mk("Bir konsere birlikte gitmek ister miydi?","Bir konsere birlikte gitmek ister miydi?",{category:"food-travel-fun",hardness:1}),
+    mk("En sevdiği oyun türü hangisi?","En sevdiği oyun türü hangisi?",{category:"food-travel-fun",hardness:1}),
+    mk("Eğlence parkında hangi ata biner?","Eğlence parkında hangi ata biner?",{category:"food-travel-fun",hardness:1}),
+    mk("En çok hangi tür iltifattan hoşlanır?","En çok hangi tür iltifattan hoşlanır?",{category:"flirt-intimacy",hardness:2}),
+    mk("Uzun bir sarılma mı, beklenmedik küçük bir öpücük mü onu daha çok mutlu eder?","Uzun bir sarılma mı, beklenmedik küçük bir öpücük mü onu daha çok mutlu eder?",{category:"flirt-intimacy",hardness:2}),
+    mk("Flörtöz bir mesajda en çok hangi tonu sever?","Flörtöz bir mesajda en çok hangi tonu sever?",{category:"flirt-intimacy",hardness:2}),
+    mk("Partnerini en çekici bulduğu an genelde ne zamandır?","Partnerini en çekici bulduğu an genelde ne zamandır?",{category:"flirt-intimacy",hardness:2}),
+    mk("Bir bakışın onu etkilemesi için nasıl olması gerekir?","Bir bakışın onu etkilemesi için nasıl olması gerekir?",{category:"flirt-intimacy",hardness:2}),
+    mk("Elini tutmak, saçını okşamak, sırtını sıvazlamaktan hangisi ona daha iyi gelir?","Elini tutmak, saçını okşamak, sırtını sıvazlamaktan hangisi ona daha iyi gelir?",{category:"flirt-intimacy",hardness:2}),
+    mk("Öpücüğün önce hızlı mı yavaş mı başlamasını sever?","Öpücüğün önce hızlı mı yavaş mı başlamasını sever?",{category:"flirt-intimacy",hardness:2}),
+    mk("Ona özlediğini hangi cümleyle söylemek daha çok dokunur?","Ona özlediğini hangi cümleyle söylemek daha çok dokunur?",{category:"flirt-intimacy",hardness:2}),
+    mk("Yakın oturmak mı sarılarak oturmak mı ona daha yakın hissettirir?","Yakın oturmak mı sarılarak oturmak mı ona daha yakın hissettirir?",{category:"flirt-intimacy",hardness:2}),
+    mk("Ses tonunun alçalması onu ne kadar etkiler?","Ses tonunun alçalması onu ne kadar etkiler?",{category:"flirt-intimacy",hardness:2}),
+    mk("Romantik bir ortam için tercih ettiği ışık nasıl olur?","Romantik bir ortam için tercih ettiği ışık nasıl olur?",{category:"flirt-intimacy",hardness:2}),
+    mk("Spontane küçük bir temas ona neyi hissettirir?","Spontane küçük bir temas ona neyi hissettirir?",{category:"flirt-intimacy",hardness:2}),
+    mk("Partnerinin en çekici bulduğu hali nedir?","Partnerinin en çekici bulduğu hali nedir?",{category:"flirt-intimacy",hardness:2}),
+    mk("Yavaş bir romantizmi mi enerjik bir romantizmi mi tercih eder?","Yavaş bir romantizmi mi enerjik bir romantizmi mi tercih eder?",{category:"flirt-intimacy",hardness:2}),
+    mk("Öpüşme öncesindeki o kısa an onun için nasıldır?","Öpüşme öncesindeki o kısa an onun için nasıldır?",{category:"flirt-intimacy",hardness:2}),
+
   ],
 };
 
@@ -3216,113 +3397,164 @@ route("/ok-nok",(app)=>{
 /* ============================================================
  * 16. Guess Me state machine
  * ============================================================ */
-function loadGuessMePool(){
-  const stored = storage.get(K.pool("guessMe"),null);
-  if(stored && Array.isArray(stored) && stored.length) return stored;
-  const seed = CORE.guessMe.map(q=>({
-    id:cardId(q.q,q.type),
-    title:q.q,prompt:q.q,tags:[q.type],category:q.category||"soru",
-    hardness:2,source:"core",disabled:false,type:q.type,options:q.options||null
-  }));
-  storage.set(K.pool("guessMe"),seed);
-  return seed;
+const GUESSME_CATEGORIES = [
+  {slug:"all",label:"Tümü"},
+  {slug:"daily-life",label:"Günlük"},
+  {slug:"preferences",label:"Tercihler"},
+  {slug:"personality",label:"Karakter"},
+  {slug:"emotions",label:"Duygular"},
+  {slug:"relationship",label:"İlişki"},
+  {slug:"funny-absurd",label:"Komik"},
+  {slug:"dreams-future",label:"Hayaller"},
+  {slug:"food-travel-fun",label:"Eğlence"},
+  {slug:"flirt-intimacy",label:"Flört"},
+];
+function personalizeGuessMe(name, prompt){
+  if(!prompt) return "";
+  const first = prompt.charAt(0);
+  const rest = prompt.slice(1);
+  return name + " " + first.toLocaleLowerCase("tr-TR") + rest;
 }
 route("/guess-me",(app)=>{
   app.append(topbar("Beni Tahmin Et"));
+  const settings = getSettings();
+  const players = [settings.player1||"Ozzy", settings.player2||"Su"];
+  const state = {
+    filter: "all",
+    playerIdx: Math.random()<0.5?0:1,
+    card: null,
+    stats: { rounds:0, correct:0, close:0, wrong:0, passes:0,
+             byPlayer:{ [players[0]]:{correct:0,close:0,wrong:0},
+                        [players[1]]:{correct:0,close:0,wrong:0} } }
+  };
+
+  const chipsWrap = el("div",{class:"chip-row",style:"margin-bottom:12px;overflow-x:auto;white-space:nowrap;display:flex;gap:8px;padding-bottom:4px"});
+  app.append(chipsWrap);
+  const info = el("div",{class:"muted",style:"margin-bottom:8px;font-size:13px"});
+  app.append(info);
   const box = el("div",{class:"card"});
   app.append(box);
-  const settings = getSettings();
-  const state = { phase:"pick", card:null, playerIdx:0, secret:null, guess:null };
+
+  function poolAll(){
+    return loadPool("guessMe").filter(c=>c && !isDisabled("guessMe",c.id));
+  }
+  function poolFiltered(){
+    const p = poolAll();
+    return state.filter==="all" ? p : p.filter(c=>c.category===state.filter);
+  }
   function drawGM(){
-    const pool = loadGuessMePool().filter(c=>!isDisabled("guessMe",c.id));
+    const pool = poolFiltered();
+    if(!pool.length) return null;
     const seen = new Set(getSeen("guessMe"));
     const unseen = pool.filter(c=>!seen.has(c.id));
-    return unseen.length?pick(unseen):pool.length?pick(pool):null;
+    return unseen.length ? pick(unseen) : pick(pool);
   }
-  function render(){
-    box.innerHTML="";
-    const players=[settings.player1,settings.player2];
-    if(state.phase==="pick"){
-      box.append(el("div",{class:"muted"},"Kim kendini anlatacak?"));
-      box.append(el("div",{class:"row",style:"margin-top:12px"},
-        btn(players[0],"primary",()=>{state.playerIdx=0;state.card=drawGM();
-          if(!state.card){box.innerHTML="";box.append(el("div",null,"Soru bitti."));return}
-          markSeen("guessMe",state.card.id);bumpSession("guessMe","round");
-          state.phase="secret";render()}),
-        btn(players[1],"gold",()=>{state.playerIdx=1;state.card=drawGM();
-          if(!state.card){box.innerHTML="";box.append(el("div",null,"Soru bitti."));return}
-          markSeen("guessMe",state.card.id);bumpSession("guessMe","round");
-          state.phase="secret";render()})
-      ));
-    } else if(state.phase==="secret"){
-      const p = players[state.playerIdx];
-      box.append(el("div",{class:"big"},p+" gerçek cevabını gizlice ver"));
-      box.append(el("h3",{style:"margin-top:8px"},state.card.title));
-      renderAnswerInput(box,state.card,(v)=>{state.secret=v;state.phase="pass";render()});
-    } else if(state.phase==="pass"){
-      const other = players[1-state.playerIdx];
-      box.append(el("div",{class:"big center"},"Telefonu "+other+"'e ver"));
-      box.append(el("div",{style:"height:12px"}));
-      box.append(btn("Hazırım","primary",()=>{state.phase="guess";render()}));
-    } else if(state.phase==="guess"){
-      const other = players[1-state.playerIdx];
-      box.append(el("div",{class:"big"},other+" tahminini gir"));
-      box.append(el("h3",{style:"margin-top:8px"},state.card.title));
-      renderAnswerInput(box,state.card,(v)=>{state.guess=v;state.phase="reveal";render()});
-    } else if(state.phase==="reveal"){
-      box.append(el("h3",null,state.card.title));
-      box.append(el("div",{class:"row",style:"margin-top:12px"},
-        el("div",{class:"card",style:"flex:1;padding:12px"},
-          el("div",{class:"muted"},"Gerçek"),
-          el("div",{style:"margin-top:6px;font-weight:600"},String(state.secret))),
-        el("div",{class:"card",style:"flex:1;padding:12px"},
-          el("div",{class:"muted"},"Tahmin"),
-          el("div",{style:"margin-top:6px;font-weight:600"},String(state.guess)))
-      ));
-      box.append(el("div",{class:"muted",style:"margin-top:12px"},"Cevaplayan değerlendirsin:"));
+  function renderChips(){
+    chipsWrap.innerHTML="";
+    GUESSME_CATEGORIES.forEach(cat=>{
+      const active = state.filter===cat.slug;
+      chipsWrap.append(el("button",{
+        class:"pill"+(active?" active":""),
+        style:"flex:0 0 auto;"+(active?"background:#a73752;color:#f5ead8;border-color:#a73752":""),
+        onclick:()=>{ state.filter=cat.slug; state.card=null; render(); }
+      }, cat.label));
+    });
+  }
+  function renderInfo(){
+    const pool = poolFiltered();
+    const seen = new Set(getSeen("guessMe"));
+    const remaining = pool.filter(c=>!seen.has(c.id)).length;
+    info.textContent = state.stats.rounds+" tur oynandı · "+remaining+" / "+pool.length+" kart kaldı";
+  }
+  function nextCard(){
+    state.card = drawGM();
+    render();
+  }
+  function record(kind){
+    const p = players[state.playerIdx];
+    state.stats.rounds++;
+    if(kind==="pass"){ state.stats.passes++; bumpSession("guessMe","pass"); }
+    else {
+      state.stats[kind]++;
+      state.stats.byPlayer[p][kind]++;
+      bumpSession("guessMe","round");
       const s = getSession();
       s.modules.guessMe = s.modules.guessMe || {rounds:0,passes:0,score:0};
-      function award(pts,label){
-        s.modules.guessMe.score = (s.modules.guessMe.score||0)+pts;
-        storage.set(K.activeSession,s);
-        toast(label+" (+"+pts+")");
-        state.phase="pick"; render();
+      s.modules.guessMe.score = (s.modules.guessMe.score||0) + (kind==="correct"?2:kind==="close"?1:0);
+      storage.set(K.activeSession,s);
+    }
+    if(state.card) markSeen("guessMe", state.card.id);
+    state.playerIdx = 1 - state.playerIdx;
+    nextCard();
+  }
+  function render(){
+    renderChips();
+    renderInfo();
+    box.innerHTML="";
+    if(!state.card){
+      const pool = poolFiltered();
+      if(!pool.length){
+        box.append(el("div",null,"Bu filtrede kart yok."));
+        box.append(el("div",{style:"margin-top:12px"},
+          btn("Tüm kategoriler","primary",()=>{state.filter="all";render()})
+        ));
+        return;
       }
-      box.append(el("div",{class:"row",style:"margin-top:8px"},
-        btn("Bilemedi","ghost",()=>award(0,"Bilemedi")),
-        btn("Yaklaştı","gold",()=>award(1,"Yaklaştı")),
-        btn("Bildi","primary",()=>award(2,"Bildi"))
-      ));
+      const seen = new Set(getSeen("guessMe"));
+      const anyUnseen = pool.some(c=>!seen.has(c.id));
+      if(!anyUnseen){
+        box.append(el("div",{class:"big"},"Bu havuzdaki tüm kartlar geldi."));
+        box.append(el("div",{class:"row",style:"margin-top:12px"},
+          btn("Havuzu sıfırla ve devam et","primary",()=>{resetSeen("guessMe");nextCard()}),
+          btn("Ana menü","ghost",()=>navigate("#/home"))
+        ));
+        return;
+      }
+      box.append(btn("Başla","primary",()=>nextCard()));
+      return;
+    }
+
+    const asker  = players[state.playerIdx];       // hakkında tahmin yapılan
+    const guesser= players[1-state.playerIdx];     // tahmin eden
+    const question = personalizeGuessMe(asker, state.card.prompt || state.card.title || "");
+
+    box.append(el("div",{class:"muted",style:"font-size:13px"},
+      "Sıra: "+guesser+", "+asker+" hakkında tahmin yap"));
+    box.append(el("h2",{style:"margin:10px 0 4px;line-height:1.35"}, question));
+    if(state.card.category){
+      const catLabel = (GUESSME_CATEGORIES.find(c=>c.slug===state.card.category)||{}).label || state.card.category;
+      box.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:12px"}, catLabel));
+    }
+
+    const btnRow = el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px"});
+    btnRow.append(btn("Bildin","primary",()=>record("correct")));
+    btnRow.append(btn("Yaklaştın","gold",()=>record("close")));
+    btnRow.append(btn("Bilemedin","ghost",()=>record("wrong")));
+    btnRow.append(btn("Pas","ghost",()=>record("pass")));
+    box.append(btnRow);
+
+    const foot = el("div",{class:"row",style:"margin-top:14px;gap:8px;flex-wrap:wrap"});
+    foot.append(btn("Sonraki","ghost",()=>{
+      if(state.card) markSeen("guessMe",state.card.id);
+      state.playerIdx = 1 - state.playerIdx;
+      nextCard();
+    }));
+    foot.append(btn("Bir daha gösterme","ghost",()=>{
+      if(state.card){ disableCard("guessMe",state.card.id); markSeen("guessMe",state.card.id); }
+      state.playerIdx = 1 - state.playerIdx;
+      nextCard();
+    }));
+    foot.append(btn("Ana menü","ghost",()=>navigate("#/home")));
+    box.append(foot);
+
+    if(state.stats.rounds>0 && state.stats.rounds%10===0){
+      const st = state.stats;
+      box.append(el("div",{class:"muted",style:"margin-top:14px;font-size:12px"},
+        st.rounds+" soru · "+st.correct+" bildin · "+st.close+" yakın · "+st.wrong+" bilemedin"+(st.passes?" · "+st.passes+" pas":"")));
     }
   }
   render();
 });
-function renderAnswerInput(box,card,onDone){
-  const t = card.type||"text";
-  if(t==="choice" && card.options){
-    const wrap = el("div",{style:"margin-top:12px"});
-    card.options.forEach(op=>{
-      wrap.append(el("button",{class:"btn ghost",style:"margin-bottom:8px",onclick:()=>onDone(op)},op));
-    });
-    box.append(wrap);
-  } else if(t==="scale"){
-    const wrap = el("div",{class:"pill-row",style:"margin-top:12px;justify-content:center"});
-    [1,2,3,4,5].forEach(n=>{
-      wrap.append(el("button",{class:"pill",onclick:()=>onDone(n)},String(n)));
-    });
-    box.append(wrap);
-  } else if(t==="binary"){
-    box.append(el("div",{class:"row",style:"margin-top:12px"},
-      btn("Evet","primary",()=>onDone("Evet")),
-      btn("Hayır","ghost",()=>onDone("Hayır"))
-    ));
-  } else {
-    const inp = el("input",{type:"text",placeholder:"Cevabını yaz…"});
-    const b = btn("Onayla","primary",()=>{const v=(inp.value||"").trim().slice(0,120);if(!v)return;onDone(v)});
-    box.append(el("div",{style:"margin-top:12px"},inp));
-    box.append(el("div",{style:"margin-top:10px"},b));
-  }
-}
 
 /* ============================================================
  * 17. Sex Dice engine
@@ -3872,7 +4104,7 @@ if(!runMigrations()){
   document.documentElement.style.setProperty("--rm", _s.reducedMotion?"1":"0");
   // Init all pools with core
   Object.keys(CORE).forEach(m=>loadPool(m));
-  loadGuessMePool();
+  loadPool("guessMe");
   // Ensure a session exists
   if(!storage.get(K.activeSession,null)) startSession();
   render();
