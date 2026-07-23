@@ -3120,7 +3120,7 @@ route("/ok-nok",(app)=>{
   // Filter bar
   const filterWrap = el("div",{style:"display:flex;gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px"});
   OK_NOK_CATS.forEach(([id,label])=>{
-    const chip = el("button",{class:"btn ghost",style:"white-space:nowrap;padding:6px 12px;font-size:13px"},label);
+    const chip = el("button",{class:"btn ghost",style:"white-space:nowrap;padding:6px 12px;font-size:13px;flex:0 0 auto"},label);
     chip.addEventListener("click",()=>{state.category=id;refreshChips();nextCard()});
     chip._catId = id;
     filterWrap.append(chip);
