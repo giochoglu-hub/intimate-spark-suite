@@ -3204,12 +3204,10 @@ route("/ok-nok",(app)=>{
     nokBtn.addEventListener("click",()=>record("nok"));
     box.append(el("div",{class:"row",style:"gap:10px"}, okBtn, nokBtn));
 
-    box.append(el("div",{style:"height:14px"}));
-    const secondaryRow = el("div",{class:"row",style:"gap:8px;flex-wrap:wrap"});
-    secondaryRow.append(btn("Pas","ghost",()=>record("pass")));
-    secondaryRow.append(btn("Sonraki","ghost",()=>{ markSeen("okNok",state.card.id); nextCard(); }));
-    secondaryRow.append(btn("Bir daha gösterme","ghost",()=>{disableCard("okNok",state.card.id); nextCard();}));
-    box.append(secondaryRow);
+    box.append(el("div",{style:"height:10px"}));
+    const passBtn = btn("Pas","ghost",()=>record("pass"));
+    passBtn.style.width = "100%";
+    box.append(passBtn);
   }
 
   nextCard();
