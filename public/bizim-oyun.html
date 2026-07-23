@@ -3397,113 +3397,164 @@ route("/ok-nok",(app)=>{
 /* ============================================================
  * 16. Guess Me state machine
  * ============================================================ */
-function loadGuessMePool(){
-  const stored = storage.get(K.pool("guessMe"),null);
-  if(stored && Array.isArray(stored) && stored.length) return stored;
-  const seed = CORE.guessMe.map(q=>({
-    id:cardId(q.q,q.type),
-    title:q.q,prompt:q.q,tags:[q.type],category:q.category||"soru",
-    hardness:2,source:"core",disabled:false,type:q.type,options:q.options||null
-  }));
-  storage.set(K.pool("guessMe"),seed);
-  return seed;
+const GUESSME_CATEGORIES = [
+  {slug:"all",label:"Tümü"},
+  {slug:"daily-life",label:"Günlük"},
+  {slug:"preferences",label:"Tercihler"},
+  {slug:"personality",label:"Karakter"},
+  {slug:"emotions",label:"Duygular"},
+  {slug:"relationship",label:"İlişki"},
+  {slug:"funny-absurd",label:"Komik"},
+  {slug:"dreams-future",label:"Hayaller"},
+  {slug:"food-travel-fun",label:"Eğlence"},
+  {slug:"flirt-intimacy",label:"Flört"},
+];
+function personalizeGuessMe(name, prompt){
+  if(!prompt) return "";
+  const first = prompt.charAt(0);
+  const rest = prompt.slice(1);
+  return name + " " + first.toLocaleLowerCase("tr-TR") + rest;
 }
 route("/guess-me",(app)=>{
   app.append(topbar("Beni Tahmin Et"));
+  const settings = getSettings();
+  const players = [settings.player1||"Ozzy", settings.player2||"Su"];
+  const state = {
+    filter: "all",
+    playerIdx: Math.random()<0.5?0:1,
+    card: null,
+    stats: { rounds:0, correct:0, close:0, wrong:0, passes:0,
+             byPlayer:{ [players[0]]:{correct:0,close:0,wrong:0},
+                        [players[1]]:{correct:0,close:0,wrong:0} } }
+  };
+
+  const chipsWrap = el("div",{class:"chip-row",style:"margin-bottom:12px;overflow-x:auto;white-space:nowrap;display:flex;gap:8px;padding-bottom:4px"});
+  app.append(chipsWrap);
+  const info = el("div",{class:"muted",style:"margin-bottom:8px;font-size:13px"});
+  app.append(info);
   const box = el("div",{class:"card"});
   app.append(box);
-  const settings = getSettings();
-  const state = { phase:"pick", card:null, playerIdx:0, secret:null, guess:null };
+
+  function poolAll(){
+    return loadPool("guessMe").filter(c=>c && !isDisabled("guessMe",c.id));
+  }
+  function poolFiltered(){
+    const p = poolAll();
+    return state.filter==="all" ? p : p.filter(c=>c.category===state.filter);
+  }
   function drawGM(){
-    const pool = loadGuessMePool().filter(c=>!isDisabled("guessMe",c.id));
+    const pool = poolFiltered();
+    if(!pool.length) return null;
     const seen = new Set(getSeen("guessMe"));
     const unseen = pool.filter(c=>!seen.has(c.id));
-    return unseen.length?pick(unseen):pool.length?pick(pool):null;
+    return unseen.length ? pick(unseen) : pick(pool);
   }
-  function render(){
-    box.innerHTML="";
-    const players=[settings.player1,settings.player2];
-    if(state.phase==="pick"){
-      box.append(el("div",{class:"muted"},"Kim kendini anlatacak?"));
-      box.append(el("div",{class:"row",style:"margin-top:12px"},
-        btn(players[0],"primary",()=>{state.playerIdx=0;state.card=drawGM();
-          if(!state.card){box.innerHTML="";box.append(el("div",null,"Soru bitti."));return}
-          markSeen("guessMe",state.card.id);bumpSession("guessMe","round");
-          state.phase="secret";render()}),
-        btn(players[1],"gold",()=>{state.playerIdx=1;state.card=drawGM();
-          if(!state.card){box.innerHTML="";box.append(el("div",null,"Soru bitti."));return}
-          markSeen("guessMe",state.card.id);bumpSession("guessMe","round");
-          state.phase="secret";render()})
-      ));
-    } else if(state.phase==="secret"){
-      const p = players[state.playerIdx];
-      box.append(el("div",{class:"big"},p+" gerçek cevabını gizlice ver"));
-      box.append(el("h3",{style:"margin-top:8px"},state.card.title));
-      renderAnswerInput(box,state.card,(v)=>{state.secret=v;state.phase="pass";render()});
-    } else if(state.phase==="pass"){
-      const other = players[1-state.playerIdx];
-      box.append(el("div",{class:"big center"},"Telefonu "+other+"'e ver"));
-      box.append(el("div",{style:"height:12px"}));
-      box.append(btn("Hazırım","primary",()=>{state.phase="guess";render()}));
-    } else if(state.phase==="guess"){
-      const other = players[1-state.playerIdx];
-      box.append(el("div",{class:"big"},other+" tahminini gir"));
-      box.append(el("h3",{style:"margin-top:8px"},state.card.title));
-      renderAnswerInput(box,state.card,(v)=>{state.guess=v;state.phase="reveal";render()});
-    } else if(state.phase==="reveal"){
-      box.append(el("h3",null,state.card.title));
-      box.append(el("div",{class:"row",style:"margin-top:12px"},
-        el("div",{class:"card",style:"flex:1;padding:12px"},
-          el("div",{class:"muted"},"Gerçek"),
-          el("div",{style:"margin-top:6px;font-weight:600"},String(state.secret))),
-        el("div",{class:"card",style:"flex:1;padding:12px"},
-          el("div",{class:"muted"},"Tahmin"),
-          el("div",{style:"margin-top:6px;font-weight:600"},String(state.guess)))
-      ));
-      box.append(el("div",{class:"muted",style:"margin-top:12px"},"Cevaplayan değerlendirsin:"));
+  function renderChips(){
+    chipsWrap.innerHTML="";
+    GUESSME_CATEGORIES.forEach(cat=>{
+      const active = state.filter===cat.slug;
+      chipsWrap.append(el("button",{
+        class:"pill"+(active?" active":""),
+        style:"flex:0 0 auto;"+(active?"background:#a73752;color:#f5ead8;border-color:#a73752":""),
+        onclick:()=>{ state.filter=cat.slug; state.card=null; render(); }
+      }, cat.label));
+    });
+  }
+  function renderInfo(){
+    const pool = poolFiltered();
+    const seen = new Set(getSeen("guessMe"));
+    const remaining = pool.filter(c=>!seen.has(c.id)).length;
+    info.textContent = state.stats.rounds+" tur oynandı · "+remaining+" / "+pool.length+" kart kaldı";
+  }
+  function nextCard(){
+    state.card = drawGM();
+    render();
+  }
+  function record(kind){
+    const p = players[state.playerIdx];
+    state.stats.rounds++;
+    if(kind==="pass"){ state.stats.passes++; bumpSession("guessMe","pass"); }
+    else {
+      state.stats[kind]++;
+      state.stats.byPlayer[p][kind]++;
+      bumpSession("guessMe","round");
       const s = getSession();
       s.modules.guessMe = s.modules.guessMe || {rounds:0,passes:0,score:0};
-      function award(pts,label){
-        s.modules.guessMe.score = (s.modules.guessMe.score||0)+pts;
-        storage.set(K.activeSession,s);
-        toast(label+" (+"+pts+")");
-        state.phase="pick"; render();
+      s.modules.guessMe.score = (s.modules.guessMe.score||0) + (kind==="correct"?2:kind==="close"?1:0);
+      storage.set(K.activeSession,s);
+    }
+    if(state.card) markSeen("guessMe", state.card.id);
+    state.playerIdx = 1 - state.playerIdx;
+    nextCard();
+  }
+  function render(){
+    renderChips();
+    renderInfo();
+    box.innerHTML="";
+    if(!state.card){
+      const pool = poolFiltered();
+      if(!pool.length){
+        box.append(el("div",null,"Bu filtrede kart yok."));
+        box.append(el("div",{style:"margin-top:12px"},
+          btn("Tüm kategoriler","primary",()=>{state.filter="all";render()})
+        ));
+        return;
       }
-      box.append(el("div",{class:"row",style:"margin-top:8px"},
-        btn("Bilemedi","ghost",()=>award(0,"Bilemedi")),
-        btn("Yaklaştı","gold",()=>award(1,"Yaklaştı")),
-        btn("Bildi","primary",()=>award(2,"Bildi"))
-      ));
+      const seen = new Set(getSeen("guessMe"));
+      const anyUnseen = pool.some(c=>!seen.has(c.id));
+      if(!anyUnseen){
+        box.append(el("div",{class:"big"},"Bu havuzdaki tüm kartlar geldi."));
+        box.append(el("div",{class:"row",style:"margin-top:12px"},
+          btn("Havuzu sıfırla ve devam et","primary",()=>{resetSeen("guessMe");nextCard()}),
+          btn("Ana menü","ghost",()=>navigate("#/home"))
+        ));
+        return;
+      }
+      box.append(btn("Başla","primary",()=>nextCard()));
+      return;
+    }
+
+    const asker  = players[state.playerIdx];       // hakkında tahmin yapılan
+    const guesser= players[1-state.playerIdx];     // tahmin eden
+    const question = personalizeGuessMe(asker, state.card.prompt || state.card.title || "");
+
+    box.append(el("div",{class:"muted",style:"font-size:13px"},
+      "Sıra: "+guesser+", "+asker+" hakkında tahmin yap"));
+    box.append(el("h2",{style:"margin:10px 0 4px;line-height:1.35"}, question));
+    if(state.card.category){
+      const catLabel = (GUESSME_CATEGORIES.find(c=>c.slug===state.card.category)||{}).label || state.card.category;
+      box.append(el("div",{class:"muted",style:"font-size:12px;margin-bottom:12px"}, catLabel));
+    }
+
+    const btnRow = el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px"});
+    btnRow.append(btn("Bildin","primary",()=>record("correct")));
+    btnRow.append(btn("Yaklaştın","gold",()=>record("close")));
+    btnRow.append(btn("Bilemedin","ghost",()=>record("wrong")));
+    btnRow.append(btn("Pas","ghost",()=>record("pass")));
+    box.append(btnRow);
+
+    const foot = el("div",{class:"row",style:"margin-top:14px;gap:8px;flex-wrap:wrap"});
+    foot.append(btn("Sonraki","ghost",()=>{
+      if(state.card) markSeen("guessMe",state.card.id);
+      state.playerIdx = 1 - state.playerIdx;
+      nextCard();
+    }));
+    foot.append(btn("Bir daha gösterme","ghost",()=>{
+      if(state.card){ disableCard("guessMe",state.card.id); markSeen("guessMe",state.card.id); }
+      state.playerIdx = 1 - state.playerIdx;
+      nextCard();
+    }));
+    foot.append(btn("Ana menü","ghost",()=>navigate("#/home")));
+    box.append(foot);
+
+    if(state.stats.rounds>0 && state.stats.rounds%10===0){
+      const st = state.stats;
+      box.append(el("div",{class:"muted",style:"margin-top:14px;font-size:12px"},
+        st.rounds+" soru · "+st.correct+" bildin · "+st.close+" yakın · "+st.wrong+" bilemedin"+(st.passes?" · "+st.passes+" pas":"")));
     }
   }
   render();
 });
-function renderAnswerInput(box,card,onDone){
-  const t = card.type||"text";
-  if(t==="choice" && card.options){
-    const wrap = el("div",{style:"margin-top:12px"});
-    card.options.forEach(op=>{
-      wrap.append(el("button",{class:"btn ghost",style:"margin-bottom:8px",onclick:()=>onDone(op)},op));
-    });
-    box.append(wrap);
-  } else if(t==="scale"){
-    const wrap = el("div",{class:"pill-row",style:"margin-top:12px;justify-content:center"});
-    [1,2,3,4,5].forEach(n=>{
-      wrap.append(el("button",{class:"pill",onclick:()=>onDone(n)},String(n)));
-    });
-    box.append(wrap);
-  } else if(t==="binary"){
-    box.append(el("div",{class:"row",style:"margin-top:12px"},
-      btn("Evet","primary",()=>onDone("Evet")),
-      btn("Hayır","ghost",()=>onDone("Hayır"))
-    ));
-  } else {
-    const inp = el("input",{type:"text",placeholder:"Cevabını yaz…"});
-    const b = btn("Onayla","primary",()=>{const v=(inp.value||"").trim().slice(0,120);if(!v)return;onDone(v)});
-    box.append(el("div",{style:"margin-top:12px"},inp));
-    box.append(el("div",{style:"margin-top:10px"},b));
-  }
-}
 
 /* ============================================================
  * 17. Sex Dice engine
