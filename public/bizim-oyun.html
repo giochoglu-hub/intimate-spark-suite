@@ -3118,9 +3118,9 @@ route("/ok-nok",(app)=>{
   const settings = getSettings();
 
   // Filter bar
-  const filterWrap = el("div",{class:"row",style:"gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;-webkit-overflow-scrolling:touch"});
+  const filterWrap = el("div",{style:"display:flex;gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px"});
   OK_NOK_CATS.forEach(([id,label])=>{
-    const chip = el("button",{class:"btn ghost",style:"white-space:nowrap;padding:6px 12px;font-size:13px"},label);
+    const chip = el("button",{class:"btn ghost",style:"white-space:nowrap;padding:6px 12px;font-size:13px;flex:0 0 auto"},label);
     chip.addEventListener("click",()=>{state.category=id;refreshChips();nextCard()});
     chip._catId = id;
     filterWrap.append(chip);
@@ -3204,12 +3204,10 @@ route("/ok-nok",(app)=>{
     nokBtn.addEventListener("click",()=>record("nok"));
     box.append(el("div",{class:"row",style:"gap:10px"}, okBtn, nokBtn));
 
-    box.append(el("div",{style:"height:14px"}));
-    const secondaryRow = el("div",{class:"row",style:"gap:8px;flex-wrap:wrap"});
-    secondaryRow.append(btn("Pas","ghost",()=>record("pass")));
-    secondaryRow.append(btn("Sonraki","ghost",()=>{ markSeen("okNok",state.card.id); nextCard(); }));
-    secondaryRow.append(btn("Bir daha gösterme","ghost",()=>{disableCard("okNok",state.card.id); nextCard();}));
-    box.append(secondaryRow);
+    box.append(el("div",{style:"height:10px"}));
+    const passBtn = btn("Pas","ghost",()=>record("pass"));
+    passBtn.style.width = "100%";
+    box.append(passBtn);
   }
 
   nextCard();
