@@ -4104,7 +4104,7 @@ if(!runMigrations()){
   document.documentElement.style.setProperty("--rm", _s.reducedMotion?"1":"0");
   // Init all pools with core
   Object.keys(CORE).forEach(m=>loadPool(m));
-  loadGuessMePool();
+  loadPool("guessMe");
   // Ensure a session exists
   if(!storage.get(K.activeSession,null)) startSession();
   render();
