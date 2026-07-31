@@ -83,6 +83,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Ozzy ve Su için hazırlanmış kişisel çift oyunu." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Bizim Oyun — Ozzy & Su için" },
+      { name: "twitter:description", content: "Ozzy ve Su için hazırlanmış kişisel çift oyunu." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5bc5a2b6-1382-4216-a8d9-346ad0d22532/id-preview-c7a81828--f3312f86-c349-4657-80af-fac830988625.lovable.app-1785524628583.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/5bc5a2b6-1382-4216-a8d9-346ad0d22532/id-preview-c7a81828--f3312f86-c349-4657-80af-fac830988625.lovable.app-1785524628583.png" },
     ],
     links: [
       {
