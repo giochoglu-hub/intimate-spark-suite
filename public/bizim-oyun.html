@@ -983,6 +983,29 @@ const CORE = {
     mk("Küçük çocuk","İçindeki küçük çocuk şu an ne ister?",{tags:["içsel"],hardness:2}),
     mk("Sırlı beğeni","Kimseye söylemediğin bir 'guilty pleasure'ını söyle.",{tags:["itiraf"],hardness:1}),
     mk("En rahat","Benimle en rahat hissettiğin an hangi tür anlar oluyor?",{tags:["yakınlık"],hardness:1}),
+    mk("İlk izlenim","Beni ilk gördüğünde aklından geçen ama hiç söylemediğin şey neydi?",{tags:["anı"],hardness:1}),
+    mk("Gizli endişe","İlişkimizle ilgili şu an içinde taşıdığın küçük bir endişe var mı?",{tags:["duygu"],hardness:3}),
+    mk("Sosyal medya","Sosyal medyada beni gizlice takip ettiğim ama söylemediğim biri var mı diye merak ettin mi?",{tags:["merak"],hardness:2}),
+    mk("Kıyaslama","Bir eski ilişkinle bizi kıyasladığın bir an oldu mu?",{tags:["geçmiş"],hardness:3}),
+    mk("Utanç anı","Yanımda yaşadığın ama hâlâ düşününce utandığın bir an var mı?",{tags:["itiraf","komik"],hardness:2}),
+    mk("Değişim","Bu ilişkide seni en çok değiştiren şey ne oldu?",{tags:["içsel"],hardness:2}),
+    mk("Küçük yalan 2","Bugüne kadar bana attığın en zararsız 'iyiyim' yalanını anlat.",{tags:["itiraf"],hardness:1}),
+    mk("Gizli hayal","Kimseyle paylaşmadığın küçük bir hayalini söyle.",{tags:["hayal"],hardness:2}),
+    mk("Rahatsız eden alışkanlık","Kendi alışkanlıklarımdan hangisi seni bazen rahatsız ediyor?",{tags:["dürüstlük"],hardness:3}),
+    mk("En sevdiğim övgü","Senden duyduğum hangi övgü beni en çok mutlu ediyor, fark ettin mi?",{tags:["yakınlık"],hardness:1}),
+    mk("Vazgeçemediğim şey","Benim yüzünden vazgeçtiğin küçük bir şey oldu mu?",{tags:["fedakarlık"],hardness:2}),
+    mk("Çocukluk sırrı","Çocukken kimseye anlatmadığın küçük bir sırrını paylaş.",{tags:["geçmiş","itiraf"],hardness:2}),
+    mk("Kararsız kaldığım an","Bu ilişkide kararsız kaldığın bir dönem oldu mu, ne değişti?",{tags:["dürüstlük"],hardness:3}),
+    mk("Gözünde büyüyen","Başta önemsiz gelip sonra gözünde büyüyen bir şey oldu mu?",{tags:["gözlem"],hardness:2}),
+    mk("En sevdiğim anım","Aramızdaki en sevdiğin fiziksel yakınlık anını anlat.",{tags:["yakınlık","itiraf"],hardness:2}),
+    mk("Hayal kırıklığı","Beklediğin ama olmayan küçük bir şey var mı?",{tags:["beklenti"],hardness:2}),
+    mk("Gurur anı","Seninle ilgili en gurur duyduğum ama az söylediğim şey ne, tahmin et.",{tags:["yakınlık"],hardness:1}),
+    mk("Kıyaslanma korkusu","Başkalarıyla kıyaslanmaktan korktuğun bir yönün var mı?",{tags:["korku"],hardness:3}),
+    mk("Gizli tercih","Yatak odasında hiç söylemediğin küçük bir tercihin var mı?",{tags:["itiraf","yetişkin"],hardness:3}),
+    mk("En çok güldüğüm","Seninle en çok güldüğüm anı hatırlıyor musun, hangisiydi?",{tags:["anı","komik"],hardness:1}),
+    mk("Affetmekte zorlandığım","Küçük de olsa affetmesi zaman alan bir şey oldu mu?",{tags:["dürüstlük"],hardness:3}),
+    mk("Beklenmedik minnet","Fark etmediğimi düşündüğün ama minnettar olduğun bir şey var mı?",{tags:["minnet"],hardness:1}),
+    mk("Söylenmeyen övgü","Bana hiç söylemediğin ama içten içe düşündüğün bir övgü var mı?",{tags:["yakınlık"],hardness:1}),
   ],
   dare: [
     mk("30 saniye","30 saniye boyunca partnerine hiç gülmeden iltifat et.",{tags:["görev"],hardness:2}),
@@ -996,6 +1019,29 @@ const CORE = {
     mk("Sekiz saniye sarıl","Partnerine tam 8 saniye boyunca sıkıca sarıl.",{tags:["görev","fiziksel"],hardness:1}),
     mk("Aşk mektubu","Bir dakikada partnerine kısa bir aşk notu yaz ve sesli oku.",{tags:["görev","romantik"],hardness:2}),
     mk("Emoji telefon","Telefonundaki son 3 emojiyle bir cümle kur.",{tags:["görev","komik"],hardness:1}),
+    mk("Reklam sesi","Bir reklam spikeri gibi partnerini 20 saniye övecek bir reklam yap.",{tags:["görev","komik"],hardness:1}),
+    mk("Hızlı çizim","Gözlerini kapatıp partnerinin yüzünü 15 saniyede çizmeye çalış.",{tags:["görev","komik"],hardness:1}),
+    mk("Robot yürüyüşü","Bir robot gibi yürüyerek odanın karşısına geç.",{tags:["görev","komik"],hardness:1}),
+    mk("Şiir doğaçlama","Partnerin için 4 satırlık kafiyeli bir şiir uydur.",{tags:["görev","romantik"],hardness:2}),
+    mk("Fısıltı iltifat","Kulağına 3 farklı iltifatı fısıldayarak söyle.",{tags:["görev","yakınlık"],hardness:2}),
+    mk("Ayna oyunu","30 saniye boyunca partnerinin her hareketini ayna gibi taklit et.",{tags:["görev","komik"],hardness:1}),
+    mk("Slow motion","Su bardağını slow motion çekimdeymiş gibi partnerine uzat.",{tags:["görev","komik"],hardness:1}),
+    mk("Gizli kahraman","Kendini bir süper kahraman gibi tanıt, adın ve gücün ne?",{tags:["görev","hayal"],hardness:1}),
+    mk("Masaj daveti","Partnerine 1 dakikalık omuz masajı teklif et ve uygula.",{tags:["görev","fiziksel"],hardness:2}),
+    mk("Fotoğraf pozu","Birlikte en saçma pozu verip bir fotoğraf çekin.",{tags:["görev","eğlence"],hardness:1}),
+    mk("Ters alfabe","Adını tersten söylemeye çalış, 3 denemede olmazsa bir görev daha al.",{tags:["görev","komik"],hardness:1}),
+    mk("Yıldız ol","30 saniye boyunca ünlü bir sanatçı gibi röportaj ver.",{tags:["görev","komik"],hardness:2}),
+    mk("Göz kapalı tarif","Gözlerin kapalıyken partnerine sarılıp onu koklayarak tarif et.",{tags:["görev","yakınlık"],hardness:2}),
+    mk("Mini dans dersi","Partnerine 30 saniyelik bir dans hareketi öğret.",{tags:["görev","dans"],hardness:1}),
+    mk("Komik ses","Bir sonraki cümleni çizgi film karakteri sesiyle söyle.",{tags:["görev","komik"],hardness:1}),
+    mk("Aşk ilanı panosu","Elinle havada büyük harflerle 'Seni seviyorum' yaz.",{tags:["görev","romantik"],hardness:1}),
+    mk("Sessiz alkış","30 saniye boyunca partnerini sessizce sadece mimiklerle alkışla ve övgü göster.",{tags:["görev","komik"],hardness:1}),
+    mk("Parmak izi","Parmaklarınla partnerinin elinin üstüne bir kalp çiz.",{tags:["görev","romantik"],hardness:2}),
+    mk("Anons","Bir uçuş görevlisi gibi 'bu gecenin programını' anons et.",{tags:["görev","komik"],hardness:1}),
+    mk("Yürek sesi","Elini partnerinin göğsüne koy, kalp atışını 20 saniye dinle.",{tags:["görev","yakınlık"],hardness:2}),
+    mk("Kompliman zinciri","Art arda durmadan 5 farklı iltifat sırala.",{tags:["görev"],hardness:1}),
+    mk("Gizli dans","Gözler kapalı, sadece müziği hayal ederek 15 saniye dans et.",{tags:["görev","komik"],hardness:1}),
+    mk("Aşk mektubu 2","Partnerine tek cümlelik ama çok özel bir söz söyle.",{tags:["görev","romantik"],hardness:2}),
   ],
   whoAmI: [
     mk("Kararsız haldeyken","Kararsız kaldığımda genelde önce ne yaparım?",{tags:["kişilik"],hardness:2}),
@@ -1008,6 +1054,24 @@ const CORE = {
     mk("Sevdiğim ses","Beni sakinleştiren bir ses söyle.",{tags:["duyusal"],hardness:1}),
     mk("Alışkanlık","Farkında olmadan yaptığım bir alışkanlığımı söyle.",{tags:["gözlem"],hardness:2}),
     mk("İki kelime","Beni iki kelimeyle özetle.",{tags:["gözlem"],hardness:1}),
+    mk("Stres anında","Stresliyken bedenimde ilk fark ettiğin şey ne olur?",{tags:["gözlem","duygu"],hardness:2}),
+    mk("En sevdiğim mevsim","Hangi mevsimde daha mutlu olurum, neden olduğunu düşünüyorsun?",{tags:["kişilik"],hardness:1}),
+    mk("Vazgeçilmezim","Sabah rutinimde asla atlamadığım bir şey ne?",{tags:["gözlem"],hardness:1}),
+    mk("Korkularım","En sıradan ama gerçek korkularımdan biri ne?",{tags:["duygu"],hardness:2}),
+    mk("Enerjimi tüketen","Beni en çok hangi tür durumlar yorar?",{tags:["gözlem"],hardness:2}),
+    mk("Motive eden","Beni harekete geçiren şey ödül mü, sevgi mi, yoksa başka bir şey mi?",{tags:["içsel"],hardness:2}),
+    mk("Çocukluk hayalim","Küçükken ne olmak isterdim?",{tags:["geçmiş"],hardness:1}),
+    mk("En büyük değerim","Hayatta bana göre en önemli değer ne?",{tags:["değer"],hardness:2}),
+    mk("Sinyal veririm","Kötü bir gün geçirdiğimde bunu nasıl belli ederim?",{tags:["gözlem"],hardness:2}),
+    mk("Vazgeçemediğim tat","Hangi lezzeti asla reddedemem?",{tags:["yemek"],hardness:1}),
+    mk("Gizli korkum","Kimseye söylemediğim ama içimde taşıdığım bir endişem ne olabilir?",{tags:["içsel"],hardness:3}),
+    mk("Sevgi dilim","Sevildiğimi en çok neyle hissederim: söz mü, dokunuş mu, zaman mı?",{tags:["ilişki"],hardness:2}),
+    mk("Enerjik anım","Günün hangi saatinde en enerjik olurum?",{tags:["gözlem"],hardness:1}),
+    mk("En sevdiğim kompliman","Bana yapılan hangi tür iltifattan en çok etkilenirim?",{tags:["ilişki"],hardness:1}),
+    mk("Vazgeçtiğim alışkanlık","Bırakmaya çalıştığım küçük bir alışkanlığım var mı?",{tags:["içsel"],hardness:2}),
+    mk("Rahatlatan koku","Beni sakinleştiren bir koku söyle.",{tags:["duyusal"],hardness:1}),
+    mk("Gururlandığım an","Kendimle en gurur duyduğum an hangi türden olur?",{tags:["içsel"],hardness:2}),
+    mk("İçimdeki çocuk 2","Şu an içimdeki çocuğu en çok ne mutlu eder?",{tags:["içsel"],hardness:1}),
   ],
   taboo: [
     mk("KAHVE","Yasak: fincan, sabah, kafein",{tags:["kelime"],hardness:1}),
@@ -1020,6 +1084,31 @@ const CORE = {
     mk("MÜZİK","Yasak: şarkı, ritim, kulak",{tags:["kelime"],hardness:1}),
     mk("YEMEK","Yasak: tabak, aç, mutfak",{tags:["kelime"],hardness:1}),
     mk("KIŞ","Yasak: kar, soğuk, mont",{tags:["kelime"],hardness:1}),
+    mk("DOĞUM GÜNÜ","Yasak: pasta, mum, hediye",{tags:["kelime"],hardness:1}),
+    mk("SİNEMA","Yasak: film, koltuk, bilet",{tags:["kelime"],hardness:1}),
+    mk("HASTANE","Yasak: doktor, iğne, beyaz",{tags:["kelime"],hardness:1}),
+    mk("KEDİ","Yasak: miyav, tüy, pati",{tags:["kelime"],hardness:1}),
+    mk("SPOR SALONU","Yasak: ağırlık, ter, koşu",{tags:["kelime"],hardness:1}),
+    mk("OKUL","Yasak: sınıf, öğretmen, sınav",{tags:["kelime"],hardness:1}),
+    mk("BALAYI","Yasak: gelin, damat, otel",{tags:["kelime"],hardness:2}),
+    mk("PİKNİK","Yasak: sepet, battaniye, çim",{tags:["kelime"],hardness:1}),
+    mk("KONSER","Yasak: sahne, mikrofon, ışık",{tags:["kelime"],hardness:1}),
+    mk("İŞ TOPLANTISI","Yasak: sunum, ofis, mail",{tags:["kelime"],hardness:1}),
+    mk("BAHÇE","Yasak: çiçek, toprak, sulama",{tags:["kelime"],hardness:1}),
+    mk("SPOR MÜSABAKASI","Yasak: top, saha, taraftar",{tags:["kelime"],hardness:1}),
+    mk("MÜZE","Yasak: tablo, tarih, sessizlik",{tags:["kelime"],hardness:1}),
+    mk("YATAK ODASI","Yasak: yastık, uyku, örtü",{tags:["kelime"],hardness:2}),
+    mk("TATİL PLANI","Yasak: bilet, valiz, rota",{tags:["kelime"],hardness:1}),
+    mk("SÜRPRİZ","Yasak: hediye, gizli, kutlama",{tags:["kelime"],hardness:1}),
+    mk("KAHVALTI","Yasak: yumurta, çay, ekmek",{tags:["kelime"],hardness:1}),
+    mk("DANS","Yasak: müzik, ayak, adım",{tags:["kelime"],hardness:1}),
+    mk("AŞK","Yasak: kalp, duygu, sevgili",{tags:["kelime"],hardness:2}),
+    mk("YILBAŞI","Yasak: ağaç, hediye, kutlama",{tags:["kelime"],hardness:1}),
+    mk("KAMP","Yasak: çadır, ateş, orman",{tags:["kelime"],hardness:1}),
+    mk("DOĞUM","Yasak: bebek, hastane, ağlama",{tags:["kelime"],hardness:2}),
+    mk("İLK BULUŞMA","Yasak: restoran, heyecan, sevgili",{tags:["kelime"],hardness:2}),
+    mk("SARILMA","Yasak: kol, kucaklama, sıcak",{tags:["kelime"],hardness:2}),
+    mk("GECE YÜRÜYÜŞÜ","Yasak: karanlık, ay, sokak",{tags:["kelime"],hardness:1}),
   ],
   charades: [
     mk("İlk buluşma sahnesi","Bizim ilk buluşmamızı canlandır.",{tags:["anı"],hardness:2}),
@@ -1032,6 +1121,26 @@ const CORE = {
     mk("Uykuya dalış","Beni uyumaya çalışırken canlandır.",{tags:["yatak"],hardness:1}),
     mk("Yemek yaparken","Beni mutfakta canlandır: en tipik hareketim ne?",{tags:["mutfak"],hardness:1}),
     mk("Kızgın hâlim","Ben kızgınken görüntümü abartılı canlandır.",{tags:["duygu"],hardness:2}),
+    mk("Diş fırçalama","Beni dişlerimi fırçalarken abartılı canlandır.",{tags:["ev","komik"],hardness:1}),
+    mk("Telefon konuşması","Beni telefonda uzun bir konuşma yaparken canlandır.",{tags:["gözlem"],hardness:1}),
+    mk("Spor salonu","Beni spor yaparken canlandır, en tipik hareketim ne?",{tags:["gözlem","komik"],hardness:1}),
+    mk("Havaalanı telaşı","Uçağa yetişmeye çalışan halimizi canlandır.",{tags:["gözlem","komik"],hardness:1}),
+    mk("Kıskançlık anı","Beni hafif kıskandığım bir anda canlandır (abartarak).",{tags:["duygu","komik"],hardness:2}),
+    mk("Doğum günü sürprizi","Bana sürpriz yapılınca nasıl tepki veririm, canlandır.",{tags:["duygu"],hardness:1}),
+    mk("Sabah kahvesi","Kahvemi içmeden önceki halimi canlandır.",{tags:["komik"],hardness:1}),
+    mk("Alışveriş merkezinde","Beni alışveriş merkezinde sıkılırken canlandır.",{tags:["gözlem"],hardness:1}),
+    mk("İlk 'seni seviyorum'","O anı -abartarak- yeniden canlandır.",{tags:["anı","romantik"],hardness:2}),
+    mk("Kavga sonrası barışma","Küçük bir kavgadan sonra nasıl barışırım, canlandır.",{tags:["ilişki"],hardness:2}),
+    mk("Kilo tartısı","Tartıya çıktığımdaki tepkimi canlandır.",{tags:["komik"],hardness:1}),
+    mk("Sürpriz karşılama","Beni havaalanında/kapıda sürprizle karşılarken canlandır.",{tags:["romantik"],hardness:1}),
+    mk("Dedikodu anı","Bir dedikoduyu anlatırkenki halimi canlandır.",{tags:["komik"],hardness:1}),
+    mk("Yorgun eve dönüş","İşten yorgun eve geldiğimdeki halimi canlandır.",{tags:["gözlem"],hardness:1}),
+    mk("Aşırı heyecan","Çok heyecanlandığım bir anı abartarak canlandır.",{tags:["duygu"],hardness:1}),
+    mk("Sinema izlerken","Filmde duygusal sahnede halimi canlandır.",{tags:["komik"],hardness:1}),
+    mk("Kararsızlık","Menüde ne yiyeceğime karar veremediğim anı canlandır.",{tags:["komik"],hardness:1}),
+    mk("İlk tanışma heyecanı","İlk tanıştığımızdaki heyecanımı canlandır.",{tags:["anı"],hardness:2}),
+    mk("Masaj keyfi","Masaj yaparken/alırken tepkimi canlandır.",{tags:["fiziksel","komik"],hardness:2}),
+    mk("Gece yatmadan önce","Yatmadan önceki son 5 dakikamı canlandır.",{tags:["ev"],hardness:1}),
   ],
   rapidFire: [
     mk("Hızlı 5 - Sabah","Kahve mi? / Ekmek mi simit mi? / Ilık mı sıcak mı? / Müzikle mi sessizce mi? / Uzun mu kısa mı duş?",{tags:["hız"],hardness:1}),
@@ -1044,6 +1153,15 @@ const CORE = {
     mk("Hızlı 5 - Hayal","Ev mi karavan mı? / Kedi mi köpek mi? / Kitap mı podcast mi? / Kış mı yaz mı? / Erken emeklilik mi kariyer mi?",{tags:["hız"],hardness:1}),
     mk("Hızlı 5 - Sanat","Resim mi müzik mi? / Konser mi tiyatro mu? / Klasik mi modern mi? / Müze mi sinema mı? / Roman mı şiir mi?",{tags:["hız"],hardness:1}),
     mk("Hızlı 5 - Sen","Sabahçı mı gececi mi? / Söz mü yaz mı? / Sarılan mı sarılmayan mı? / Duygusal mı mantıklı mı? / İçe mi dışa mı?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Ev","Şehir mi sayfiye mi? / Balkon mu bahçe mi? / Modern mi klasik mi? / Büyük mü küçük mü? / Sessiz mi hareketli mi?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Para","Biriktirmek mi harcamak mı? / Plan mı anlık mı? / Deneyim mi eşya mı? / Yatırım mı tatil mi? / Paylaşmak mı ayrı mı?",{tags:["hız"],hardness:2}),
+    mk("Hızlı 5 - Randevu gecesi","Ev mi dışarı mı? / Sessiz mi eğlenceli mi? / Erken mi geç mi? / Sürpriz mi planlı mı? / Rahat mı şık mı?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - Vücut","Masaj mı sarılma mı? / Sıcak mı serin mi? / Yavaş mı hızlı mı? / Işıklı mı karanlık mı? / Müzikli mi sessiz mi?",{tags:["hız","yetişkin"],hardness:3}),
+    mk("Hızlı 5 - Duygular","Ağlamak mı gülmek mi? / Konuşmak mı susmak mı? / Yalnız mı beraber mi? / Yavaşça mı hemen mi? / Sarılmak mı uzaklaşmak mı?",{tags:["hız"],hardness:2}),
+    mk("Hızlı 5 - Hafta sonu","Erken kalkmak mı geç uyanmak mı? / Plan mı doğaçlama mı? / Şehir mi doğa mı? / Kalabalık mı ikimiz mi? / Aktif mi tembel mi?",{tags:["hız"],hardness:1}),
+    mk("Hızlı 5 - İletişim","Konuşarak mı yazarak mı? / Hemen mi düşünüp mü? / Doğrudan mı dolaylı mı? / Sessizlik mi tartışma mı? / Espri mi ciddiyet mi?",{tags:["hız"],hardness:2}),
+    mk("Hızlı 5 - Gelecek","Şehirde mi kırsalda mı? / Erken emeklilik mi kariyer mi? / Küçük düğün mü büyük düğün mü? / Macera mı istikrar mı? / Plan mı akış mı?",{tags:["hız"],hardness:2}),
+    mk("Hızlı 5 - Yatak odası","Sabah mı gece mi? / Yavaş mı ateşli mi? / Sessiz mi konuşkan mı? / Karanlık mı loş ışık mı? / Sürpriz mi rutin mi?",{tags:["hız","yetişkin"],hardness:3}),
   ],
   story: [
     mk("Otel odasında","Küçük bir sahil kasabasındaki eski otelin odasına girdiğimizde, camda tuhaf bir zarf duruyordu...",{tags:["hikaye"],hardness:1}),
@@ -1056,6 +1174,20 @@ const CORE = {
     mk("Deniz feneri","Deniz feneri bakıcılığı için gönüllü olduk, ilk gecemizde...",{tags:["hikaye"],hardness:1}),
     mk("Yıldızlar","Terasa çıktık, gökyüzüne baktık ve ikimiz de aynı anda aynı dileği tuttuk...",{tags:["hikaye"],hardness:1}),
     mk("Kayıp dükkan","Şehirde daha önce hiç görmediğimiz bir dükkan bulduk, kapısında yazan tek şey 'sadece çiftler için' idi...",{tags:["hikaye"],hardness:2}),
+    mk("Fırtınalı gece","Elektrikler kesildi, mumları yakarken pencereden garip bir ışık gördük...",{tags:["hikaye"],hardness:1}),
+    mk("Eski fotoğraf","Tavan arasında bulduğumuz eski bir fotoğrafta bizim gibi görünen iki kişi vardı, ama tarih 100 yıl önceydi...",{tags:["hikaye"],hardness:2}),
+    mk("Asansörde kalmak","Asansörde mahsur kaldık, saatler geçince birbirimize itiraf etmeye başladık...",{tags:["hikaye"],hardness:2}),
+    mk("Gizemli davetiye","Kapıya bırakılan bir davetiyede sadece bir adres ve saat yazıyordu...",{tags:["hikaye"],hardness:2}),
+    mk("Yeni komşu","Yeni taşınan komşumuz garip bir şekilde bizi hep izliyor gibiydi, sonra bir gün kapımızı çaldı ve...",{tags:["hikaye"],hardness:1}),
+    mk("Kaybolan mektup","Postacı yanlışlıkla bize 50 yıl önce yazılmış bir aşk mektubu getirdi...",{tags:["hikaye","romantik"],hardness:1}),
+    mk("Ada tatili","Fırtına yüzünden ıssız bir adada mahsur kaldık, ilk gecemizde...",{tags:["hikaye"],hardness:2}),
+    mk("Zaman kapsülü","Bahçede kazı yaparken kendi geleceğimize yazdığımızı hatırlamadığımız bir zaman kapsülü bulduk...",{tags:["hikaye"],hardness:2}),
+    mk("Yanlış numara","Yanlışlıkla aradığımız numaradan çok tanıdık bir ses çıktı...",{tags:["hikaye"],hardness:1}),
+    mk("Gece treni","Son trene zar zor yetiştik, kompartımanda yalnızdık ve tren birden durdu...",{tags:["hikaye","roleplay"],hardness:2}),
+    mk("Sihirli dükkan","Antikacıda bulduğumuz eski bir saat, sahibine bir dileği gerçekleştiriyormuş...",{tags:["hikaye"],hardness:1}),
+    mk("İkinci şans","Bir sabah uyandığımızda ilk tanıştığımız güne geri dönmüştük...",{tags:["hikaye","roleplay"],hardness:2}),
+    mk("Terk edilmiş ev","Yürüyüşte bulduğumuz terk edilmiş evin bahçe kapısı kendiliğinden açıldı...",{tags:["hikaye"],hardness:1}),
+    mk("Balon festivali","Sıcak hava balonuyla yükselirken pilot birden 'bir sürprizimiz var' dedi...",{tags:["hikaye","romantik"],hardness:1}),
   ],
   sameThought: [
     mk("Renk","3-2-1 deyip aynı anda aklınıza gelen bir renk söyleyin.",{tags:["senkron"],hardness:1}),
@@ -1070,6 +1202,19 @@ const CORE = {
     mk("Bugünkü ruh hâlim","Bugünü tek kelimeyle özetle.",{tags:["senkron"],hardness:1}),
     mk("Öpüşmek nerede","Aynı anda: 'Şu an nereden öpüşürdün?'",{tags:["senkron","yakınlaşma"],hardness:3}),
     mk("İlk aklına gelen","Ortak arkadaş listemizden bir isim.",{tags:["senkron","komik"],hardness:1}),
+    mk("Hayvan","Aynı anda: hangi hayvan olmak isterdiniz?",{tags:["senkron"],hardness:1}),
+    mk("Mevsim","Aynı anda en sevdiğiniz mevsimi söyleyin.",{tags:["senkron"],hardness:1}),
+    mk("Süper güç","Aynı anda: hangi süper gücü isterdiniz?",{tags:["senkron","hayal"],hardness:1}),
+    mk("Bugünkü kahraman","Aynı anda: bugün sizi kim gülümsetti?",{tags:["senkron"],hardness:1}),
+    mk("Tatlı mı tuzlu mu","Aynı anda: şu an canınız ne çekiyor?",{tags:["senkron"],hardness:1}),
+    mk("Aşk dili","Aynı anda: sevgi en çok hangi şekilde gösterilir sizce?",{tags:["senkron","romantik"],hardness:2}),
+    mk("Film türü","Aynı anda: şimdi izlemek istediğiniz film türü.",{tags:["senkron"],hardness:1}),
+    mk("Renk-duygu","Aynı anda: bugünü bir renkle anlatın.",{tags:["senkron"],hardness:1}),
+    mk("Hayal tatili","Aynı anda: yarın uçağa binseniz nereye giderdiniz?",{tags:["senkron"],hardness:1}),
+    mk("Ortak kelime","Aynı anda: ilişkimizi tek kelimeyle anlatın.",{tags:["senkron","romantik"],hardness:2}),
+    mk("Gizli istek","Aynı anda: bu gece en çok ne yapmak istersiniz?",{tags:["senkron","yakınlaşma"],hardness:2}),
+    mk("Sabah mı akşam","Aynı anda: sabah insanı mısınız akşam insanı mı?",{tags:["senkron"],hardness:1}),
+    mk("İlk dokunuş","Aynı anda: en sevdiğiniz dokunuş nerede?",{tags:["senkron","yakınlaşma"],hardness:3}),
   ],
   secretMission: [
     mk("Sabah bileti","Yarın sabah partnerine kahvesini önce sen getir, tek kelime etme.",{tags:["görev","sürpriz"],hardness:1}),
@@ -1084,6 +1229,18 @@ const CORE = {
     mk("Öpücük tuzağı","Gün içinde beklemediği bir anda ensesinden öp.",{tags:["görev","yakınlaşma"],hardness:2}),
     mk("Sessiz izle","Bir dakika boyunca konuşmadan sadece ona bak, o ne yaparsa yapsın.",{tags:["görev"],hardness:2}),
     mk("Anı albümü","Ortak bir fotoğrafımızı bul ve ona yolla.",{tags:["görev","anı"],hardness:1}),
+    mk("Küçük hediye","Bugün ona küçük, beklenmedik bir şey al ya da hazırla.",{tags:["görev","sürpriz"],hardness:2}),
+    mk("Övgü mesajı","Gün içinde ona neden şanslı hissettiğini anlatan bir mesaj yaz.",{tags:["görev","romantik"],hardness:1}),
+    mk("Sessiz yardım","Fark ettirmeden onun bugün yapması gereken bir işi sen yap.",{tags:["görev"],hardness:1}),
+    mk("Randevu planla","Ona sormadan küçük bir sürpriz buluşma planla.",{tags:["görev","sürpriz"],hardness:2}),
+    mk("El yazısı not","Elle yazılmış kısa bir not bırak, göreceği bir yere.",{tags:["görev","romantik"],hardness:1}),
+    mk("Gözlerine bak","Bugün bir sohbet sırasında en az 10 saniye göz teması kur ve bunu bilinçli yap.",{tags:["görev","yakınlık"],hardness:2}),
+    mk("Onun şarkısı","Sizi hatırlatan bir şarkıyı çalıp birlikte dinleyin.",{tags:["görev","müzik"],hardness:1}),
+    mk("Teşekkür listesi","Ona sessizce teşekkür ettiğin 3 şeyi zihninde say, sonra birini söyle.",{tags:["görev","minnet"],hardness:1}),
+    mk("El ele yürüyüş","Bir sonraki fırsatta en az 10 dakika el ele yürüyün.",{tags:["görev","fiziksel"],hardness:1}),
+    mk("Gizli kompliman notu","Aynaya silinen kalemle küçük bir not bırak.",{tags:["görev","romantik"],hardness:1}),
+    mk("Sabah sürprizi","Yarın sabah onu her zamankinden farklı bir şekilde uyandır.",{tags:["görev","sürpriz"],hardness:2}),
+    mk("Dinleme görevi","Bugün bir konuşmada araya girmeden sadece dinle, sonuna kadar.",{tags:["görev","dinleme"],hardness:2}),
   ],
   touchBingo: [
     mk("Ense — parmak uçları","Ensesine sadece parmak uçlarıyla dokun, 15 saniye.",{tags:["dokunuş"],hardness:2}),
@@ -1098,6 +1255,18 @@ const CORE = {
     mk("Ayak bileği","Ayak bileğini avuç içine al, hafifçe bastır.",{tags:["dokunuş"],hardness:1}),
     mk("Alın — burun ucu","Alnından burun ucuna bir öpücük çizgisi.",{tags:["dokunuş","romantik"],hardness:2}),
     mk("Sadece nefes","Boynuna sadece nefesini hissettir, dokunma.",{tags:["dokunuş","yavaş"],hardness:3}),
+    mk("Parmak ucu yüz","Yüzünün hatlarını sadece parmak ucuyla, gözler kapalı takip et.",{tags:["dokunuş","yavaş"],hardness:2}),
+    mk("Avuç içi","Avuç içine küçük bir kalp çiz, tahmin etsin.",{tags:["dokunuş","komik"],hardness:1}),
+    mk("Köprücük kemiği","Köprücük kemiğinden omzuna doğru hafifçe kaydır.",{tags:["dokunuş"],hardness:2}),
+    mk("Ense öpücüğü","Ensesine hafif bir öpücük kondur.",{tags:["dokunuş","yakınlaşma"],hardness:3}),
+    mk("Sırt çizgisi","Parmağınla omurgası boyunca yavaşça in.",{tags:["dokunuş"],hardness:2}),
+    mk("El bileği","El bileğinin iç kısmına 10 saniye hafifçe dokun.",{tags:["dokunuş"],hardness:1}),
+    mk("Şakak masajı","Şakaklarına 20 saniye küçük dairesel masaj yap.",{tags:["dokunuş","masaj"],hardness:1}),
+    mk("Kulak arkası","Kulağının arkasını hafifçe okşa.",{tags:["dokunuş"],hardness:2}),
+    mk("İki el","İki elini avuçlarının içine al, 15 saniye sadece tut.",{tags:["dokunuş","yavaş"],hardness:1}),
+    mk("Yanak okşama","Yanağını avuç içinle nazikçe okşa.",{tags:["dokunuş","romantik"],hardness:1}),
+    mk("Baldır","Baldırından dizine kadar hafif bir dokunuşla çık.",{tags:["dokunuş"],hardness:2}),
+    mk("Alnına öpücük","Alnına yavaşça bir öpücük kondur.",{tags:["dokunuş","romantik"],hardness:1}),
   ],
   okNok: [
     mk("Geç cevap","Partnerin mesajına birkaç saat sonra cevap vermesi.",{category:"messaging",hardness:1}),
@@ -2855,47 +3024,55 @@ function renderCardUI(box,mod,c,onNext,ext){
   box.append(el("div",{style:"margin-top:8px;font-size:16px"},c.prompt));
   box.append(tagList(c));
 
+  // Two primary actions + a "…" overflow menu for everything else — this used
+  // to stack up to 8 buttons at once (Yap/Yumuşat/Değiştir/Pas/Favori/Bir daha
+  // gösterme/💾/AI üret on the memories module), which made every card feel
+  // like a decision-fatigue wall late at night.
   const canDareUi = isTask && (ext.isFlirt || ext.isIntimacy || ext.hasSoften);
+  const primaryRow = el("div",{class:"row",style:"margin-top:16px"});
   if(canDareUi){
-    const rowDare = el("div",{class:"row",style:"margin-top:16px"},
+    primaryRow.append(
       btn("Yap","primary",()=>{ (ext.onDone||onNext)(c); }),
-      btn("Yumuşat","gold",()=>{ if(ext.onSoften) ext.onSoften(c); else onNext(); }),
-      btn("Değiştir","ghost",()=>{ if(ext.onReplace) ext.onReplace(c); else onNext(); }),
       btn("Pas","ghost",()=>{ bumpSession(mod,"pass"); onNext(); })
     );
-    box.append(rowDare);
   } else {
-    const row1 = el("div",{class:"row",style:"margin-top:16px"},
+    primaryRow.append(
       btn("Pas","ghost",()=>{bumpSession(mod,"pass");onNext()}),
       btn("Sonraki kart","primary",onNext)
     );
-    box.append(row1);
   }
+  box.append(primaryRow);
 
-  const row2 = el("div",{class:"row",style:"margin-top:10px"},
-    btn(isFav(mod,c.id)?"★ Favori":"☆ Favori","ghost",(e)=>{
-      const on = toggleFav(mod,c.id);
-      toast(on?"Favorilere eklendi":"Favoriden çıkarıldı");
-      e.currentTarget.textContent = on?"★ Favori":"☆ Favori";
-    }),
-    btn("Bir daha gösterme","danger",()=>{
-      disableCard(mod,c.id);toast("Bu kart artık gösterilmeyecek.");onNext();
-    })
-  );
-  box.append(row2);
-  if(mod === "memories"){
-    box.append(el("div",{style:"margin-top:10px"},
-      btn("💾 Bu anıyı kaydet","gold",()=>openSaveMemoryModal(c))
-    ));
-  }
-  if(aiAvailable()){
-    box.append(el("div",{style:"margin-top:10px"},
-      btn("Yeni sorular üret (AI)","gold",()=>requestAi(mod,box,onNext))
-    ));
-  } else {
-    box.append(el("div",{class:"muted",style:"margin-top:10px;font-size:12px"},
-      "AI ile yeni kart üretmek için oyunu çevrimiçi adresinden aç. Sabit ve özel kartlar çevrimdışı çalışır."));
-  }
+  const moreBtn = btn("⋯ Daha fazla","ghost",()=>{
+    openModal((mbox,close)=>{
+      mbox.append(el("h3",null,"Bu kart için"));
+      const list = el("div",{style:"margin-top:12px;display:flex;flex-direction:column;gap:8px"});
+      mbox.append(list);
+      if(canDareUi){
+        list.append(btn("Yumuşat","gold",()=>{ close(); if(ext.onSoften) ext.onSoften(c); else onNext(); }));
+        list.append(btn("Değiştir","ghost",()=>{ close(); if(ext.onReplace) ext.onReplace(c); else onNext(); }));
+      }
+      list.append(btn(isFav(mod,c.id)?"★ Favorilerden çıkar":"☆ Favorilere ekle","ghost",()=>{
+        const on = toggleFav(mod,c.id);
+        toast(on?"Favorilere eklendi":"Favoriden çıkarıldı");
+        close();
+      }));
+      list.append(btn("Bir daha gösterme","danger",()=>{
+        close(); disableCard(mod,c.id);toast("Bu kart artık gösterilmeyecek.");onNext();
+      }));
+      if(mod === "memories"){
+        list.append(btn("💾 Bu anıyı kaydet","gold",()=>{ close(); openSaveMemoryModal(c); }));
+      }
+      if(aiAvailable()){
+        list.append(btn("Yeni sorular üret (AI)","gold",()=>{ close(); requestAi(mod,box,onNext); }));
+      } else {
+        mbox.append(el("div",{class:"muted",style:"margin-top:10px;font-size:12px"},
+          "AI ile yeni kart üretmek için oyunu çevrimiçi adresinden aç. Sabit ve özel kartlar çevrimdışı çalışır."));
+      }
+      list.append(btn("Kapat","ghost",close));
+    });
+  });
+  box.append(el("div",{style:"margin-top:10px"},moreBtn));
 }
 
 /* ============================================================
