@@ -3288,8 +3288,14 @@ route("/ok-nok",(app)=>{
     ["communication","İletişim"],
     ["boundaries","Sınırlar"],
   ];
-  const state = { card:null, category:"all", lastChoice:null };
+  // Each card now goes through a private hand-off for both players (turn 1,
+  // then turn 2) before revealing whether they matched — previously there was
+  // a single shared OK/NOK button, so there was never any per-person answer
+  // to compare and "which topics we differ on" could never be computed.
+  const state = { card:null, category:"all", phase:"handoff", turn:1, p1Choice:null, p2Choice:null };
   const settings = getSettings();
+  const p1name = settings.player1 || "Oyuncu 1";
+  const p2name = settings.player2 || "Oyuncu 2";
 
   // Filter bar
   const filterWrap = el("div",{style:"display:flex;gap:6px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px"});
@@ -3324,25 +3330,55 @@ route("/ok-nok",(app)=>{
   }
 
   function nextCard(){
-    state.lastChoice = null;
     const c = drawFiltered();
     state.card = c;
+    state.phase = "handoff";
+    state.turn = 1;
+    state.p1Choice = null;
+    state.p2Choice = null;
     render();
   }
 
-  function record(choice){
-    if(!state.card || state.card.__exhausted) return;
-    state.lastChoice = choice;
+  function finalizeRound(){
+    // Increment everything on one session object and save once — calling
+    // bumpSession() here as well would read its own separate copy of the
+    // session and clobber whatever we write below (lost-update race).
     const s = getSession();
-    s.modules.okNok = s.modules.okNok || {rounds:0,passes:0,okCount:0,nokCount:0};
-    if(choice==="ok"){ s.modules.okNok.okCount = (s.modules.okNok.okCount||0)+1; bumpSession("okNok","round"); }
-    else if(choice==="nok"){ s.modules.okNok.nokCount = (s.modules.okNok.nokCount||0)+1; bumpSession("okNok","round"); }
-    else if(choice==="pass"){ bumpSession("okNok","pass"); }
+    s.modules.okNok = s.modules.okNok || {rounds:0,passes:0,agreeCount:0,disagreeCount:0,pairs:[]};
+    const m = s.modules.okNok;
+    m.pairs = m.pairs || [];
+    const p1 = state.p1Choice, p2 = state.p2Choice;
+    if(p1==="pass" || p2==="pass"){
+      m.passes = (m.passes||0)+1; s.totalPasses = (s.totalPasses||0)+1;
+    } else {
+      m.rounds = (m.rounds||0)+1; s.totalRounds = (s.totalRounds||0)+1;
+      if(p1===p2){ m.agreeCount = (m.agreeCount||0)+1; }
+      else {
+        m.disagreeCount = (m.disagreeCount||0)+1;
+        m.pairs.push({prompt:state.card.prompt, category:state.card.category, p1, p2});
+        if(m.pairs.length>40) m.pairs.shift();
+      }
+    }
     storage.set(K.activeSession,s);
     markSeen("okNok", state.card.id);
+  }
+
+  function answer(choice){
+    if(!state.card || state.card.__exhausted || state.phase!=="answering") return;
+    if(state.turn===1){
+      state.p1Choice = choice;
+      state.turn = 2;
+      state.phase = "handoff";
+    } else {
+      state.p2Choice = choice;
+      finalizeRound();
+      state.phase = "reveal";
+    }
     render();
-    const delay = settings.reducedMotion ? 0 : 450;
-    setTimeout(()=>{ nextCard(); }, delay);
+  }
+
+  function choiceLabel(c){
+    return c==="ok" ? "OK 👍" : c==="nok" ? "NOK 👎" : "Pas";
   }
 
   function render(){
@@ -3363,23 +3399,63 @@ route("/ok-nok",(app)=>{
       box.append(row);
       return;
     }
+
+    // Hand-off screen: keeps the current answer private until the other
+    // player is holding the phone.
+    if(state.phase==="handoff"){
+      const who = state.turn===1 ? p1name : p2name;
+      box.append(el("div",{class:"center",style:"padding:12px 0"},
+        el("div",{style:"font-size:34px;margin-bottom:10px"},"📱"),
+        el("div",{class:"big"},"Telefonu "+who+"'a ver"),
+        el("div",{class:"muted",style:"margin-top:8px"},state.turn===1
+          ? "Diğer kişi görmeden hazır olduğunda dokun."
+          : "İlk cevap kaydedildi — şimdi sıra sende."),
+      ));
+      box.append(el("div",{style:"height:16px"}));
+      box.append(btn("Soruyu göster","primary",()=>{ state.phase="answering"; render(); }));
+      return;
+    }
+
+    // Reveal screen: shows both private answers side by side, no scoring language.
+    if(state.phase==="reveal"){
+      const agree = state.p1Choice===state.p2Choice;
+      const eitherPassed = state.p1Choice==="pass" || state.p2Choice==="pass";
+      const catLabel = (OK_NOK_CATS.find(c=>c[0]===state.card.category)||["","·"])[1];
+      box.append(el("div",{class:"muted",style:"font-size:12px;letter-spacing:.4px;text-transform:uppercase"},catLabel));
+      box.append(el("div",{style:"margin-top:10px;font-size:16px;line-height:1.5"},state.card.prompt));
+      box.append(el("div",{style:"height:16px"}));
+      box.append(el("div",{class:"row",style:"gap:10px"},
+        el("div",{class:"card",style:"flex:1;text-align:center;padding:12px"},
+          el("div",{class:"muted",style:"font-size:12px"},p1name),
+          el("div",{style:"font-size:18px;font-weight:700;margin-top:4px"},choiceLabel(state.p1Choice))),
+        el("div",{class:"card",style:"flex:1;text-align:center;padding:12px"},
+          el("div",{class:"muted",style:"font-size:12px"},p2name),
+          el("div",{style:"font-size:18px;font-weight:700;margin-top:4px"},choiceLabel(state.p2Choice)))
+      ));
+      box.append(el("div",{style:"height:14px"}));
+      box.append(el("div",{class:"consent-box",style:"text-align:center"},
+        eitherPassed ? "Bu soruyu geçtiniz." : agree ? "Aynı düşündünüz 🎉" : "Farklı düşündünüz — konuşmaya değer 💬"));
+      box.append(el("div",{style:"height:14px"}));
+      box.append(btn("Devam","primary",()=>nextCard()));
+      return;
+    }
+
+    // Answering screen — only the current player should be looking at the phone.
     const catLabel = (OK_NOK_CATS.find(c=>c[0]===state.card.category)||["","·"])[1];
-    box.append(el("div",{class:"muted",style:"font-size:12px;letter-spacing:.4px;text-transform:uppercase"},catLabel));
+    box.append(el("div",{class:"muted",style:"font-size:12px;letter-spacing:.4px;text-transform:uppercase;display:flex;justify-content:space-between"},
+      el("span",null,catLabel),
+      el("span",null,(state.turn===1?p1name:p2name)+" cevaplıyor")));
     box.append(el("div",{class:"big",style:"margin-top:14px;font-size:20px;line-height:1.5;min-height:80px"},state.card.prompt));
     box.append(el("div",{style:"height:18px"}));
 
     const okBtn = el("button",{class:"btn primary",style:"flex:1;padding:20px;font-size:18px;font-weight:600"},"OK");
     const nokBtn = el("button",{class:"btn danger",style:"flex:1;padding:20px;font-size:18px;font-weight:600"},"NOK");
-    if(state.lastChoice==="ok") okBtn.style.transform = settings.reducedMotion ? "" : "scale(1.05)";
-    if(state.lastChoice==="nok") nokBtn.style.transform = settings.reducedMotion ? "" : "scale(1.05)";
-    if(state.lastChoice==="ok") okBtn.style.boxShadow = "0 0 0 3px var(--gold)";
-    if(state.lastChoice==="nok") nokBtn.style.boxShadow = "0 0 0 3px var(--danger,#c33)";
-    okBtn.addEventListener("click",()=>record("ok"));
-    nokBtn.addEventListener("click",()=>record("nok"));
+    okBtn.addEventListener("click",()=>answer("ok"));
+    nokBtn.addEventListener("click",()=>answer("nok"));
     box.append(el("div",{class:"row",style:"gap:10px"}, okBtn, nokBtn));
 
     box.append(el("div",{style:"height:10px"}));
-    const passBtn = btn("Pas","ghost",()=>record("pass"));
+    const passBtn = btn("Pas","ghost",()=>answer("pass"));
     passBtn.style.width = "100%";
     box.append(passBtn);
   }
@@ -3687,12 +3763,22 @@ route("/summary",(app)=>{
     el("div",{class:"kv"},el("div",null,"Toplam tur"),el("div",null,String(s.totalRounds||0))),
     el("div",{class:"kv"},el("div",null,"Toplam pas"),el("div",null,String(s.totalPasses||0))),
     most && el("div",{class:"kv"},el("div",null,"En çok oynanan"),el("div",null,MODULES[most]?.name||most)),
-    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — değerlendirilen"),el("div",null,String((mods.okNok.okCount||0)+(mods.okNok.nokCount||0))+" kart")),
+    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — aynı düşündüğünüz"),el("div",null,String(mods.okNok.agreeCount||0)+" kart")),
+    mods.okNok && el("div",{class:"kv"},el("div",null,"OK/NOK — farklı düşündüğünüz"),el("div",null,String(mods.okNok.disagreeCount||0)+" kart")),
     mods.guessMe && el("div",{class:"kv"},el("div",null,"Beni Tahmin Et skoru"),el("div",null,String(mods.guessMe.score||0))),
   ));
   const favs = getFavorites();
   const favCount = Object.values(favs).reduce((n,o)=>n+Object.keys(o||{}).length,0);
   box.append(el("div",{class:"kv"},el("div",null,"Favori kart"),el("div",null,String(favCount))));
+  if(mods.okNok && mods.okNok.pairs && mods.okNok.pairs.length){
+    const diffBox = el("div",{class:"card",style:"margin-top:14px"});
+    app.append(diffBox);
+    diffBox.append(el("h3",null,"Farklı düşündüğünüz konular"));
+    diffBox.append(el("div",{class:"muted",style:"margin-top:4px;font-size:13px"},"Yargı yok — sadece konuşmaya değer birkaç başlık."));
+    mods.okNok.pairs.slice(-8).reverse().forEach(p=>{
+      diffBox.append(el("div",{class:"kv"},el("div",{style:"max-width:100%"},p.prompt)));
+    });
+  }
   box.append(el("div",{class:"consent-box",style:"margin-top:14px"},
     "Bu gece bazı cevaplarda aynı yerdeydiniz, bazılarında yeni şeyler öğrendiniz. Oyunun amacı zaten doğru cevabı bulmak değil, birbirinizi biraz daha keşfetmek."));
   box.append(el("div",{class:"row",style:"margin-top:14px"},
