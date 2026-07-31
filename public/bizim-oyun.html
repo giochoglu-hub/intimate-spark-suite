@@ -107,40 +107,23 @@ label{display:block;font-size:13px;color:var(--muted);margin:12px 0 6px}
 .pill{padding:6px 12px;border-radius:999px;background:var(--surface-2);color:var(--muted);
   font-size:13px;border:1px solid transparent;cursor:pointer}
 .pill.active{background:var(--wine);color:var(--cream);border-color:var(--wine-light)}
-.dice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.die{background:var(--surface-2);border-radius:14px;padding:12px;text-align:center;
-  min-height:80px;display:flex;flex-direction:column;justify-content:center;
-  border:1px solid #3a2028}
-.die .k{font-size:11px;color:var(--gold);letter-spacing:.15em;text-transform:uppercase}
-.die .v{font-size:15px;font-weight:600;margin-top:4px}
-.die.pozisyon-with-image{grid-column:1/-1;padding:0;overflow:hidden}
-.die .pos-img{width:100%;max-height:260px;object-fit:contain;background:#fff;display:block}
-.die .pos-body{padding:12px}
-.die.rolling{animation:shake .5s ease-in-out infinite}
-@keyframes shake{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--gold);
   border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
   background:var(--surface-2);color:var(--cream);padding:12px 18px;border-radius:12px;
   border:1px solid var(--gold);z-index:2000;font-size:14px;max-width:90vw;text-align:center}
-.hide-answer{filter:blur(18px);pointer-events:none;user-select:none}
 .answers{display:flex;gap:8px}
 .answers .btn{flex:1}
 .consent-box{background:rgba(217,175,97,.08);border:1px solid rgba(217,175,97,.35);
   border-radius:14px;padding:14px;color:var(--cream);font-size:14px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(16,9,12,.92);
-  backdrop-filter:blur(10px);border-top:1px solid var(--surface-2);padding:8px 12px;z-index:50}
-.bottom-nav .inner{max-width:520px;margin:0 auto;display:flex;justify-content:space-around}
-.bottom-nav a{color:var(--muted);text-decoration:none;padding:6px 10px;font-size:12px;
-  border-radius:10px;display:flex;flex-direction:column;align-items:center;gap:2px}
-.bottom-nav a.active{color:var(--gold)}
 .kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--surface-2)}
 .kv:last-child{border:0}
 @media (prefers-reduced-motion: reduce){
   .wheel{transition:none}
-  .die.rolling{animation:none}
 }
+html.reduced-motion .wheel{transition:none !important}
+html.reduced-motion *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 </style>
 </head>
 <body>
@@ -1982,27 +1965,6 @@ const DICE = {
   surpriz:["ışıkları kıs, sadece bir mum","yavaş bir şarkı aç","tenine hafif parfüm sür","bir buz küpü ve bir fincan sıcak çay hazır et","tüy ya da ipek bir kumaş getir","aynanın önüne geç","gözleri bir fularla bağla","bir kadeh şarap paylaşın"],
 };
 
-// Which body regions each action makes sense on. "*" = any region.
-// "SELF" = the action doesn't need a region (self-directed, e.g. hair pulling).
-const ACTION_ZONES = {
-  "yavaş, ıslak bir öpücükle başla":["boyun","kulakla ense arası","dudak kenarı","köprücük kemiği","göğüs uçları çevresi","iç uyluk","karnın altı"],
-  "parmak uçlarıyla hafifçe gez":["*"],
-  "alçak sesle ne hissettiğini fısılda":["kulakla ense arası","boyun"],
-  "gözlerini kaçırmadan yavaşça yaklaş":["dudak kenarı","boyun"],
-  "önce sadece nefesini teninde hissettir":["boyun","kulakla ense arası","köprücük kemiği","iç kol","iç uyluk","karnın altı","göğüs uçları çevresi"],
-  "kıyafetin bir parçasını yavaşça çıkar":["SELF"],
-  "öpücük hattı çiz":["boyun","köprücük kemiği","göğüs uçları çevresi","karnın altı","bel çukuru","omurga boyunca","iç uyluk","iç kol"],
-  "dilinle küçük daireler çiz":["boyun","kulakla ense arası","göğüs uçları çevresi","köprücük kemiği","iç uyluk","karnın altı","dudak kenarı"],
-  "hafif ısırıklarla dolaş":["boyun","kulakla ense arası","iç uyluk","köprücük kemiği","kalça yanı","dudak kenarı"],
-  "avuçlarınla sıcak, baskılı bir masaj yap":["kalça yanı","bel çukuru","omurga boyunca","iç uyluk","karnın altı","göğüs uçları çevresi"],
-  "saçlarını nazikçe topla ve çek":["SELF"],
-  "sadece dokun — konuşma, öpme":["*"],
-  "önce bir yerini dondur, sonra oradan başla":["*"],
-  "iki elinle sabit tut, sadece bak":["SELF"],
-  "sıcak nefesle ısıt, sonra üfle":["boyun","kulakla ense arası","köprücük kemiği","göğüs uçları çevresi","iç kol","el bileği içi","iç uyluk"],
-  "tırnaklarınla çok hafif iz bırak":["omurga boyunca","bel çukuru","kalça yanı","iç uyluk","göğüs uçları çevresi","karnın altı"],
-};
-
 // Position illustration thumbnails (matched by position name prefix, case-insensitive).
 const POSITION_IMAGES = {
   "pretzel dip":"/__l5e/assets-v1/eb4137c7-bfbc-4f3a-bd08-d571ba17d1c8/pretzel-dip.jpg",
@@ -2076,15 +2038,6 @@ function compressImageFile(file){
 }
 
 
-
-const DICE_MODES = {
-  klasik:{name:"Klasik",dice:["oyuncu","eylem","bolge","sure"]},
-  yavas:{name:"Yavaş",dice:["oyuncu","eylem","tarz","tempo","sure"]},
-  vahsi:{name:"Vahşi",dice:["oyuncu","eylem","pozisyon","tarz","kural"]},
-  buGece:{name:"Sadece Bu Gece",dice:null},
-  rulet:{name:"Rulet",dice:null},
-  kasa:{name:"Özel Kasa",dice:null},
-};
 
 /* ============================================================
  * 6. Application state / pool management
@@ -2428,35 +2381,72 @@ route("/home",(app)=>{
     app.append(cardBox);
   }
 
-  // wheel
+  // wheel — real labeled slices; the rotation always lands the pointer on the
+  // module that was actually picked (previously the spin angle was pure
+  // Math.random(), fully unrelated to the result, and there were no slice
+  // labels at all — just a plain color band).
+  const WHEEL_SHORT = {
+    warmup:"Isınma", flirt:"Flört", intimacy:"Yakınlaşma", memories:"Anılar",
+    party:"Parti", okNok:"OK/NOK", guessMe:"Tahmin", sexDice:"Zar"
+  };
   const wheelCard = el("div",{class:"card center"});
   wheelCard.append(el("h3",null,"Rastgele Modül Çarkı"));
   const wrap = el("div",{class:"wheel-wrap"});
   const wheel = el("div",{class:"wheel","aria-hidden":"true"});
   const pointer = el("div",{class:"wheel-pointer"});
   const center = el("div",{class:"wheel-center"},
-    el("div",{class:"lbl"},"Sonuç"),
-    el("div",{class:"val",id:"wheel-val"},"Çevir!")
+    el("div",{class:"lbl",id:"wheel-lbl"},""),
+    el("div",{class:"val",id:"wheel-val"},"🎡 Çarkı çevir")
   );
+  const wheelMods = Object.keys(MODULES);
+  const sliceDeg = 360/wheelMods.length;
+  (function buildWheelFace(){
+    const R = 122, C = 130;
+    const colors = ["var(--wine)","var(--wine-light)"];
+    let svg = `<svg viewBox="0 0 260 260" width="100%" height="100%" style="display:block">`;
+    wheelMods.forEach((k,i)=>{
+      const a0 = (-90 + i*sliceDeg) * Math.PI/180;
+      const a1 = (-90 + (i+1)*sliceDeg) * Math.PI/180;
+      const x0 = (C + R*Math.cos(a0)).toFixed(2), y0 = (C + R*Math.sin(a0)).toFixed(2);
+      const x1 = (C + R*Math.cos(a1)).toFixed(2), y1 = (C + R*Math.sin(a1)).toFixed(2);
+      const largeArc = sliceDeg>180?1:0;
+      svg += `<path d="M${C},${C} L${x0},${y0} A${R},${R} 0 ${largeArc} 1 ${x1},${y1} Z" style="fill:${colors[i%colors.length]}" stroke="var(--surface-2)" stroke-width="1.5"/>`;
+      const am = (a0+a1)/2;
+      const lx = (C + R*0.66*Math.cos(am)).toFixed(2), ly = (C + R*0.66*Math.sin(am)).toFixed(2);
+      const labelDeg = (am*180/Math.PI + 90).toFixed(1);
+      const label = MODULES[k].icon+" "+(WHEEL_SHORT[k]||MODULES[k].name);
+      svg += `<text x="${lx}" y="${ly}" style="fill:var(--cream);font-size:11px;font-weight:700" text-anchor="middle" transform="rotate(${labelDeg} ${lx} ${ly})">${label}</text>`;
+    });
+    svg += `</svg>`;
+    wheel.innerHTML = svg;
+  })();
   wrap.append(pointer,wheel,center);
   wheelCard.append(wrap);
-  const wheelMods = Object.keys(MODULES);
   const wheelActions = el("div",{style:"margin-top:12px;min-height:52px"});
   wheelCard.append(wheelActions);
   let spinning = false;
+  let spinCount = 0;
   const spinBtn = btn("Çarkı Çevir","primary",()=>{
     if(spinning) return;
     spinning = true;
     wheelActions.innerHTML = "";
+    document.getElementById("wheel-lbl").textContent = "";
     document.getElementById("wheel-val").textContent = "…";
     spinBtn.disabled = true; spinBtn.style.opacity = ".6";
     const idx = Math.floor(Math.random()*wheelMods.length);
     const chosen = wheelMods[idx];
-    const rotations = 3+Math.random()*3;
-    const targetDeg = rotations*360 + Math.random()*360;
+    spinCount++;
+    const rotations = 4 + (spinCount%3); // always adds fresh full turns so repeats still visibly spin
+    // Land the pointer (fixed at the top, 0deg) on the middle of the chosen slice,
+    // with a little jitter that still stays safely inside that slice.
+    const jitter = (Math.random()-0.5) * (sliceDeg*0.5);
+    const targetDeg = rotations*360 - (idx+0.5)*sliceDeg - jitter;
+    const duration = settings.reducedMotion ? 500 : 3800;
+    wheel.style.transition = `transform ${duration}ms cubic-bezier(.15,.85,.25,1)`;
     wheel.style.transform = `rotate(${targetDeg}deg)`;
     setTimeout(()=>{
       const m = MODULES[chosen];
+      document.getElementById("wheel-lbl").textContent = "Sonuç";
       document.getElementById("wheel-val").textContent = m.icon+" "+m.name;
       wheelActions.innerHTML = "";
       wheelActions.append(
@@ -2464,12 +2454,13 @@ route("/home",(app)=>{
         el("div",{style:"height:8px"}),
         btn("Yeniden çevir","ghost",()=>{
           spinning = false; spinBtn.disabled = false; spinBtn.style.opacity = "1";
-          document.getElementById("wheel-val").textContent = "Çevir!";
+          document.getElementById("wheel-lbl").textContent = "";
+          document.getElementById("wheel-val").textContent = "🎡 Çarkı çevir";
           wheelActions.innerHTML = "";
         })
       );
       spinning = false; spinBtn.disabled = false; spinBtn.style.opacity = "1";
-    },3800);
+    },duration);
   });
   wheelCard.append(spinBtn);
   app.append(wheelCard);
@@ -3579,7 +3570,7 @@ function renderDice(app){
   app.append(topbar("Sex Zarı"));
   const card = el("div",{class:"card"});
   app.append(card);
-  const info = el("div",{class:"muted"},"Zarı at, çıkan pozisyonu uygula. Aynı pozisyon 'Yeni Oyun' diyene kadar tekrar gelmez.");
+  const info = el("div",{class:"muted"},"Zarı at, çıkan pozisyonu uygula. Aynı pozisyon 'Yeni Oyun' diyene kadar tekrar gelmez. İlerlemen kaydedilir, sayfa yenilense de kalır.");
   card.append(info);
   const rollArea = el("div",{style:"margin-top:14px"});
   card.append(rollArea);
@@ -3588,18 +3579,22 @@ function renderDice(app){
   const rollBtn = btn("Zar At","primary",()=>roll());
   card.append(rollBtn);
   card.append(el("div",{style:"height:8px"}));
-  card.append(btn("Yeni Oyun","ghost",()=>{ seen.clear(); rollArea.innerHTML=""; updateCounter(); toast("Yeni oyun başladı."); }));
+  card.append(btn("Yeni Oyun","ghost",()=>{ resetSeen("sexDice"); rollArea.innerHTML=""; updateCounter(); toast("Yeni oyun başladı."); }));
 
-  const seen = new Set();
-  function allValues(){ return poolValues("pozisyon").filter(v=>!!positionImage(v)); }
+  // Full position pool — every position can come up, with an illustration when we have one,
+  // name + description always. (Used to silently filter out anything without an image,
+  // which meant ~9 out of 10 positions could never appear.)
+  function allValues(){ return poolValues("pozisyon"); }
   function updateCounter(){
     const total = allValues().length;
-    counter.textContent = total ? `Bu oyunda: ${seen.size} / ${total}` : "";
+    const seenCount = getSeen("sexDice").length;
+    counter.textContent = total ? `Bu oyunda: ${seenCount} / ${total}` : "";
   }
   function roll(){
     const values = allValues();
-    if(!values.length){ toast("Görselli pozisyon yok. Ayarlar → Pozisyon Görselleri'nden ekleyebilirsin."); return; }
-    const remaining = values.filter(v=>!seen.has(v));
+    if(!values.length){ toast("Pozisyon havuzu boş. Ayarlar → Özel Kasa'dan ekleyebilirsin."); return; }
+    const seenIds = getSeen("sexDice");
+    const remaining = values.filter(v=>!seenIds.includes(hashStr(v)));
     if(!remaining.length){
       rollArea.innerHTML="";
       const done = el("div",{class:"card",style:"text-align:center;padding:16px"});
@@ -3609,7 +3604,7 @@ function renderDice(app){
       return;
     }
     const v = pick(remaining);
-    seen.add(v);
+    markSeen("sexDice", hashStr(v));
     rollArea.innerHTML="";
     const name = v.split(" — ")[0];
     const desc = v.includes(" — ") ? v.slice(v.indexOf(" — ")+3) : "";
@@ -3637,22 +3632,21 @@ route("/dice-custom",(app)=>{
   app.append(topbar("Özel Kasa"));
   const box = el("div",{class:"card"});
   app.append(box);
+  box.append(el("div",{class:"muted"},"Buraya eklediğin her şey doğrudan Sex Zarı'nın pozisyon havuzuna girer. \"İsim — açıklama\" biçiminde yazarsan zarda ayrı ayrı görünürler; görsel eklemek istersen Ayarlar → Pozisyon Görselleri'nden yükleyebilirsin."));
   const custom = getCustomDice();
-  const poolSelect = el("select");
-  Object.keys(DICE).forEach(k=>poolSelect.append(el("option",{value:k},k)));
-  const input = el("input",{type:"text",placeholder:"Öğe metni…",maxlength:"80"});
-  box.append(el("label",null,"Havuz"),poolSelect);
-  box.append(el("label",null,"Yeni öğe"),input);
+  const POOL = "pozisyon";
+  const input = el("input",{type:"text",placeholder:"Örn: Yeni pozisyon — kısa açıklama…",maxlength:"160"});
+  box.append(el("label",{style:"margin-top:12px"},"Yeni pozisyon"),input);
   const addBtn = btn("Ekle","primary",()=>{
-    const p = poolSelect.value, v = input.value.trim().slice(0,80);
+    const v = input.value.trim().slice(0,160);
     if(!v)return;
-    custom[p]=custom[p]||[];
-    if(!custom[p].includes(v))custom[p].push(v);
+    custom[POOL]=custom[POOL]||[];
+    if(!custom[POOL].includes(v))custom[POOL].push(v);
     saveCustomDice(custom);
     input.value="";
     listBox.innerHTML="";
     renderList();
-    toast("Eklendi.");
+    toast("Eklendi — Sex Zarı'nda çıkabilir.");
   });
   box.append(el("div",{style:"margin-top:12px"},addBtn));
 
@@ -3660,18 +3654,15 @@ route("/dice-custom",(app)=>{
   box.append(listBox);
   function renderList(){
     listBox.innerHTML="";
-    Object.keys(DICE).forEach(pool=>{
-      const items = custom[pool]||[];
-      if(!items.length)return;
-      listBox.append(el("h3",{style:"margin-top:12px"},pool));
-      items.forEach(v=>{
-        const row = el("div",{class:"kv"},
-          el("div",null,v),
-          el("button",{class:"btn small danger",onclick:()=>{
-            custom[pool]=custom[pool].filter(x=>x!==v);saveCustomDice(custom);renderList();
-          }},"Sil"));
-        listBox.append(row);
-      });
+    const items = custom[POOL]||[];
+    if(!items.length){ listBox.append(el("div",{class:"muted"},"Henüz özel pozisyon eklemedin.")); return; }
+    items.forEach(v=>{
+      const row = el("div",{class:"kv"},
+        el("div",null,v),
+        el("button",{class:"btn small danger",onclick:()=>{
+          custom[POOL]=custom[POOL].filter(x=>x!==v);saveCustomDice(custom);renderList();
+        }},"Sil"));
+      listBox.append(row);
     });
   }
   renderList();
@@ -3794,6 +3785,7 @@ route("/settings",(app)=>{
   const rmBtn = btn(s.reducedMotion?"Az animasyon: AÇIK":"Az animasyon: KAPALI","ghost",()=>{
     s.reducedMotion=!s.reducedMotion;saveSettings(s);
     document.documentElement.style.setProperty("--rm",s.reducedMotion?"1":"0");
+    document.documentElement.classList.toggle("reduced-motion",!!s.reducedMotion);
     render();
   });
   box.append(rmBtn);
@@ -4104,6 +4096,7 @@ if(!runMigrations()){
   const _s = getSettings();
   if(_s.theme && _s.theme!=="bordo") document.documentElement.setAttribute("data-theme", _s.theme);
   document.documentElement.style.setProperty("--rm", _s.reducedMotion?"1":"0");
+  document.documentElement.classList.toggle("reduced-motion", !!_s.reducedMotion);
   // Init all pools with core
   Object.keys(CORE).forEach(m=>loadPool(m));
   loadPool("guessMe");
