@@ -2301,6 +2301,8 @@ function render(){
   const q = new URLSearchParams(queryStr||"");
   const app = document.getElementById("app");
   app.innerHTML="";
+  // Clear any modal left open from the previous screen (it would block the new one).
+  const ov = document.getElementById("overlay-root"); if(ov) ov.innerHTML="";
   // find best match
   const keys = Object.keys(routes);
   let handler = routes[path];
